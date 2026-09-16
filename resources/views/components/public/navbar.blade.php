@@ -125,13 +125,22 @@
             </div>
 
             <div class="hidden lg:flex items-center">
-                <a
-                    href="{{ Route::has('login') ? route('login') : '#' }}"
-                    class="inline-flex items-center justify-center gap-2 px-5 py-2 text-sm font-display font-bold tracking-wide uppercase text-surface bg-brand border-2 border-ink shadow-brutal hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-brutal-sm hover:bg-brand-dark active:translate-x-1 active:translate-y-1 active:shadow-none transition-all focus:outline-none focus:ring-2 focus:ring-brand"
-                >
-                    <span>MASUK</span>
-                    <span aria-hidden="true">&rarr;</span>
-                </a>
+                @auth
+                    <a
+                        href="{{ auth()->user()->canAccessAdminPanel() ? url('/admin') : (Route::has('profile') ? route('profile') : route('home')) }}"
+                        class="inline-flex items-center justify-center gap-2 px-5 py-2 text-sm font-display font-bold tracking-wide uppercase text-surface bg-brand border-2 border-ink shadow-brutal hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-brutal-sm hover:bg-brand-dark active:translate-x-1 active:translate-y-1 active:shadow-none transition-all focus:outline-none focus:ring-2 focus:ring-brand"
+                    >
+                        <span>PROFIL</span>
+                    </a>
+                @else
+                    <a
+                        href="{{ Route::has('login') ? route('login') : '#' }}"
+                        class="inline-flex items-center justify-center gap-2 px-5 py-2 text-sm font-display font-bold tracking-wide uppercase text-surface bg-brand border-2 border-ink shadow-brutal hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-brutal-sm hover:bg-brand-dark active:translate-x-1 active:translate-y-1 active:shadow-none transition-all focus:outline-none focus:ring-2 focus:ring-brand"
+                    >
+                        <span>MASUK</span>
+                        <span aria-hidden="true">&rarr;</span>
+                    </a>
+                @endauth
             </div>
 
             <div class="flex lg:hidden">
@@ -174,13 +183,22 @@
         @endforeach
 
         <div class="pt-2">
-            <a
-                href="{{ Route::has('login') ? route('login') : '#' }}"
-                class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 text-base font-display font-bold tracking-wide uppercase text-surface bg-brand border-2 border-ink shadow-brutal hover:bg-brand-dark active:translate-x-1 active:translate-y-1 active:shadow-none transition-all focus:outline-none focus:ring-2 focus:ring-brand"
-            >
-                <span>MASUK</span>
-                <span aria-hidden="true">&rarr;</span>
-            </a>
+            @auth
+                <a
+                    href="{{ auth()->user()->canAccessAdminPanel() ? url('/admin') : (Route::has('profile') ? route('profile') : route('home')) }}"
+                    class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 text-base font-display font-bold tracking-wide uppercase text-surface bg-brand border-2 border-ink shadow-brutal hover:bg-brand-dark active:translate-x-1 active:translate-y-1 active:shadow-none transition-all focus:outline-none focus:ring-2 focus:ring-brand"
+                >
+                    <span>PROFIL</span>
+                </a>
+            @else
+                <a
+                    href="{{ Route::has('login') ? route('login') : '#' }}"
+                    class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 text-base font-display font-bold tracking-wide uppercase text-surface bg-brand border-2 border-ink shadow-brutal hover:bg-brand-dark active:translate-x-1 active:translate-y-1 active:shadow-none transition-all focus:outline-none focus:ring-2 focus:ring-brand"
+                >
+                    <span>MASUK</span>
+                    <span aria-hidden="true">&rarr;</span>
+                </a>
+            @endauth
         </div>
     </div>
 </nav>
