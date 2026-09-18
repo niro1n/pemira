@@ -48,8 +48,9 @@ class User extends Authenticatable
         return $this->isAdmin() || $this->isSuperAdmin();
     }
 
-    public function canAccessPanel(mixed $panel = null): bool
+    public function getAdminDisplayName(): string
     {
-        return $this->canAccessAdminPanel();
+        return $this->voterAccount?->eligibleVoter?->name
+            ?? ($this->isSuperAdmin() ? 'Super Administrator' : ($this->isAdmin() ? 'Admin KPR' : $this->email));
     }
 }
