@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use App\Models\User;
+use App\Services\Dashboard\DashboardDataProvider;
+use App\Services\Dashboard\DashboardDataProviderInterface;
 use Carbon\CarbonImmutable;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -14,7 +16,13 @@ use Illuminate\Validation\Rules\Password;
 
 class AppServiceProvider extends ServiceProvider
 {
-    public function register(): void {}
+    public function register(): void
+    {
+        $this->app->singleton(
+            DashboardDataProviderInterface::class,
+            DashboardDataProvider::class,
+        );
+    }
 
     public function boot(): void
     {
@@ -48,9 +56,6 @@ class AppServiceProvider extends ServiceProvider
         Gate::define('voter-only', fn (User $user) => $user->isVoter());
     }
 
-    /**
-     * Configure default behaviors for production-ready applications.
-     */
     protected function configureDefaults(): void
     {
         Date::use(CarbonImmutable::class);
