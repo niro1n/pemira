@@ -98,7 +98,7 @@ class AuthorizationTest extends TestCase
         $this->assertTrue($superAdmin->canAccessAdminPanel());
     }
 
-    public function test_voter_cannot_access_filament_or_admin_area(): void
+    public function test_voter_cannot_access_admin_area(): void
     {
         $voter = User::factory()->create([
             'role' => 'voter',
@@ -110,7 +110,7 @@ class AuthorizationTest extends TestCase
         $response->assertForbidden();
     }
 
-    public function test_admin_can_access_filament_or_admin_area(): void
+    public function test_admin_can_access_admin_area(): void
     {
         $admin = User::factory()->admin()->create([
             'email_verified_at' => now(),
@@ -121,7 +121,7 @@ class AuthorizationTest extends TestCase
         $response->assertOk();
     }
 
-    public function test_super_admin_can_access_filament_or_admin_area(): void
+    public function test_super_admin_can_access_admin_area(): void
     {
         $superAdmin = User::factory()->superAdmin()->create([
             'email_verified_at' => now(),
@@ -294,9 +294,9 @@ class AuthorizationTest extends TestCase
         $admin = User::factory()->admin()->create();
         $superAdmin = User::factory()->superAdmin()->create();
 
-        $this->assertFalse($voter->canAccessPanel());
-        $this->assertTrue($admin->canAccessPanel());
-        $this->assertTrue($superAdmin->canAccessPanel());
+        $this->assertFalse($voter->canAccessAdminPanel());
+        $this->assertTrue($admin->canAccessAdminPanel());
+        $this->assertTrue($superAdmin->canAccessAdminPanel());
 
         $this->assertFalse(Gate::forUser($voter)->allows('access-admin-panel'));
         $this->assertTrue(Gate::forUser($admin)->allows('access-admin-panel'));
