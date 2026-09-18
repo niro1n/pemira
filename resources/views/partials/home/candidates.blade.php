@@ -1,3 +1,7 @@
+@props([
+    'election' => null,
+])
+
 @php
     $candidatePairs = [
         [
@@ -68,7 +72,7 @@
             </h2>
 
             <p class="text-sm sm:text-base lg:text-lg text-ink font-sans font-medium leading-snug sm:leading-relaxed">
-                Kenali pasangan calon, gagasan, visi, dan misi sebelum menentukan pilihanmu pada PEMIRA 2026.
+                Kenali pasangan calon, gagasan, visi, dan misi sebelum menentukan pilihanmu pada {{ $election ? $election->name : 'PEMIRA' }}.
             </p>
         </div>
 

@@ -119,6 +119,18 @@
                             </div>
 
                             <div class="p-5 sm:p-7">
+                                @if (session('status'))
+                                    <div class="bg-surface-muted border-2 border-ink p-3.5 shadow-brutal-sm mb-5 text-ink">
+                                        <div class="flex items-center gap-2 text-xs font-display font-bold uppercase text-brand mb-1">
+                                            <span class="w-2 h-2 bg-accent inline-block border border-ink"></span>
+                                            <span>INFORMASI</span>
+                                        </div>
+                                        <p class="text-xs font-sans font-medium text-ink/90 leading-relaxed">
+                                            {{ session('status') }}
+                                        </p>
+                                    </div>
+                                @endif
+
                                 @if ($errors->any())
                                     <div class="bg-surface-muted border-2 border-ink p-3.5 shadow-brutal-sm mb-5 text-ink">
                                         <div class="flex items-center gap-2 text-xs font-display font-bold uppercase text-brand mb-1">

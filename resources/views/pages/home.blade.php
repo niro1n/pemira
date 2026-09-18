@@ -1,15 +1,15 @@
 @extends('layouts.public')
 
 @section('content')
-    @include('partials.home.navbar')
+    @include('partials.home.navbar', ['election' => $election])
 
     <main>
-        @include('partials.home.hero')
-        @include('partials.home.schedule')
-        @include('partials.home.candidates')
-        @include('partials.home.voting-guide')
-        @include('partials.home.faq')
+        @include('partials.home.hero', ['election' => $election])
+        @include('partials.home.schedule', ['election' => $election])
+        @include('partials.home.candidates', ['election' => $election])
+        @include('partials.home.voting-guide', ['election' => $election])
+        @include('partials.home.faq', ['election' => $election])
     </main>
 
-    @include('partials.home.footer')
+    @include('partials.home.footer', ['election' => $election])
 @endsection

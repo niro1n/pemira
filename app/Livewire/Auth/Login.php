@@ -78,7 +78,7 @@ class Login extends Component
         ]);
 
         $user = Auth::user();
-        if ($user->isAdmin() || $user->isSuperAdmin()) {
+        if ($user->canAccessAdminPanel()) {
             return redirect()->intended('/admin');
         }
 

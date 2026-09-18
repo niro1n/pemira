@@ -1,12 +1,16 @@
+@props([
+    'election' => null,
+])
+
 <section id="beranda" class="relative w-full bg-surface border-b-2 border-ink overflow-hidden">
     <div class="absolute inset-0 pointer-events-none select-none overflow-hidden z-0" aria-hidden="true">
         <div
             class="hidden md:block absolute -top-10 -left-6 font-display font-black text-8xl lg:text-9xl text-ink/5 tracking-tighter leading-none">
-            PEMIRA
+            {{ $election ? $election->name : 'PEMIRA' }}
         </div>
         <div
             class="hidden lg:block absolute -bottom-16 right-10 font-display font-black text-8xl lg:text-9xl text-ink/5 tracking-tighter leading-none">
-            2026
+            {{ $election ? $election->year : date('Y') }}
         </div>
 
         <svg class="absolute top-12 right-12 w-48 h-48 text-ink/10 hidden sm:block" fill="currentColor">
@@ -67,7 +71,7 @@
 
                 <p
                     class="text-sm sm:text-base lg:text-xl text-ink font-sans font-medium max-w-xl mb-5 sm:mb-8 lg:mb-10 leading-snug sm:leading-relaxed">
-                    Tentukan pilihanmu untuk pemimpin BEM pada PEMIRA 2026. Satu suara, satu langkah besar untuk
+                    Tentukan pilihanmu untuk pemimpin BEM pada {{ $election ? $election->name : 'PEMIRA' }}. Satu suara, satu langkah besar untuk
                     perubahan di kampus kita.
                 </p>
 
@@ -136,7 +140,7 @@
                             <div class="flex items-center gap-1.5 sm:gap-2">
                                 <span class="w-2 h-2 sm:w-2.5 sm:h-2.5 bg-accent inline-block"></span>
                                 <span class="font-display font-bold text-xs sm:text-sm uppercase tracking-wider">
-                                    PEMIRA '26
+                                    {{ $election ? $election->name : "PEMIRA '26" }}
                                 </span>
                             </div>
                             <span
@@ -154,7 +158,7 @@
                                     </div>
                                     <div
                                         class="font-display font-black text-3xl sm:text-6xl lg:text-7xl text-brand leading-none tracking-tight">
-                                        2026
+                                        {{ $election ? $election->year : date('Y') }}
                                     </div>
                                 </div>
                                 <div
@@ -163,8 +167,8 @@
                                         STATUS
                                     </div>
                                     <div
-                                        class="text-lg sm:text-2xl lg:text-3xl font-display font-black text-accent mt-0.5">
-                                        &#10003;
+                                        class="text-xs sm:text-sm font-display font-black text-brand mt-0.5">
+                                        {{ $election ? $election->statusLabel() : 'BELUM DIBUKA' }}
                                     </div>
                                 </div>
                             </div>
@@ -201,7 +205,7 @@
                                 <span class="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-brand inline-block"></span>
                                 <span>SUARA MAHASISWA BERHARGA</span>
                             </span>
-                            <span class="text-brand uppercase">PNB 2026</span>
+                            <span class="text-brand uppercase">PNB {{ $election ? $election->year : date('Y') }}</span>
                         </div>
                     </div>
                 </div>

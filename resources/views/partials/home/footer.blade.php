@@ -1,16 +1,18 @@
 @props([
+    'election' => null,
     'brandName' => 'PEMIRA',
-    'period' => "'26",
+    'period' => null,
 ])
 
 @php
     $whatsappUrl = 'https://wa.me/REPLACE_WITH_OFFICIAL_NUMBER';
+    $resolvedPeriod = $period ?? ($election?->year ? "'".substr((string) $election->year, -2) : "'26");
 @endphp
 
 <footer class="w-full bg-brand text-surface border-t-2 border-ink relative overflow-hidden">
     <div class="absolute inset-0 pointer-events-none select-none overflow-hidden z-0" aria-hidden="true">
         <div class="hidden md:block absolute -bottom-10 -right-6 font-display font-black text-8xl lg:text-9xl text-surface/5 tracking-tighter leading-none">
-            2026
+            {{ $election ? $election->year : date('Y') }}
         </div>
 
         <div class="hidden lg:block absolute top-0 left-1/3 w-px h-full bg-surface/10"></div>
@@ -41,7 +43,7 @@
                             {{ $brandName }}
                         </span>
                         <span class="text-xl sm:text-2xl font-extrabold text-accent ml-1">
-                            {{ $period }}
+                            {{ $resolvedPeriod }}
                         </span>
                     </div>
                 </a>
@@ -52,7 +54,7 @@
 
                 <div class="inline-flex items-center gap-2 px-2.5 py-1 bg-brand-dark border border-surface/20 text-[11px] sm:text-xs font-sans font-bold uppercase tracking-wider text-accent">
                     <span class="w-1.5 h-1.5 bg-accent inline-block border border-ink"></span>
-                    <span>KOMISI PEMILIHAN RAYA 2026</span>
+                    <span>KOMISI PEMILIHAN RAYA {{ $election ? $election->year : date('Y') }}</span>
                 </div>
             </div>
 
@@ -131,7 +133,7 @@
 
     <div class="border-t-2 border-surface/15 bg-brand-dark py-3.5 sm:py-4">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] sm:text-xs font-sans font-medium text-surface/60 text-center sm:text-left">
-            <span>PEMIRA 2026 — Pemilihan Raya Mahasiswa</span>
+            <span>{{ $election ? $election->name : 'PEMIRA' }} — Pemilihan Raya Mahasiswa</span>
             <span>&copy; {{ date('Y') }} Komisi Pemilihan Raya (KPR). All rights reserved.</span>
         </div>
     </div>
