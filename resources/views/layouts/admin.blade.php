@@ -44,7 +44,7 @@
                                 <span class="font-display font-black text-sm text-brand uppercase tracking-tight block leading-none">
                                     PEMIRA PNB
                                 </span>
-                                <span class="text-[10px] font-sans font-bold uppercase tracking-wider text-ink/60 mt-1 block">
+                                <span class="text-xs font-sans font-bold uppercase tracking-wider text-ink/60 mt-1 block">
                                     Panel Admin
                                 </span>
                             </div>
@@ -77,47 +77,50 @@
                             @endif
                         </a>
 
-                        <div class="flex items-center justify-between px-3 py-2 border-2 border-transparent text-ink/40 text-xs font-semibold uppercase tracking-wide cursor-not-allowed">
+                        <a href="{{ route('admin.candidate-pairs.index') }}"
+                           class="flex items-center justify-between px-3 py-2 {{ request()->routeIs('admin.candidate-pairs.*') ? 'bg-brand text-surface' : 'text-ink/80 hover:bg-surface-muted' }} border-2 border-ink shadow-brutal-sm font-display font-bold text-xs uppercase tracking-wide">
                             <span>Pasangan Calon</span>
-                            <span class="text-[9px] px-1 py-0.5 bg-surface-muted border border-ink/20 text-ink/50 font-display font-bold">SEGERA</span>
-                        </div>
+                            @if (request()->routeIs('admin.candidate-pairs.*'))
+                                <span class="w-2 h-2 bg-accent inline-block"></span>
+                            @endif
+                        </a>
 
                         <div class="flex items-center justify-between px-3 py-2 border-2 border-transparent text-ink/40 text-xs font-semibold uppercase tracking-wide cursor-not-allowed">
                             <span>Daftar Pemilih</span>
-                            <span class="text-[9px] px-1 py-0.5 bg-surface-muted border border-ink/20 text-ink/50 font-display font-bold">SEGERA</span>
+                            <span class="text-xs px-1.5 py-0.5 bg-surface-muted border border-ink/20 text-ink/50 font-display font-bold">SEGERA</span>
                         </div>
 
                         <div class="flex items-center justify-between px-3 py-2 border-2 border-transparent text-ink/40 text-xs font-semibold uppercase tracking-wide cursor-not-allowed">
                             <span>Hasil Perhitungan</span>
-                            <span class="text-[9px] px-1 py-0.5 bg-surface-muted border border-ink/20 text-ink/50 font-display font-bold">SEGERA</span>
+                            <span class="text-xs px-1.5 py-0.5 bg-surface-muted border border-ink/20 text-ink/50 font-display font-bold">SEGERA</span>
                         </div>
 
                         <div class="flex items-center justify-between px-3 py-2 border-2 border-transparent text-ink/40 text-xs font-semibold uppercase tracking-wide cursor-not-allowed">
                             <span>Masukan Pemilih</span>
-                            <span class="text-[9px] px-1 py-0.5 bg-surface-muted border border-ink/20 text-ink/50 font-display font-bold">SEGERA</span>
+                            <span class="text-xs px-1.5 py-0.5 bg-surface-muted border border-ink/20 text-ink/50 font-display font-bold">SEGERA</span>
                         </div>
 
                         <div class="flex items-center justify-between px-3 py-2 border-2 border-transparent text-ink/40 text-xs font-semibold uppercase tracking-wide cursor-not-allowed">
                             <span>Audit & Log</span>
-                            <span class="text-[9px] px-1 py-0.5 bg-surface-muted border border-ink/20 text-ink/50 font-display font-bold">SEGERA</span>
+                            <span class="text-xs px-1.5 py-0.5 bg-surface-muted border border-ink/20 text-ink/50 font-display font-bold">SEGERA</span>
                         </div>
 
                         @if (auth()->user()?->isSuperAdmin())
                             <div class="pt-3 mt-3 border-t-2 border-ink/15">
-                                <div class="px-3 pb-1 text-[10px] font-display font-black text-brand uppercase tracking-wider">
+                                <div class="px-3 pb-1 text-xs font-display font-black text-brand uppercase tracking-wider">
                                     Super Admin
                                 </div>
                                 <div class="flex items-center justify-between px-3 py-2 border-2 border-transparent text-ink/40 text-xs font-semibold uppercase tracking-wide cursor-not-allowed">
                                     <span>Manajemen Admin</span>
-                                    <span class="text-[9px] px-1 py-0.5 bg-accent/20 border border-ink/20 text-brand font-display font-bold">SEGERA</span>
+                                    <span class="text-xs px-1.5 py-0.5 bg-accent/20 border border-ink/20 text-brand font-display font-bold">SEGERA</span>
                                 </div>
                                 <div class="flex items-center justify-between px-3 py-2 border-2 border-transparent text-ink/40 text-xs font-semibold uppercase tracking-wide cursor-not-allowed">
                                     <span>Pengajuan Jadwal</span>
-                                    <span class="text-[9px] px-1 py-0.5 bg-accent/20 border border-ink/20 text-brand font-display font-bold">SEGERA</span>
+                                    <span class="text-xs px-1.5 py-0.5 bg-accent/20 border border-ink/20 text-brand font-display font-bold">SEGERA</span>
                                 </div>
                                 <div class="flex items-center justify-between px-3 py-2 border-2 border-transparent text-ink/40 text-xs font-semibold uppercase tracking-wide cursor-not-allowed">
                                     <span>Tindakan Khusus</span>
-                                    <span class="text-[9px] px-1 py-0.5 bg-accent/20 border border-ink/20 text-brand font-display font-bold">SEGERA</span>
+                                    <span class="text-xs px-1.5 py-0.5 bg-accent/20 border border-ink/20 text-brand font-display font-bold">SEGERA</span>
                                 </div>
                             </div>
                         @endif
@@ -134,7 +137,7 @@
                                 <div class="font-display font-bold text-xs text-ink truncate uppercase leading-tight">
                                     {{ auth()->user()?->getAdminDisplayName() }}
                                 </div>
-                                <div class="text-[10px] font-sans text-ink/60 truncate leading-tight mt-0.5">
+                                <div class="text-xs font-sans text-ink/60 truncate leading-tight mt-0.5">
                                     {{ auth()->user()?->email }}
                                 </div>
                             </div>
@@ -223,7 +226,7 @@
                         <span class="font-display font-bold text-brand" x-text="clock">--:--:-- WITA</span>
                     </div>
 
-                    <div class="inline-flex items-center gap-1.5 px-2 sm:px-2.5 py-1 bg-brand text-surface border-2 border-ink shadow-brutal-sm text-[10px] sm:text-xs font-display font-bold uppercase tracking-wider">
+                    <div class="inline-flex items-center gap-1.5 px-2 sm:px-2.5 py-1 bg-brand text-surface border-2 border-ink shadow-brutal-sm text-xs font-display font-bold uppercase tracking-wider">
                         <span class="w-2 h-2 bg-accent inline-block"></span>
                         <span>{{ auth()->user()?->isSuperAdmin() ? 'SUPER ADMIN' : 'ADMIN KPR' }}</span>
                     </div>
