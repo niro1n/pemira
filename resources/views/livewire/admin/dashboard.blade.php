@@ -204,12 +204,12 @@
                 <div class="space-y-1.5">
                     <div class="flex items-center justify-between text-xs font-sans">
                         <div class="font-display font-bold text-ink truncate pr-2">
-                            <span class="px-1.5 py-0.5 bg-surface-muted border border-ink text-[10px] font-display font-black text-brand mr-1.5">{{ $prog['code'] }}</span>
+                            <span class="px-1.5 py-0.5 bg-surface-muted border border-ink text-xs font-display font-black text-brand mr-1.5">{{ $prog['code'] }}</span>
                             <span>{{ $prog['name'] }}</span>
                         </div>
                         <div class="shrink-0 flex items-center gap-2">
                             <span class="text-ink/70 font-semibold">{{ number_format($prog['voted'], 0, ',', '.') }} / {{ number_format($prog['eligible'], 0, ',', '.') }} Suara</span>
-                            <span class="px-1.5 py-0.5 bg-brand text-surface text-[10px] font-display font-black border border-ink">{{ $prog['rate_formatted'] }}</span>
+                            <span class="px-1.5 py-0.5 bg-brand text-surface text-xs font-display font-black border border-ink">{{ $prog['rate_formatted'] }}</span>
                         </div>
                     </div>
 
@@ -229,7 +229,7 @@
                 <h3 class="font-display font-extrabold text-base sm:text-lg text-ink uppercase">
                     LOG SUARA MASUK TERKINI
                 </h3>
-                <span class="text-[10px] font-display font-bold uppercase tracking-wider px-2 py-0.5 bg-surface-muted border border-ink text-ink/70">
+                <span class="text-xs font-display font-bold uppercase tracking-wider px-2 py-0.5 bg-surface-muted border border-ink text-ink/70">
                     ANONIM
                 </span>
             </div>
@@ -253,11 +253,11 @@
 
                         <div class="flex items-center gap-1.5 shrink-0">
                             @if (!empty($act['department']))
-                                <span class="text-[9px] font-display font-black uppercase px-1.5 py-0.5 bg-brand text-surface border border-ink">
+                                <span class="text-xs font-display font-black uppercase px-1.5 py-0.5 bg-brand text-surface border border-ink">
                                     {{ $act['department'] }}
                                 </span>
                             @endif
-                            <span class="text-[9px] font-display font-bold uppercase tracking-wider px-1.5 py-0.5 border border-ink bg-surface-muted text-ink/70">
+                            <span class="text-xs font-display font-bold uppercase tracking-wider px-1.5 py-0.5 border border-ink bg-surface-muted text-ink/70">
                                 {{ $act['type'] }}
                             </span>
                         </div>
@@ -276,7 +276,7 @@
                     <h3 class="font-display font-extrabold text-base text-accent uppercase">
                         OTORITAS SISTEM
                     </h3>
-                    <span class="px-1.5 py-0.5 bg-accent text-ink text-[9px] font-display font-black uppercase">SUPER ADMIN</span>
+                    <span class="px-1.5 py-0.5 bg-accent text-ink text-xs font-display font-black uppercase">SUPER ADMIN</span>
                 </div>
 
                 <div class="space-y-2.5 text-xs font-sans">
