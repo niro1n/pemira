@@ -389,4 +389,81 @@ class ElectionManagementTest extends TestCase
         $this->assertEquals(ElectionPhase::VOTING, $election->currentPhase(Carbon::parse('2026-10-10 10:00:00')));
         $this->assertEquals(ElectionPhase::FINISHED, $election->currentPhase(Carbon::parse('2026-10-10 17:00:00')));
     }
+
+    public function test_elections_table_and_detail_render_indonesian_date_formats(): void
+    {
+        $election = Election::create([
+            'name' => 'PEMIRA Format Test',
+            'slug' => 'pemira-format-test-2026',
+            'year' => 2026,
+            'registration_start_at' => Carbon::parse('2026-09-09 08:05:00'),
+            'registration_end_at' => Carbon::parse('2026-09-19 16:00:00'),
+            'voting_start_at' => Carbon::parse('2026-09-25 08:00:00'),
+            'voting_end_at' => Carbon::parse('2026-09-25 16:00:00'),
+        ]);
+
+        $test = Livewire::actingAs($this->admin)
+            ->test(ElectionIndex::class);
+
+        $test->assertSee('09/09/2026 08:05')
+            ->assertSee('19/09/2026 16:00')
+            ->assertSee('25/09/2026 08:00')
+            ->assertSee('25/09/2026 16:00')
+            ->assertDontSee('09/09/2026 08:05 AM')
+            ->assertDontSee('09/19/2026')
+            ->assertDontSee('09/25/2026');
+
+        $test->call('openDetailModal', $election->id)
+            ->assertSet('showDetailModal', true)
+            ->assertSee('09/09/2026 08:05 - 19/09/2026 16:00 WITA')
+            ->assertSee('25/09/2026 08:00 - 25/09/2026 16:00 WITA');
+    }
+
+    public function test_create_election_with_datetime_local_format_and_database_persistence(): void
+    {
+        Livewire::actingAs($this->admin)
+            ->test(ElectionIndex::class)
+            ->call('openCreateModal')
+            ->assertSet('showCreateModal', true)
+            ->set('name', 'PEMIRA Persist Test 2026')
+            ->set('year', 2026)
+            ->set('registration_start_at', '2026-09-20T08:00')
+            ->set('registration_end_at', '2026-09-24T16:00')
+            ->set('voting_start_at', '2026-09-26T08:00')
+            ->set('voting_end_at', '2026-09-26T16:00')
+            ->call('createElection')
+            ->assertHasNoErrors()
+            ->assertSet('showCreateModal', false);
+
+        $this->assertDatabaseHas('elections', [
+            'name' => 'PEMIRA Persist Test 2026',
+            'year' => 2026,
+            'registration_start_at' => '2026-09-20 08:00:00',
+            'registration_end_at' => '2026-09-24 16:00:00',
+            'voting_start_at' => '2026-09-26 08:00:00',
+            'voting_end_at' => '2026-09-26 16:00:00',
+        ]);
+    }
+
+    public function test_edit_modal_populates_dates_in_datetime_local_format(): void
+    {
+        $election = Election::create([
+            'name' => 'PEMIRA Edit Format Test',
+            'slug' => 'pemira-edit-format-test-2026',
+            'year' => 2026,
+            'registration_start_at' => Carbon::parse('2026-09-20 08:00:00'),
+            'registration_end_at' => Carbon::parse('2026-09-24 16:00:00'),
+            'voting_start_at' => Carbon::parse('2026-09-26 08:00:00'),
+            'voting_end_at' => Carbon::parse('2026-09-26 16:00:00'),
+        ]);
+
+        Livewire::actingAs($this->admin)
+            ->test(ElectionIndex::class)
+            ->call('openEditModal', $election->id)
+            ->assertSet('showEditModal', true)
+            ->assertSet('registration_start_at', '2026-09-20T08:00')
+            ->assertSet('registration_end_at', '2026-09-24T16:00')
+            ->assertSet('voting_start_at', '2026-09-26T08:00')
+            ->assertSet('voting_end_at', '2026-09-26T16:00');
+    }
 }

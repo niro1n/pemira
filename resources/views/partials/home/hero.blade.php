@@ -93,7 +93,7 @@
                         <div class="flex items-center gap-1.5 sm:gap-2 mb-0.5 sm:mb-1">
                             <span class="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-brand inline-block shrink-0"></span>
                             <span
-                                class="font-display font-bold text-[10px] sm:text-xs lg:text-sm uppercase tracking-tight sm:tracking-wide text-brand">
+                                class="font-display font-bold text-xs lg:text-sm uppercase tracking-tight sm:tracking-wide text-brand">
                                 DARI MAHASISWA
                             </span>
                         </div>
@@ -105,7 +105,7 @@
                         <div class="flex items-center gap-1.5 sm:gap-2 mb-0.5 sm:mb-1">
                             <span class="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-accent inline-block shrink-0"></span>
                             <span
-                                class="font-display font-bold text-[10px] sm:text-xs lg:text-sm uppercase tracking-tight sm:tracking-wide text-brand">
+                                class="font-display font-bold text-xs lg:text-sm uppercase tracking-tight sm:tracking-wide text-brand">
                                 TRANSPARAN
                             </span>
                         </div>
@@ -117,7 +117,7 @@
                         <div class="flex items-center gap-1.5 sm:gap-2 mb-0.5 sm:mb-1">
                             <span class="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-brand inline-block shrink-0"></span>
                             <span
-                                class="font-display font-bold text-[10px] sm:text-xs lg:text-sm uppercase tracking-tight sm:tracking-wide text-brand">
+                                class="font-display font-bold text-xs lg:text-sm uppercase tracking-tight sm:tracking-wide text-brand">
                                 SATU SUARA
                             </span>
                         </div>
@@ -144,7 +144,7 @@
                                 </span>
                             </div>
                             <span
-                                class="bg-accent text-ink px-2 sm:px-2.5 py-0.5 text-[10px] sm:text-xs font-display font-bold uppercase border border-ink">
+                                class="bg-accent text-ink px-2 sm:px-2.5 py-0.5 text-xs font-display font-bold uppercase border border-ink">
                                 E-VOTING RESMI
                             </span>
                         </div>
@@ -153,7 +153,7 @@
                             <div class="flex items-start justify-between gap-3 sm:gap-4">
                                 <div>
                                     <div
-                                        class="text-[10px] sm:text-xs font-sans font-bold uppercase tracking-widest text-brand mb-0.5 sm:mb-1">
+                                        class="text-xs font-sans font-bold uppercase tracking-widest text-brand mb-0.5 sm:mb-1">
                                         TAHUN PEMILIHAN
                                     </div>
                                     <div
@@ -163,7 +163,7 @@
                                 </div>
                                 <div
                                     class="bg-surface-muted border-2 border-ink p-1.5 sm:p-3 shadow-brutal-sm text-center shrink-0">
-                                    <div class="text-[10px] sm:text-xs font-display font-bold uppercase text-brand">
+                                    <div class="text-xs font-display font-bold uppercase text-brand">
                                         STATUS
                                     </div>
                                     <div
@@ -178,7 +178,7 @@
                             <div class="grid grid-cols-2 gap-2 sm:gap-3 lg:gap-4">
                                 <div class="bg-surface-muted border-2 border-ink p-2 sm:p-3.5 shadow-brutal-sm">
                                     <div
-                                        class="text-[9px] sm:text-xs font-sans font-bold uppercase tracking-wider text-ink">
+                                        class="text-xs font-sans font-bold uppercase tracking-wider text-ink">
                                         ASAS
                                     </div>
                                     <div
@@ -188,7 +188,7 @@
                                 </div>
                                 <div class="bg-surface-muted border-2 border-ink p-2 sm:p-3.5 shadow-brutal-sm">
                                     <div
-                                        class="text-[9px] sm:text-xs font-sans font-bold uppercase tracking-wider text-ink">
+                                        class="text-xs font-sans font-bold uppercase tracking-wider text-ink">
                                         HAK SUARA
                                     </div>
                                     <div
@@ -200,7 +200,7 @@
                         </div>
 
                         <div
-                            class="bg-surface-muted border-t-2 border-ink px-3 sm:px-5 py-2 sm:py-3 flex items-center justify-between text-[10px] sm:text-xs font-display font-bold text-ink">
+                            class="bg-surface-muted border-t-2 border-ink px-3 sm:px-5 py-2 sm:py-3 flex items-center justify-between text-xs font-display font-bold text-ink">
                             <span class="flex items-center gap-1.5 sm:gap-2">
                                 <span class="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-brand inline-block"></span>
                                 <span>SUARA MAHASISWA BERHARGA</span>

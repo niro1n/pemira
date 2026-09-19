@@ -159,7 +159,7 @@
                 <div class="relative z-10 grid grid-cols-1 md:grid-cols-12 gap-4 sm:gap-6 items-center">
                     <div class="md:col-span-8">
                         <div
-                            class="inline-flex items-center gap-2 px-2.5 py-0.5 bg-brand-dark border border-surface/20 text-[11px] sm:text-xs font-sans font-bold uppercase tracking-wider text-accent mb-2">
+                            class="inline-flex items-center gap-2 px-2.5 py-0.5 bg-brand-dark border border-surface/20 text-xs font-sans font-bold uppercase tracking-wider text-accent mb-2">
                             <span class="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-accent inline-block border border-ink"></span>
                             <span>BANTUAN PANITIA</span>
                         </div>

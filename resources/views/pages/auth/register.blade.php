@@ -143,7 +143,7 @@
                                     KETENTUAN PEMILIH
                                 </span>
                             </div>
-                            <span class="text-[10px] font-sans font-bold uppercase tracking-wider text-ink/60">
+                            <span class="text-xs font-sans font-bold uppercase tracking-wider text-ink/60">
                                 DPT RESMI
                             </span>
                         </div>
@@ -157,7 +157,7 @@
                             </p>
                         </div>
 
-                        <div class="pt-2 border-t border-ink/10 flex items-center justify-between text-[11px] font-display font-bold text-brand uppercase">
+                        <div class="pt-2 border-t border-ink/10 flex items-center justify-between text-xs font-display font-bold text-brand uppercase">
                             <span>TAHAP: {{ $currentStep }} / 04</span>
                             <span class="text-accent">&#9632; LUBER JURDIL</span>
                         </div>
@@ -176,7 +176,7 @@
                                         REGISTRASI PEMILIH
                                     </span>
                                 </div>
-                                <span class="bg-accent text-ink px-2 sm:px-2.5 py-0.5 text-[10px] sm:text-xs font-display font-bold uppercase border border-ink">
+                                <span class="bg-accent text-ink px-2 sm:px-2.5 py-0.5 text-xs font-display font-bold uppercase border border-ink">
                                     E-VOTING 2026
                                 </span>
                             </div>
@@ -185,22 +185,22 @@
                                 <div class="grid grid-cols-4 gap-1.5 sm:gap-2">
                                     <div class="flex flex-col items-center text-center p-1.5 sm:p-2 border-2 transition-all {{ $currentStep === 1 ? 'border-ink bg-surface text-brand shadow-brutal-sm' : ($currentStep > 1 ? 'border-ink/30 bg-surface text-accent' : 'border-transparent text-ink/40') }}">
                                         <span class="font-display font-extrabold text-xs sm:text-sm leading-none">{{ $currentStep > 1 ? '✓' : '01' }}</span>
-                                        <span class="text-[9px] sm:text-[10px] font-sans font-bold uppercase tracking-tight mt-0.5">DATA</span>
+                                        <span class="text-xs font-sans font-bold uppercase tracking-tight mt-0.5">DATA</span>
                                     </div>
 
                                     <div class="flex flex-col items-center text-center p-1.5 sm:p-2 border-2 transition-all {{ $currentStep === 2 ? 'border-ink bg-surface text-brand shadow-brutal-sm' : ($currentStep > 2 ? 'border-ink/30 bg-surface text-accent' : 'border-transparent text-ink/40') }}">
                                         <span class="font-display font-extrabold text-xs sm:text-sm leading-none">{{ $currentStep > 2 ? '✓' : '02' }}</span>
-                                        <span class="text-[9px] sm:text-[10px] font-sans font-bold uppercase tracking-tight mt-0.5">AKUN</span>
+                                        <span class="text-xs font-sans font-bold uppercase tracking-tight mt-0.5">AKUN</span>
                                     </div>
 
                                     <div class="flex flex-col items-center text-center p-1.5 sm:p-2 border-2 transition-all {{ $currentStep === 3 ? 'border-ink bg-surface text-brand shadow-brutal-sm' : ($currentStep > 3 ? 'border-ink/30 bg-surface text-accent' : 'border-transparent text-ink/40') }}">
                                         <span class="font-display font-extrabold text-xs sm:text-sm leading-none">{{ $currentStep > 3 ? '✓' : '03' }}</span>
-                                        <span class="text-[9px] sm:text-[10px] font-sans font-bold uppercase tracking-tight mt-0.5">OTP</span>
+                                        <span class="text-xs font-sans font-bold uppercase tracking-tight mt-0.5">OTP</span>
                                     </div>
 
                                     <div class="flex flex-col items-center text-center p-1.5 sm:p-2 border-2 transition-all {{ $currentStep === 4 ? 'border-ink bg-surface text-accent shadow-brutal-sm font-bold' : 'border-transparent text-ink/40' }}">
                                         <span class="font-display font-extrabold text-xs sm:text-sm leading-none">04</span>
-                                        <span class="text-[9px] sm:text-[10px] font-sans font-bold uppercase tracking-tight mt-0.5">SELESAI</span>
+                                        <span class="text-xs font-sans font-bold uppercase tracking-tight mt-0.5">SELESAI</span>
                                     </div>
                                 </div>
                             </div>
@@ -264,7 +264,7 @@
                                                     required
                                                     class="w-full px-3.5 py-2.5 sm:py-3 text-xs sm:text-sm font-sans font-medium text-ink bg-surface border-2 border-ink shadow-brutal-sm focus:outline-none focus:ring-2 focus:ring-brand focus:border-ink transition-all"
                                                 >
-                                                <p class="mt-1 text-[11px] font-sans font-medium text-ink/60">
+                                                <p class="mt-1 text-xs font-sans font-medium text-ink/60">
                                                     Digunakan sebagai autentikasi awal identitas mahasiswa.
                                                 </p>
                                                 @error('birth_date')
@@ -300,28 +300,28 @@
 
                                         <div class="bg-surface-muted border-2 border-ink p-3.5 sm:p-4 shadow-brutal-sm mb-5 space-y-2.5">
                                             <div class="flex items-center justify-between pb-2 border-b border-ink/15">
-                                                <span class="text-[10px] font-display font-bold uppercase tracking-wider text-brand flex items-center gap-1.5">
+                                                <span class="text-xs font-display font-bold uppercase tracking-wider text-brand flex items-center gap-1.5">
                                                     <span class="w-2 h-2 bg-accent inline-block border border-ink"></span>
                                                     <span>DATA MAHASISWA TERVERIFIKASI</span>
                                                 </span>
-                                                <span class="bg-accent text-ink px-2 py-0.5 text-[9px] font-display font-bold uppercase border border-ink">
+                                                <span class="bg-accent text-ink px-2 py-0.5 text-xs font-display font-bold uppercase border border-ink">
                                                     ELIGIBLE
                                                 </span>
                                             </div>
 
                                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
                                                 <div>
-                                                    <span class="text-[10px] font-sans font-bold uppercase text-ink/60 block">NAMA LENGKAP</span>
+                                                    <span class="text-xs font-sans font-bold uppercase text-ink/60 block">NAMA LENGKAP</span>
                                                     <span class="font-display font-bold text-brand uppercase">{{ $studentName }}</span>
                                                 </div>
                                                 <div>
-                                                    <span class="text-[10px] font-sans font-bold uppercase text-ink/60 block">NIM</span>
+                                                    <span class="text-xs font-sans font-bold uppercase text-ink/60 block">NIM</span>
                                                     <span class="font-display font-bold text-brand uppercase">{{ $studentNim }}</span>
                                                 </div>
                                             </div>
 
                                             <div class="text-xs pt-1 border-t border-ink/10">
-                                                <span class="text-[10px] font-sans font-bold uppercase text-ink/60 block">PROGRAM STUDI</span>
+                                                <span class="text-xs font-sans font-bold uppercase text-ink/60 block">PROGRAM STUDI</span>
                                                 <span class="font-sans font-medium text-ink">{{ $studentProdi }}</span>
                                             </div>
                                         </div>
@@ -340,7 +340,7 @@
                                                     placeholder="nama@student.pnb.ac.id"
                                                     class="w-full px-3.5 py-2.5 sm:py-3 text-xs sm:text-sm font-sans font-medium text-ink bg-surface border-2 border-ink shadow-brutal-sm focus:outline-none focus:ring-2 focus:ring-brand focus:border-ink transition-all placeholder:text-ink/40"
                                                 >
-                                                <p class="mt-1 text-[11px] font-sans font-medium text-ink/60">
+                                                <p class="mt-1 text-xs font-sans font-medium text-ink/60">
                                                     Kode verifikasi (OTP) akan dikirimkan ke alamat email ini.
                                                 </p>
                                                 @error('email')
@@ -476,7 +476,7 @@
                                                     @endfor
                                                 </div>
 
-                                                <p class="mt-2 text-center text-[11px] font-sans font-medium text-ink/60">
+                                                <p class="mt-2 text-center text-xs font-sans font-medium text-ink/60">
                                                     Kode berlaku selama 5 menit.
                                                 </p>
                                                 @error('otp')
@@ -544,16 +544,16 @@
 
                                             <div class="bg-surface-muted border-2 border-ink p-4 text-left shadow-brutal-sm space-y-2 max-w-sm mx-auto">
                                                 <div class="flex items-center justify-between pb-1.5 border-b border-ink/15 text-xs">
-                                                    <span class="text-[10px] font-sans font-bold uppercase text-ink/60">NIM</span>
+                                                    <span class="text-xs font-sans font-bold uppercase text-ink/60">NIM</span>
                                                     <span class="font-display font-bold text-brand uppercase">{{ $studentNim }}</span>
                                                 </div>
                                                 <div class="flex items-center justify-between pb-1.5 border-b border-ink/15 text-xs">
-                                                    <span class="text-[10px] font-sans font-bold uppercase text-ink/60">EMAIL</span>
-                                                    <span class="font-sans font-medium text-ink truncate max-w-[200px]">{{ $email }}</span>
+                                                    <span class="text-xs font-sans font-bold uppercase text-ink/60">EMAIL</span>
+                                                    <span class="font-sans font-medium text-ink truncate max-w-50">{{ $email }}</span>
                                                 </div>
                                                 <div class="flex items-center justify-between pt-0.5 text-xs">
-                                                    <span class="text-[10px] font-sans font-bold uppercase text-ink/60">STATUS HAK SUARA</span>
-                                                    <span class="bg-accent text-ink px-2 py-0.5 text-[9px] font-display font-bold uppercase border border-ink">
+                                                    <span class="text-xs font-sans font-bold uppercase text-ink/60">STATUS HAK SUARA</span>
+                                                    <span class="bg-accent text-ink px-2 py-0.5 text-xs font-display font-bold uppercase border border-ink">
                                                         TERDAFTAR
                                                     </span>
                                                 </div>
@@ -592,7 +592,7 @@
     </main>
 
     <footer class="relative z-10 w-full bg-brand text-surface border-t-2 border-ink py-3.5 sm:py-4">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] sm:text-xs font-sans font-medium text-surface/70 text-center sm:text-left">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs font-sans font-medium text-surface/70 text-center sm:text-left">
             <span>PEMIRA 2026 — Pemilihan Raya Mahasiswa PNB</span>
             <span>&copy; {{ date('Y') }} Komisi Pemilihan Raya (KPR). All rights reserved.</span>
         </div>

@@ -32,17 +32,17 @@
     };
 
     $activeDateRange = match ($phase) {
-        \App\Enums\ElectionPhase::UPCOMING => 'Dimulai '.$election?->registration_start_at?->translatedFormat('d F Y · H:i').' WITA',
-        \App\Enums\ElectionPhase::REGISTRATION => $election?->registration_start_at?->translatedFormat('d F Y').' — '.$election?->registration_end_at?->translatedFormat('d F Y'),
-        \App\Enums\ElectionPhase::VOTING => $election?->voting_start_at?->translatedFormat('d F Y').' — '.$election?->voting_end_at?->translatedFormat('d F Y'),
-        \App\Enums\ElectionPhase::FINISHED => 'Selesai '.$election?->voting_end_at?->translatedFormat('d F Y · H:i').' WITA',
+        \App\Enums\ElectionPhase::UPCOMING => 'Dimulai '.$election?->registration_start_at?->format('d/m/Y H:i').' WITA',
+        \App\Enums\ElectionPhase::REGISTRATION => $election?->registration_start_at?->format('d/m/Y H:i').' — '.$election?->registration_end_at?->format('d/m/Y H:i').' WITA',
+        \App\Enums\ElectionPhase::VOTING => $election?->voting_start_at?->format('d/m/Y H:i').' — '.$election?->voting_end_at?->format('d/m/Y H:i').' WITA',
+        \App\Enums\ElectionPhase::FINISHED => 'Selesai '.$election?->voting_end_at?->format('d/m/Y H:i').' WITA',
         default => '-',
     };
 
-    $regStartFormatted = $election?->registration_start_at?->translatedFormat('d F Y');
-    $regEndFormatted = $election?->registration_end_at?->translatedFormat('d F Y');
-    $votingStartFormatted = $election?->voting_start_at?->translatedFormat('d F Y');
-    $votingEndFormatted = $election?->voting_end_at?->translatedFormat('d F Y');
+    $regStartFormatted = $election?->registration_start_at?->format('d/m/Y H:i');
+    $regEndFormatted = $election?->registration_end_at?->format('d/m/Y H:i');
+    $votingStartFormatted = $election?->voting_start_at?->format('d/m/Y H:i');
+    $votingEndFormatted = $election?->voting_end_at?->format('d/m/Y H:i');
 
     $step1Status = match ($phase) {
         \App\Enums\ElectionPhase::UPCOMING => 'MENDATANG',
@@ -195,7 +195,7 @@
                                     00
                                 </div>
                                 <div
-                                    class="text-[9px] sm:text-[11px] font-sans font-bold uppercase tracking-wider text-ink mt-1">
+                                    class="text-xs font-sans font-bold uppercase tracking-wider text-ink mt-1">
                                     HARI
                                 </div>
                             </div>
@@ -204,7 +204,7 @@
                                     00
                                 </div>
                                 <div
-                                    class="text-[9px] sm:text-[11px] font-sans font-bold uppercase tracking-wider text-ink mt-1">
+                                    class="text-xs font-sans font-bold uppercase tracking-wider text-ink mt-1">
                                     JAM
                                 </div>
                             </div>
@@ -213,7 +213,7 @@
                                     00
                                 </div>
                                 <div
-                                    class="text-[9px] sm:text-[11px] font-sans font-bold uppercase tracking-wider text-ink mt-1">
+                                    class="text-xs font-sans font-bold uppercase tracking-wider text-ink mt-1">
                                     MENIT
                                 </div>
                             </div>
@@ -222,7 +222,7 @@
                                     00
                                 </div>
                                 <div
-                                    class="text-[9px] sm:text-[11px] font-sans font-bold uppercase tracking-wider text-ink mt-1">
+                                    class="text-xs font-sans font-bold uppercase tracking-wider text-ink mt-1">
                                     DETIK
                                 </div>
                             </div>
@@ -239,7 +239,7 @@
                             01
                         </span>
                         <span
-                            class="px-2 py-0.5 text-[10px] sm:text-xs font-display font-bold uppercase border border-ink {{ $step1Status === 'TAHAP AKTIF' ? 'bg-accent text-ink shadow-brutal-sm' : 'bg-surface-muted text-ink' }}">
+                            class="px-2 py-0.5 text-xs font-display font-bold uppercase border border-ink {{ $step1Status === 'TAHAP AKTIF' ? 'bg-accent text-ink shadow-brutal-sm' : 'bg-surface-muted text-ink' }}">
                             {{ $step1Status }}
                         </span>
                     </div>
@@ -256,7 +256,7 @@
                 <div class="bg-surface border-2 border-ink p-5 sm:p-6 lg:p-7 shadow-brutal flex flex-col justify-between relative {{ $step2Status === 'TAHAP AKTIF' ? 'shadow-brutal-lg' : '' }}">
                     @if ($step2Status === 'TAHAP AKTIF')
                         <div
-                            class="absolute -top-3 left-6 bg-accent text-ink px-2.5 py-0.5 text-[10px] sm:text-xs font-display font-bold uppercase border border-ink shadow-brutal-sm">
+                            class="absolute -top-3 left-6 bg-accent text-ink px-2.5 py-0.5 text-xs font-display font-bold uppercase border border-ink shadow-brutal-sm">
                             TAHAP AKTIF
                         </div>
                     @endif
@@ -265,7 +265,7 @@
                             02
                         </span>
                         <span
-                            class="px-2 py-0.5 text-[10px] sm:text-xs font-display font-bold uppercase border border-ink {{ $step2Status === 'TAHAP AKTIF' ? 'bg-accent text-ink shadow-brutal-sm' : 'bg-surface-muted text-ink' }}">
+                            class="px-2 py-0.5 text-xs font-display font-bold uppercase border border-ink {{ $step2Status === 'TAHAP AKTIF' ? 'bg-accent text-ink shadow-brutal-sm' : 'bg-surface-muted text-ink' }}">
                             {{ $step2Status }}
                         </span>
                     </div>
@@ -286,7 +286,7 @@
                             03
                         </span>
                         <span
-                            class="px-2 py-0.5 text-[10px] sm:text-xs font-display font-bold uppercase border border-ink {{ $step3Status === 'TAHAP AKTIF' ? 'bg-accent text-ink shadow-brutal-sm' : 'bg-surface-muted text-ink/60' }}">
+                            class="px-2 py-0.5 text-xs font-display font-bold uppercase border border-ink {{ $step3Status === 'TAHAP AKTIF' ? 'bg-accent text-ink shadow-brutal-sm' : 'bg-surface-muted text-ink/60' }}">
                             {{ $step3Status }}
                         </span>
                     </div>

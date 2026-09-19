@@ -12,7 +12,7 @@
         <div class="w-full sm:w-auto shrink-0">
             <button wire:click="openCreateModal"
                     type="button"
-                    class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-brand text-accent hover:bg-brand-dark border-2 border-ink shadow-brutal font-display font-black text-xs uppercase tracking-wider transition-all cursor-pointer min-h-[42px]">
+                    class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-brand text-accent hover:bg-brand-dark border-2 border-ink shadow-brutal font-display font-black text-xs uppercase tracking-wider transition-all cursor-pointer min-h-10.5">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/>
                 </svg>
@@ -55,12 +55,12 @@
                 <input type="text"
                        wire:model.live.debounce.300ms="search"
                        placeholder="Cari nama, slug, atau tahun PEMIRA..."
-                       class="w-full bg-surface-muted border-2 border-ink px-3 py-2 text-xs sm:text-sm font-sans font-medium text-ink placeholder:text-ink/40 shadow-brutal-sm focus:outline-none focus:bg-surface min-h-[40px]" />
+                       class="w-full bg-surface-muted border-2 border-ink px-3 py-2 text-xs sm:text-sm font-sans font-medium text-ink placeholder:text-ink/40 shadow-brutal-sm focus:outline-none focus:bg-surface min-h-10" />
             </div>
 
             <div class="flex items-center gap-2 w-full sm:w-auto">
                 <select wire:model.live="yearFilter"
-                        class="w-full sm:w-auto flex-1 sm:flex-initial bg-surface-muted border-2 border-ink px-3 py-2 text-xs sm:text-sm font-sans font-bold text-ink shadow-brutal-sm focus:outline-none cursor-pointer min-h-[40px]">
+                        class="w-full sm:w-auto flex-1 sm:flex-initial bg-surface-muted border-2 border-ink px-3 py-2 text-xs sm:text-sm font-sans font-bold text-ink shadow-brutal-sm focus:outline-none cursor-pointer min-h-10">
                     <option value="">Semua Tahun</option>
                     @foreach ($availableYears as $yr)
                         <option value="{{ $yr }}">{{ $yr }}</option>
@@ -70,7 +70,7 @@
                 @if ($search !== '' || $yearFilter !== '')
                     <button wire:click="$set('search', ''); $set('yearFilter', '')"
                             type="button"
-                            class="px-3 py-2 bg-surface border-2 border-ink text-xs font-sans font-bold text-ink/70 hover:text-ink shadow-brutal-sm shrink-0 min-h-[40px]">
+                            class="px-3 py-2 bg-surface border-2 border-ink text-xs font-sans font-bold text-ink/70 hover:text-ink shadow-brutal-sm shrink-0 min-h-10">
                         Reset
                     </button>
                 @endif
@@ -82,7 +82,7 @@
         <div class="hidden md:block overflow-x-auto">
             <table class="w-full text-left border-collapse">
                 <thead>
-                    <tr class="border-b-2 border-ink bg-surface-muted text-[11px] font-display font-black uppercase tracking-wider text-ink/80">
+                    <tr class="border-b-2 border-ink bg-surface-muted text-xs font-display font-black uppercase tracking-wider text-ink/80">
                         <th class="p-3.5 sm:p-4">Nama & Identitas</th>
                         <th class="p-3.5 sm:p-4">Tahun</th>
                         <th class="p-3.5 sm:p-4">Status / Fase</th>
@@ -101,7 +101,7 @@
                                 <div class="font-display font-black text-sm text-brand uppercase">
                                     {{ $elec->name }}
                                 </div>
-                                <div class="text-[11px] font-mono text-ink/60 mt-0.5">
+                                <div class="text-xs font-mono text-ink/60 mt-0.5">
                                     {{ $elec->slug }}
                                 </div>
                             </td>
@@ -109,33 +109,33 @@
                                 {{ $elec->year }}
                             </td>
                             <td class="p-3.5 sm:p-4">
-                                <span class="inline-block px-2 py-0.5 text-[10px] font-display font-black uppercase border border-ink {{ $phase === \App\Enums\ElectionPhase::VOTING ? 'bg-accent text-ink' : ($phase === \App\Enums\ElectionPhase::FINISHED ? 'bg-ink text-surface' : 'bg-surface-muted text-brand') }}">
+                                <span class="inline-block px-2 py-0.5 text-xs font-display font-black uppercase border border-ink {{ $phase === \App\Enums\ElectionPhase::VOTING ? 'bg-accent text-ink' : ($phase === \App\Enums\ElectionPhase::FINISHED ? 'bg-ink text-surface' : 'bg-surface-muted text-brand') }}">
                                     {{ $phase->badgeText() }}
                                 </span>
                             </td>
                             <td class="p-3.5 sm:p-4 text-ink/80">
-                                <div>{{ $elec->registration_start_at->translatedFormat('d M Y, H:i') }}</div>
-                                <div class="text-[11px] text-ink/60">s.d. {{ $elec->registration_end_at->translatedFormat('d M Y, H:i') }} WITA</div>
+                                <div>{{ $elec->registration_start_at->format('d/m/Y H:i') }}</div>
+                                <div class="text-xs text-ink/60">s.d. {{ $elec->registration_end_at->format('d/m/Y H:i') }} WITA</div>
                             </td>
                             <td class="p-3.5 sm:p-4 text-ink/80">
-                                <div>{{ $elec->voting_start_at->translatedFormat('d M Y, H:i') }}</div>
-                                <div class="text-[11px] text-ink/60">s.d. {{ $elec->voting_end_at->translatedFormat('d M Y, H:i') }} WITA</div>
+                                <div>{{ $elec->voting_start_at->format('d/m/Y H:i') }}</div>
+                                <div class="text-xs text-ink/60">s.d. {{ $elec->voting_end_at->format('d/m/Y H:i') }} WITA</div>
                             </td>
                             <td class="p-3.5 sm:p-4 text-right whitespace-nowrap">
                                 <div class="inline-flex items-center gap-1.5">
                                     <button wire:click="openDetailModal({{ $elec->id }})"
                                             type="button"
-                                            class="px-2.5 py-1 bg-surface-muted hover:bg-accent border border-ink font-display font-bold text-[11px] uppercase transition-colors">
+                                            class="px-2.5 py-1 bg-surface-muted hover:bg-accent border border-ink font-display font-bold text-xs uppercase transition-colors">
                                         DETAIL
                                     </button>
                                     <button wire:click="openEditModal({{ $elec->id }})"
                                             type="button"
-                                            class="px-2.5 py-1 bg-brand text-surface hover:bg-brand-dark border border-ink font-display font-bold text-[11px] uppercase transition-colors">
+                                            class="px-2.5 py-1 bg-brand text-surface hover:bg-brand-dark border border-ink font-display font-bold text-xs uppercase transition-colors">
                                         EDIT
                                     </button>
                                     <button wire:click="openDeleteModal({{ $elec->id }})"
                                             type="button"
-                                            class="px-2.5 py-1 bg-surface-muted hover:bg-red-600 hover:text-white border border-ink font-display font-bold text-[11px] uppercase transition-colors">
+                                            class="px-2.5 py-1 bg-surface-muted hover:bg-red-600 hover:text-white border border-ink font-display font-bold text-xs uppercase transition-colors">
                                         HAPUS
                                     </button>
                                 </div>
@@ -168,26 +168,26 @@
                             <div class="font-display font-black text-sm text-brand uppercase break-words leading-tight">
                                 {{ $elec->name }}
                             </div>
-                            <div class="text-[11px] font-mono text-ink/60 mt-0.5 break-all">
+                            <div class="text-xs font-mono text-ink/60 mt-0.5 break-all">
                                 {{ $elec->slug }} · Tahun {{ $elec->year }}
                             </div>
                         </div>
-                        <span class="shrink-0 inline-block px-2 py-0.5 text-[10px] font-display font-black uppercase border border-ink {{ $phase === \App\Enums\ElectionPhase::VOTING ? 'bg-accent text-ink' : ($phase === \App\Enums\ElectionPhase::FINISHED ? 'bg-ink text-surface' : 'bg-surface-muted text-brand') }}">
+                        <span class="shrink-0 inline-block px-2 py-0.5 text-xs font-display font-black uppercase border border-ink {{ $phase === \App\Enums\ElectionPhase::VOTING ? 'bg-accent text-ink' : ($phase === \App\Enums\ElectionPhase::FINISHED ? 'bg-ink text-surface' : 'bg-surface-muted text-brand') }}">
                             {{ $phase->badgeText() }}
                         </span>
                     </div>
 
                     <div class="grid grid-cols-1 gap-2 text-xs font-sans bg-surface-muted p-2.5 border border-ink/20">
                         <div>
-                            <span class="text-[10px] font-bold text-ink/60 uppercase block">Jadwal Pendaftaran</span>
+                            <span class="text-xs font-bold text-ink/60 uppercase block">Jadwal Pendaftaran</span>
                             <span class="text-ink/90 font-medium">
-                                {{ $elec->registration_start_at->translatedFormat('d M Y, H:i') }} — {{ $elec->registration_end_at->translatedFormat('d M Y, H:i') }} WITA
+                                {{ $elec->registration_start_at->format('d/m/Y H:i') }} — {{ $elec->registration_end_at->format('d/m/Y H:i') }} WITA
                             </span>
                         </div>
                         <div>
-                            <span class="text-[10px] font-bold text-ink/60 uppercase block">Jadwal Voting</span>
+                            <span class="text-xs font-bold text-ink/60 uppercase block">Jadwal Voting</span>
                             <span class="text-brand font-bold">
-                                {{ $elec->voting_start_at->translatedFormat('d M Y, H:i') }} — {{ $elec->voting_end_at->translatedFormat('d M Y, H:i') }} WITA
+                                {{ $elec->voting_start_at->format('d/m/Y H:i') }} — {{ $elec->voting_end_at->format('d/m/Y H:i') }} WITA
                             </span>
                         </div>
                     </div>
@@ -195,17 +195,17 @@
                     <div class="grid grid-cols-3 gap-2 pt-0.5">
                         <button wire:click="openDetailModal({{ $elec->id }})"
                                 type="button"
-                                class="w-full py-2 bg-surface-muted hover:bg-accent border border-ink font-display font-bold text-xs uppercase text-center transition-colors min-h-[36px]">
+                                class="w-full py-2 bg-surface-muted hover:bg-accent border border-ink font-display font-bold text-xs uppercase text-center transition-colors min-h-9">
                             DETAIL
                         </button>
                         <button wire:click="openEditModal({{ $elec->id }})"
                                 type="button"
-                                class="w-full py-2 bg-brand text-surface hover:bg-brand-dark border border-ink font-display font-bold text-xs uppercase text-center transition-colors min-h-[36px]">
+                                class="w-full py-2 bg-brand text-surface hover:bg-brand-dark border border-ink font-display font-bold text-xs uppercase text-center transition-colors min-h-9">
                             EDIT
                         </button>
                         <button wire:click="openDeleteModal({{ $elec->id }})"
                                 type="button"
-                                class="w-full py-2 bg-surface-muted hover:bg-red-600 hover:text-white border border-ink font-display font-bold text-xs uppercase text-center transition-colors min-h-[36px]">
+                                class="w-full py-2 bg-surface-muted hover:bg-red-600 hover:text-white border border-ink font-display font-bold text-xs uppercase text-center transition-colors min-h-9">
                             HAPUS
                         </button>
                     </div>
@@ -255,7 +255,7 @@
                             <input type="text"
                                    wire:model="name"
                                    placeholder="Contoh: PEMIRA BEM PNB 2026"
-                                   class="w-full bg-surface-muted border-2 border-ink px-3 py-2 text-xs sm:text-sm font-sans text-ink shadow-brutal-sm focus:outline-none focus:bg-surface min-h-[40px]" />
+                                   class="w-full bg-surface-muted border-2 border-ink px-3 py-2 text-xs sm:text-sm font-sans text-ink shadow-brutal-sm focus:outline-none focus:bg-surface min-h-10" />
                             @error('name')
                                 <p class="text-xs font-sans font-bold text-red-600 mt-1">{{ $message }}</p>
                             @enderror
@@ -270,7 +270,7 @@
                                    min="2020"
                                    max="2099"
                                    placeholder="2026"
-                                   class="w-full bg-surface-muted border-2 border-ink px-3 py-2 text-xs sm:text-sm font-sans text-ink shadow-brutal-sm focus:outline-none focus:bg-surface min-h-[40px]" />
+                                   class="w-full bg-surface-muted border-2 border-ink px-3 py-2 text-xs sm:text-sm font-sans text-ink shadow-brutal-sm focus:outline-none focus:bg-surface min-h-10" />
                             @error('year')
                                 <p class="text-xs font-sans font-bold text-red-600 mt-1">{{ $message }}</p>
                             @enderror
@@ -282,25 +282,27 @@
                             </div>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
                                 <div>
-                                    <label class="block text-[11px] font-sans font-bold text-ink/70 mb-1">
+                                    <label class="block text-xs font-sans font-bold text-ink/70 mb-1">
                                         Waktu Mulai <span class="text-red-600">*</span>
                                     </label>
                                     <input type="datetime-local"
+                                           lang="id-ID"
                                            wire:model="registration_start_at"
-                                           class="w-full bg-surface border-2 border-ink px-2.5 py-1.5 text-xs font-sans text-ink focus:outline-none min-h-[38px]" />
+                                           class="w-full bg-surface border-2 border-ink px-2.5 py-1.5 text-xs font-sans text-ink focus:outline-none min-h-9.5" />
                                     @error('registration_start_at')
-                                        <p class="text-[11px] font-sans font-bold text-red-600 mt-0.5">{{ $message }}</p>
+                                        <p class="text-xs font-sans font-bold text-red-600 mt-0.5">{{ $message }}</p>
                                     @enderror
                                 </div>
                                 <div>
-                                    <label class="block text-[11px] font-sans font-bold text-ink/70 mb-1">
+                                    <label class="block text-xs font-sans font-bold text-ink/70 mb-1">
                                         Waktu Selesai <span class="text-red-600">*</span>
                                     </label>
                                     <input type="datetime-local"
+                                           lang="id-ID"
                                            wire:model="registration_end_at"
-                                           class="w-full bg-surface border-2 border-ink px-2.5 py-1.5 text-xs font-sans text-ink focus:outline-none min-h-[38px]" />
+                                           class="w-full bg-surface border-2 border-ink px-2.5 py-1.5 text-xs font-sans text-ink focus:outline-none min-h-9.5" />
                                     @error('registration_end_at')
-                                        <p class="text-[11px] font-sans font-bold text-red-600 mt-0.5">{{ $message }}</p>
+                                        <p class="text-xs font-sans font-bold text-red-600 mt-0.5">{{ $message }}</p>
                                     @enderror
                                 </div>
                             </div>
@@ -312,25 +314,27 @@
                             </div>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
                                 <div>
-                                    <label class="block text-[11px] font-sans font-bold text-ink/70 mb-1">
+                                    <label class="block text-xs font-sans font-bold text-ink/70 mb-1">
                                         Waktu Mulai <span class="text-red-600">*</span>
                                     </label>
                                     <input type="datetime-local"
+                                           lang="id-ID"
                                            wire:model="voting_start_at"
-                                           class="w-full bg-surface border-2 border-ink px-2.5 py-1.5 text-xs font-sans text-ink focus:outline-none min-h-[38px]" />
+                                           class="w-full bg-surface border-2 border-ink px-2.5 py-1.5 text-xs font-sans text-ink focus:outline-none min-h-9.5" />
                                     @error('voting_start_at')
-                                        <p class="text-[11px] font-sans font-bold text-red-600 mt-0.5">{{ $message }}</p>
+                                        <p class="text-xs font-sans font-bold text-red-600 mt-0.5">{{ $message }}</p>
                                     @enderror
                                 </div>
                                 <div>
-                                    <label class="block text-[11px] font-sans font-bold text-ink/70 mb-1">
+                                    <label class="block text-xs font-sans font-bold text-ink/70 mb-1">
                                         Waktu Selesai <span class="text-red-600">*</span>
                                     </label>
                                     <input type="datetime-local"
+                                           lang="id-ID"
                                            wire:model="voting_end_at"
-                                           class="w-full bg-surface border-2 border-ink px-2.5 py-1.5 text-xs font-sans text-ink focus:outline-none min-h-[38px]" />
+                                           class="w-full bg-surface border-2 border-ink px-2.5 py-1.5 text-xs font-sans text-ink focus:outline-none min-h-9.5" />
                                     @error('voting_end_at')
-                                        <p class="text-[11px] font-sans font-bold text-red-600 mt-0.5">{{ $message }}</p>
+                                        <p class="text-xs font-sans font-bold text-red-600 mt-0.5">{{ $message }}</p>
                                     @enderror
                                 </div>
                             </div>
@@ -340,12 +344,12 @@
                     <div class="p-3.5 sm:p-4 border-t-2 border-ink bg-surface-muted flex flex-row items-center justify-end gap-2.5 sm:gap-3 shrink-0">
                         <button wire:click="closeCreateModal"
                                 type="button"
-                                class="flex-1 sm:flex-initial px-4 py-2.5 bg-surface border-2 border-ink text-xs font-display font-bold uppercase tracking-wider hover:bg-surface-muted transition-colors text-center min-h-[40px]">
+                                class="flex-1 sm:flex-initial px-4 py-2.5 bg-surface border-2 border-ink text-xs font-display font-bold uppercase tracking-wider hover:bg-surface-muted transition-colors text-center min-h-10">
                             BATAL
                         </button>
                         <button type="submit"
                                 wire:loading.attr="disabled"
-                                class="flex-1 sm:flex-initial px-5 py-2.5 bg-brand text-accent hover:bg-brand-dark border-2 border-ink shadow-brutal-sm text-xs font-display font-black uppercase tracking-wider transition-all disabled:opacity-50 cursor-pointer text-center min-h-[40px]">
+                                class="flex-1 sm:flex-initial px-5 py-2.5 bg-brand text-accent hover:bg-brand-dark border-2 border-ink shadow-brutal-sm text-xs font-display font-black uppercase tracking-wider transition-all disabled:opacity-50 cursor-pointer text-center min-h-10">
                             <span wire:loading.remove wire:target="createElection">BUAT PEMIRA</span>
                             <span wire:loading wire:target="createElection">MENYIMPAN...</span>
                         </button>
@@ -379,7 +383,7 @@
                                 <div class="font-display font-black uppercase text-brand">
                                     PERHATIAN: VOTING SEDANG BERLANGSUNG
                                 </div>
-                                <p class="text-ink/80 text-[11px] font-normal leading-relaxed">
+                                <p class="text-ink/80 text-xs font-normal leading-relaxed">
                                     Jadwal pemungutan suara sedang aktif dan dikunci dari perubahan langsung. Perubahan jadwal voting yang sedang berjalan memerlukan persetujuan Super Admin.
                                 </p>
                             </div>
@@ -391,7 +395,7 @@
                             </label>
                             <input type="text"
                                    wire:model="name"
-                                   class="w-full bg-surface-muted border-2 border-ink px-3 py-2 text-xs sm:text-sm font-sans text-ink shadow-brutal-sm focus:outline-none focus:bg-surface min-h-[40px]" />
+                                   class="w-full bg-surface-muted border-2 border-ink px-3 py-2 text-xs sm:text-sm font-sans text-ink shadow-brutal-sm focus:outline-none focus:bg-surface min-h-10" />
                             @error('name')
                                 <p class="text-xs font-sans font-bold text-red-600 mt-1">{{ $message }}</p>
                             @enderror
@@ -405,7 +409,7 @@
                                    wire:model="year"
                                    min="2020"
                                    max="2099"
-                                   class="w-full bg-surface-muted border-2 border-ink px-3 py-2 text-xs sm:text-sm font-sans text-ink shadow-brutal-sm focus:outline-none focus:bg-surface min-h-[40px]" />
+                                   class="w-full bg-surface-muted border-2 border-ink px-3 py-2 text-xs sm:text-sm font-sans text-ink shadow-brutal-sm focus:outline-none focus:bg-surface min-h-10" />
                             @error('year')
                                 <p class="text-xs font-sans font-bold text-red-600 mt-1">{{ $message }}</p>
                             @enderror
@@ -417,25 +421,27 @@
                             </div>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
                                 <div>
-                                    <label class="block text-[11px] font-sans font-bold text-ink/70 mb-1">
+                                    <label class="block text-xs font-sans font-bold text-ink/70 mb-1">
                                         Waktu Mulai <span class="text-red-600">*</span>
                                     </label>
                                     <input type="datetime-local"
+                                           lang="id-ID"
                                            wire:model="registration_start_at"
-                                           class="w-full bg-surface border-2 border-ink px-2.5 py-1.5 text-xs font-sans text-ink focus:outline-none min-h-[38px]" />
+                                           class="w-full bg-surface border-2 border-ink px-2.5 py-1.5 text-xs font-sans text-ink focus:outline-none min-h-9.5" />
                                     @error('registration_start_at')
-                                        <p class="text-[11px] font-sans font-bold text-red-600 mt-0.5">{{ $message }}</p>
+                                        <p class="text-xs font-sans font-bold text-red-600 mt-0.5">{{ $message }}</p>
                                     @enderror
                                 </div>
                                 <div>
-                                    <label class="block text-[11px] font-sans font-bold text-ink/70 mb-1">
+                                    <label class="block text-xs font-sans font-bold text-ink/70 mb-1">
                                         Waktu Selesai <span class="text-red-600">*</span>
                                     </label>
                                     <input type="datetime-local"
+                                           lang="id-ID"
                                            wire:model="registration_end_at"
-                                           class="w-full bg-surface border-2 border-ink px-2.5 py-1.5 text-xs font-sans text-ink focus:outline-none min-h-[38px]" />
+                                           class="w-full bg-surface border-2 border-ink px-2.5 py-1.5 text-xs font-sans text-ink focus:outline-none min-h-9.5" />
                                     @error('registration_end_at')
-                                        <p class="text-[11px] font-sans font-bold text-red-600 mt-0.5">{{ $message }}</p>
+                                        <p class="text-xs font-sans font-bold text-red-600 mt-0.5">{{ $message }}</p>
                                     @enderror
                                 </div>
                             </div>
@@ -447,32 +453,34 @@
                                     JADWAL VOTING
                                 </div>
                                 @if ($isVotingActive)
-                                    <span class="text-[10px] font-display font-black uppercase px-1.5 py-0.5 bg-ink text-surface">TERKUNCI</span>
+                                    <span class="text-xs font-display font-black uppercase px-1.5 py-0.5 bg-ink text-surface">TERKUNCI</span>
                                 @endif
                             </div>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
                                 <div>
-                                    <label class="block text-[11px] font-sans font-bold text-ink/70 mb-1">
+                                    <label class="block text-xs font-sans font-bold text-ink/70 mb-1">
                                         Waktu Mulai <span class="text-red-600">*</span>
                                     </label>
                                     <input type="datetime-local"
+                                           lang="id-ID"
                                            wire:model="voting_start_at"
                                            @if ($isVotingActive) disabled @endif
-                                           class="w-full bg-surface border-2 border-ink px-2.5 py-1.5 text-xs font-sans text-ink focus:outline-none disabled:bg-surface-muted disabled:text-ink/40 disabled:cursor-not-allowed min-h-[38px]" />
+                                           class="w-full bg-surface border-2 border-ink px-2.5 py-1.5 text-xs font-sans text-ink focus:outline-none disabled:bg-surface-muted disabled:text-ink/40 disabled:cursor-not-allowed min-h-9.5" />
                                     @error('voting_start_at')
-                                        <p class="text-[11px] font-sans font-bold text-red-600 mt-0.5">{{ $message }}</p>
+                                        <p class="text-xs font-sans font-bold text-red-600 mt-0.5">{{ $message }}</p>
                                     @enderror
                                 </div>
                                 <div>
-                                    <label class="block text-[11px] font-sans font-bold text-ink/70 mb-1">
+                                    <label class="block text-xs font-sans font-bold text-ink/70 mb-1">
                                         Waktu Selesai <span class="text-red-600">*</span>
                                     </label>
                                     <input type="datetime-local"
+                                           lang="id-ID"
                                            wire:model="voting_end_at"
                                            @if ($isVotingActive) disabled @endif
-                                           class="w-full bg-surface border-2 border-ink px-2.5 py-1.5 text-xs font-sans text-ink focus:outline-none disabled:bg-surface-muted disabled:text-ink/40 disabled:cursor-not-allowed min-h-[38px]" />
+                                           class="w-full bg-surface border-2 border-ink px-2.5 py-1.5 text-xs font-sans text-ink focus:outline-none disabled:bg-surface-muted disabled:text-ink/40 disabled:cursor-not-allowed min-h-9.5" />
                                     @error('voting_end_at')
-                                        <p class="text-[11px] font-sans font-bold text-red-600 mt-0.5">{{ $message }}</p>
+                                        <p class="text-xs font-sans font-bold text-red-600 mt-0.5">{{ $message }}</p>
                                     @enderror
                                 </div>
                             </div>
@@ -482,12 +490,12 @@
                     <div class="p-3.5 sm:p-4 border-t-2 border-ink bg-surface-muted flex flex-row items-center justify-end gap-2.5 sm:gap-3 shrink-0">
                         <button wire:click="closeEditModal"
                                 type="button"
-                                class="flex-1 sm:flex-initial px-4 py-2.5 bg-surface border-2 border-ink text-xs font-display font-bold uppercase tracking-wider hover:bg-surface-muted transition-colors text-center min-h-[40px]">
+                                class="flex-1 sm:flex-initial px-4 py-2.5 bg-surface border-2 border-ink text-xs font-display font-bold uppercase tracking-wider hover:bg-surface-muted transition-colors text-center min-h-10">
                             BATAL
                         </button>
                         <button type="submit"
                                 wire:loading.attr="disabled"
-                                class="flex-1 sm:flex-initial px-5 py-2.5 bg-brand text-accent hover:bg-brand-dark border-2 border-ink shadow-brutal-sm text-xs font-display font-black uppercase tracking-wider transition-all disabled:opacity-50 cursor-pointer text-center min-h-[40px]">
+                                class="flex-1 sm:flex-initial px-5 py-2.5 bg-brand text-accent hover:bg-brand-dark border-2 border-ink shadow-brutal-sm text-xs font-display font-black uppercase tracking-wider transition-all disabled:opacity-50 cursor-pointer text-center min-h-10">
                             <span wire:loading.remove wire:target="updateElection">SIMPAN PERUBAHAN</span>
                             <span wire:loading wire:target="updateElection">MENYIMPAN...</span>
                         </button>
@@ -505,7 +513,7 @@
             <div class="w-full sm:max-w-xl bg-surface border-2 border-ink shadow-brutal max-h-[92dvh] sm:max-h-[90vh] flex flex-col min-w-0">
                 <div class="px-4 py-3 sm:px-5 sm:py-4 border-b-2 border-ink flex items-center justify-between bg-surface-muted shrink-0">
                     <div class="min-w-0 pr-2">
-                        <span class="text-[10px] font-display font-bold uppercase tracking-wider text-ink/60 block">INFORMASI DETAIL</span>
+                        <span class="text-xs font-display font-bold uppercase tracking-wider text-ink/60 block">INFORMASI DETAIL</span>
                         <h3 class="font-display font-black text-sm sm:text-lg text-brand uppercase truncate">
                             {{ $selectedElection->name }}
                         </h3>
@@ -523,7 +531,7 @@
                 <div class="p-3.5 sm:p-5 space-y-3 sm:space-y-4 overflow-y-auto flex-1 min-w-0 text-xs font-sans">
                     <div class="flex items-center justify-between p-3 bg-surface-muted border-2 border-ink gap-2">
                         <div class="min-w-0">
-                            <span class="text-[10px] font-sans font-bold text-ink/60 uppercase block">Status Tahapan</span>
+                            <span class="text-xs font-sans font-bold text-ink/60 uppercase block">Status Tahapan</span>
                             <span class="font-display font-black text-xs sm:text-sm text-brand uppercase mt-0.5 block truncate">
                                 {{ $detailPhase->label() }}
                             </span>
@@ -535,13 +543,13 @@
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
                         <div class="p-3 bg-surface-muted border-2 border-ink">
-                            <span class="text-[10px] font-sans font-bold text-ink/60 uppercase block">Tahun</span>
+                            <span class="text-xs font-sans font-bold text-ink/60 uppercase block">Tahun</span>
                             <span class="font-display font-black text-base text-ink mt-0.5 block">
                                 {{ $selectedElection->year }}
                             </span>
                         </div>
                         <div class="p-3 bg-surface-muted border-2 border-ink">
-                            <span class="text-[10px] font-sans font-bold text-ink/60 uppercase block">Slug URL</span>
+                            <span class="text-xs font-sans font-bold text-ink/60 uppercase block">Slug URL</span>
                             <span class="font-mono text-xs text-ink mt-0.5 block truncate">
                                 {{ $selectedElection->slug }}
                             </span>
@@ -549,50 +557,50 @@
                     </div>
 
                     <div class="space-y-1.5">
-                        <div class="text-[11px] font-display font-black text-brand uppercase">
+                        <div class="text-xs font-display font-black text-brand uppercase">
                             RENTANG WAKTU PELAKSANAAN
                         </div>
                         <div class="p-3 bg-surface-muted border-2 border-ink space-y-2">
                             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-2 border-b border-ink/15 gap-1">
-                                <span class="font-semibold text-ink/80 text-[11px] sm:text-xs">Pendaftaran Akun</span>
-                                <span class="font-bold text-ink sm:text-right text-[11px] sm:text-xs">
-                                    {{ $selectedElection->registration_start_at->translatedFormat('d M Y, H:i') }} - {{ $selectedElection->registration_end_at->translatedFormat('d M Y, H:i') }} WITA
+                                <span class="font-semibold text-ink/80 text-xs">Pendaftaran Akun</span>
+                                <span class="font-bold text-ink sm:text-right text-xs">
+                                    {{ $selectedElection->registration_start_at->format('d/m/Y H:i') }} - {{ $selectedElection->registration_end_at->format('d/m/Y H:i') }} WITA
                                 </span>
                             </div>
                             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between pt-1 gap-1">
-                                <span class="font-semibold text-ink/80 text-[11px] sm:text-xs">Pemungutan Suara</span>
-                                <span class="font-bold text-brand sm:text-right text-[11px] sm:text-xs">
-                                    {{ $selectedElection->voting_start_at->translatedFormat('d M Y, H:i') }} - {{ $selectedElection->voting_end_at->translatedFormat('d M Y, H:i') }} WITA
+                                <span class="font-semibold text-ink/80 text-xs">Pemungutan Suara</span>
+                                <span class="font-bold text-brand sm:text-right text-xs">
+                                    {{ $selectedElection->voting_start_at->format('d/m/Y H:i') }} - {{ $selectedElection->voting_end_at->format('d/m/Y H:i') }} WITA
                                 </span>
                             </div>
                         </div>
                     </div>
 
                     <div class="space-y-1.5">
-                        <div class="text-[11px] font-display font-black text-brand uppercase">
+                        <div class="text-xs font-display font-black text-brand uppercase">
                             RINGKASAN DATA PEMILIHAN
                         </div>
                         <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center">
                             <div class="p-2.5 bg-surface-muted border-2 border-ink">
-                                <div class="text-[10px] font-bold text-ink/60 uppercase">Paslon</div>
+                                <div class="text-xs font-bold text-ink/60 uppercase">Paslon</div>
                                 <div class="font-display font-black text-sm text-ink mt-0.5">
                                     {{ $detailHistoricalSummary['candidate_pairs'] ?? 0 }}
                                 </div>
                             </div>
                             <div class="p-2.5 bg-surface-muted border-2 border-ink">
-                                <div class="text-[10px] font-bold text-ink/60 uppercase">Partisipasi</div>
+                                <div class="text-xs font-bold text-ink/60 uppercase">Partisipasi</div>
                                 <div class="font-display font-black text-sm text-brand mt-0.5">
                                     {{ $detailHistoricalSummary['participations'] ?? 0 }}
                                 </div>
                             </div>
                             <div class="p-2.5 bg-surface-muted border-2 border-ink">
-                                <div class="text-[10px] font-bold text-ink/60 uppercase">Surat Suara</div>
+                                <div class="text-xs font-bold text-ink/60 uppercase">Surat Suara</div>
                                 <div class="font-display font-black text-sm text-brand mt-0.5">
                                     {{ $detailHistoricalSummary['ballots'] ?? 0 }}
                                 </div>
                             </div>
                             <div class="p-2.5 bg-surface-muted border-2 border-ink">
-                                <div class="text-[10px] font-bold text-ink/60 uppercase">Masukan</div>
+                                <div class="text-xs font-bold text-ink/60 uppercase">Masukan</div>
                                 <div class="font-display font-black text-sm text-ink mt-0.5">
                                     {{ $detailHistoricalSummary['feedbacks'] ?? 0 }}
                                 </div>
@@ -604,18 +612,18 @@
                 <div class="p-3.5 sm:p-4 border-t-2 border-ink bg-surface-muted flex flex-row items-center justify-between gap-2.5 shrink-0">
                     <button wire:click="closeDetailModal"
                             type="button"
-                            class="px-4 py-2.5 bg-surface border-2 border-ink text-xs font-display font-bold uppercase tracking-wider hover:bg-surface-muted transition-colors min-h-[40px]">
+                            class="px-4 py-2.5 bg-surface border-2 border-ink text-xs font-display font-bold uppercase tracking-wider hover:bg-surface-muted transition-colors min-h-10">
                         TUTUP
                     </button>
                     <div class="flex items-center gap-2">
                         <button wire:click="openEditModal({{ $selectedElection->id }}); closeDetailModal()"
                                 type="button"
-                                class="px-3.5 py-2.5 bg-brand text-surface hover:bg-brand-dark border-2 border-ink shadow-brutal-sm text-xs font-display font-bold uppercase min-h-[40px]">
+                                class="px-3.5 py-2.5 bg-brand text-surface hover:bg-brand-dark border-2 border-ink shadow-brutal-sm text-xs font-display font-bold uppercase min-h-10">
                             EDIT
                         </button>
                         <button wire:click="openDeleteModal({{ $selectedElection->id }}); closeDetailModal()"
                                 type="button"
-                                class="px-3.5 py-2.5 bg-surface hover:bg-red-600 hover:text-white border-2 border-ink shadow-brutal-sm text-xs font-display font-bold uppercase min-h-[40px]">
+                                class="px-3.5 py-2.5 bg-surface hover:bg-red-600 hover:text-white border-2 border-ink shadow-brutal-sm text-xs font-display font-bold uppercase min-h-10">
                             HAPUS
                         </button>
                     </div>
@@ -642,12 +650,12 @@
                 <div class="p-3.5 sm:p-4 border-t-2 border-ink bg-surface-muted flex flex-row items-center justify-end gap-2.5 sm:gap-3 shrink-0">
                     <button wire:click="closeDeleteModal"
                             type="button"
-                            class="flex-1 sm:flex-initial px-4 py-2.5 bg-surface border-2 border-ink text-xs font-display font-bold uppercase tracking-wider hover:bg-surface-muted transition-colors text-center min-h-[40px]">
+                            class="flex-1 sm:flex-initial px-4 py-2.5 bg-surface border-2 border-ink text-xs font-display font-bold uppercase tracking-wider hover:bg-surface-muted transition-colors text-center min-h-10">
                         BATAL
                     </button>
                     <button wire:click="deleteElection"
                             type="button"
-                            class="flex-1 sm:flex-initial px-5 py-2.5 bg-red-600 text-white hover:bg-red-700 border-2 border-ink shadow-brutal-sm text-xs font-display font-black uppercase tracking-wider transition-all cursor-pointer text-center min-h-[40px]">
+                            class="flex-1 sm:flex-initial px-5 py-2.5 bg-red-600 text-white hover:bg-red-700 border-2 border-ink shadow-brutal-sm text-xs font-display font-black uppercase tracking-wider transition-all cursor-pointer text-center min-h-10">
                         HAPUS
                     </button>
                 </div>
