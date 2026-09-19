@@ -99,7 +99,7 @@
                             </span>
                             @if ($step['badge'])
                                 <span
-                                    class="bg-accent text-ink px-2 py-0.5 text-[9px] sm:text-[10px] font-display font-bold uppercase border border-ink shadow-brutal-sm">
+                                    class="bg-accent text-ink px-2 py-0.5 text-xs font-display font-bold uppercase border border-ink shadow-brutal-sm">
                                     {{ $step['badge'] }}
                                 </span>
                             @else
@@ -120,7 +120,7 @@
                     </div>
 
                     <div
-                        class="mt-4 pt-3 border-t border-ink/10 flex items-center justify-between text-[10px] font-sans font-bold uppercase tracking-wider text-ink/40">
+                        class="mt-4 pt-3 border-t border-ink/10 flex items-center justify-between text-xs font-sans font-bold uppercase tracking-wider text-ink/40">
                         <span>TAHAP {{ $step['number'] }}</span>
                         @if ($step['number'] === '05')
                             <span class="w-2 h-2 bg-accent border border-ink inline-block"></span>
@@ -199,7 +199,7 @@
                 @foreach ($votingSteps as $index => $step)
                     <div class="w-full shrink-0 px-0.5">
                         <div
-                            class="bg-surface border-2 border-ink p-5 shadow-brutal-lg flex flex-col justify-between relative min-h-[210px] {{ $step['is_core'] ? 'ring-2 ring-brand ring-offset-2' : '' }}">
+                            class="bg-surface border-2 border-ink p-5 shadow-brutal-lg flex flex-col justify-between relative min-h-52 {{ $step['is_core'] ? 'ring-2 ring-brand ring-offset-2' : '' }}">
                             <div>
                                 <div class="flex items-center justify-between gap-2 mb-3">
                                     <span class="font-display font-black text-4xl sm:text-5xl text-brand leading-none">
@@ -207,12 +207,12 @@
                                     </span>
                                     @if ($step['badge'])
                                         <span
-                                            class="bg-accent text-ink px-2.5 py-0.5 text-[10px] font-display font-bold uppercase border border-ink shadow-brutal-sm">
+                                            class="bg-accent text-ink px-2.5 py-0.5 text-xs font-display font-bold uppercase border border-ink shadow-brutal-sm">
                                             {{ $step['badge'] }}
                                         </span>
                                     @else
                                         <span
-                                            class="text-[10px] font-sans font-bold uppercase tracking-wider text-ink/40">
+                                            class="text-xs font-sans font-bold uppercase tracking-wider text-ink/40">
                                             LANGKAH {{ $step['number'] }} / 05
                                         </span>
                                     @endif
@@ -226,12 +226,12 @@
                                 </h3>
 
                                 <p class="text-xs sm:text-sm font-sans font-medium text-ink leading-relaxed">
-                                    {{ $step['desc'] }}
-                                </p>
+                                     {{ $step['desc'] }}
+                                 </p>
                             </div>
 
                             <div
-                                class="mt-4 pt-3 border-t border-ink/10 flex items-center justify-between text-[10px] font-sans font-bold uppercase tracking-wider text-ink/40">
+                                class="mt-4 pt-3 border-t border-ink/10 flex items-center justify-between text-xs font-sans font-bold uppercase tracking-wider text-ink/40">
                                 <span>PROSES PEMILIHAN</span>
                                 @if ($step['number'] === '05')
                                     <span class="w-2.5 h-2.5 bg-accent border border-ink inline-block"></span>
@@ -287,7 +287,7 @@
                             class="font-display font-bold text-sm sm:text-base text-brand uppercase tracking-wide mb-1 flex flex-wrap items-center gap-2">
                             <span>PILIH DENGAN TENANG</span>
                             <span
-                                class="bg-surface-muted text-ink px-2 py-0.5 text-[9px] font-display font-bold uppercase border border-ink">
+                                class="bg-surface-muted text-ink px-2 py-0.5 text-xs font-display font-bold uppercase border border-ink">
                                 RAHASIA & AMAN
                             </span>
                         </div>
@@ -300,7 +300,7 @@
 
                 <div
                     class="md:col-span-4 flex flex-col sm:flex-row md:flex-col items-start md:items-end justify-center gap-2 border-t-2 md:border-t-0 md:border-l-2 border-ink pt-4 md:pt-0 md:pl-6">
-                    <div class="text-[10px] sm:text-xs font-sans font-bold uppercase tracking-wider text-ink/70">
+                    <div class="text-xs font-sans font-bold uppercase tracking-wider text-ink/70">
                         SUDAH SIAP MEMILIH?
                     </div>
                     <a href="{{ Route::has('login') ? route('login') : '#' }}"
