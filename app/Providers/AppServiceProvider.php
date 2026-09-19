@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Models\User;
 use App\Services\Dashboard\DashboardDataProvider;
 use App\Services\Dashboard\DashboardDataProviderInterface;
+use Carbon\Carbon;
 use Carbon\CarbonImmutable;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -59,6 +60,8 @@ class AppServiceProvider extends ServiceProvider
     protected function configureDefaults(): void
     {
         Date::use(CarbonImmutable::class);
+        Carbon::setLocale('id');
+        CarbonImmutable::setLocale('id');
 
         DB::prohibitDestructiveCommands(
             app()->isProduction(),
