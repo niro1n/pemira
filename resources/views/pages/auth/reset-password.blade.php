@@ -71,7 +71,7 @@
                                 KATA SANDI BARU
                             </span>
                         </div>
-                        <span class="bg-accent text-ink px-2 sm:px-2.5 py-0.5 text-[10px] sm:text-xs font-display font-bold uppercase border border-ink">
+                        <span class="bg-accent text-ink px-2 sm:px-2.5 py-0.5 text-xs font-display font-bold uppercase border border-ink">
                             VERIFIKASI
                         </span>
                     </div>
@@ -207,7 +207,7 @@
     </main>
 
     <footer class="relative z-10 w-full bg-brand text-surface border-t-2 border-ink py-3.5 sm:py-4">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] sm:text-xs font-sans font-medium text-surface/70 text-center sm:text-left">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs font-sans font-medium text-surface/70 text-center sm:text-left">
             <span>PEMIRA 2026 — Pemilihan Raya Mahasiswa PNB</span>
             <span>&copy; {{ date('Y') }} Komisi Pemilihan Raya (KPR). All rights reserved.</span>
         </div>
