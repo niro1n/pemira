@@ -397,4 +397,36 @@ class DashboardTest extends TestCase
         $this->assertContains('AB', $codes);
         $this->assertContains('PAR', $codes);
     }
+
+    public function test_dashboard_contextual_date_labels_use_indonesian_standard_format(): void
+    {
+        $provider = app(DashboardDataProvider::class);
+
+        $now = Carbon::parse('2026-09-01 07:00:00');
+        Carbon::setTestNow($now);
+
+        $provider->setForcedElectionData([
+            'registration_start_at' => '2026-09-09 08:05:00',
+            'registration_end_at' => '2026-09-19 16:00:00',
+            'voting_start_at' => '2026-09-25 08:00:00',
+            'voting_end_at' => '2026-09-25 16:00:00',
+        ]);
+
+        $data = $provider->getElectionData();
+        $this->assertEquals('Dimulai 09/09/2026 08:05 WITA', $data['contextual_date_label']);
+
+        Carbon::setTestNow(Carbon::parse('2026-09-10 10:00:00'));
+        $data = $provider->getElectionData();
+        $this->assertEquals('Voting Dimulai 25/09/2026 08:00 WITA', $data['contextual_date_label']);
+
+        Carbon::setTestNow(Carbon::parse('2026-09-25 10:00:00'));
+        $data = $provider->getElectionData();
+        $this->assertEquals('Berakhir 25/09/2026 16:00 WITA', $data['contextual_date_label']);
+
+        Carbon::setTestNow(Carbon::parse('2026-09-25 18:00:00'));
+        $data = $provider->getElectionData();
+        $this->assertEquals('Telah Berakhir 25/09/2026 16:00 WITA', $data['contextual_date_label']);
+
+        Carbon::setTestNow();
+    }
 }
