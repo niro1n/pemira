@@ -120,10 +120,10 @@ class DashboardDataProvider implements DashboardDataProviderInterface
         };
 
         $contextualDateLabel = match ($phase) {
-            ElectionPhase::UPCOMING => 'Dimulai '.$regStart->translatedFormat('d F Y · H:i').' WITA',
-            ElectionPhase::REGISTRATION => 'Voting Dimulai '.$votingStart->translatedFormat('d F Y · H:i').' WITA',
-            ElectionPhase::VOTING => 'Berakhir '.$votingEnd->translatedFormat('d F Y · H:i').' WITA',
-            ElectionPhase::FINISHED => 'Telah Berakhir '.$votingEnd->translatedFormat('d F Y · H:i').' WITA',
+            ElectionPhase::UPCOMING => 'Dimulai '.$regStart->format('d/m/Y H:i').' WITA',
+            ElectionPhase::REGISTRATION => 'Voting Dimulai '.$votingStart->format('d/m/Y H:i').' WITA',
+            ElectionPhase::VOTING => 'Berakhir '.$votingEnd->format('d/m/Y H:i').' WITA',
+            ElectionPhase::FINISHED => 'Telah Berakhir '.$votingEnd->format('d/m/Y H:i').' WITA',
         };
 
         return [
