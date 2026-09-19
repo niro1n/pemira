@@ -50,7 +50,7 @@
                     Pusat informasi dan partisipasi Pemilihan Raya Mahasiswa untuk menentukan pemimpin BEM Politeknik Negeri Bali.
                 </p>
 
-                <div class="inline-flex items-center gap-2 px-2.5 py-1 bg-brand-dark border border-surface/20 text-[11px] sm:text-xs font-sans font-bold uppercase tracking-wider text-accent">
+                <div class="inline-flex items-center gap-2 px-2.5 py-1 bg-brand-dark border border-surface/20 text-xs font-sans font-bold uppercase tracking-wider text-accent">
                     <span class="w-1.5 h-1.5 bg-accent inline-block border border-ink"></span>
                     <span>KOMISI PEMILIHAN RAYA 2026</span>
                 </div>
@@ -130,7 +130,7 @@
     </div>
 
     <div class="border-t-2 border-surface/15 bg-brand-dark py-3.5 sm:py-4">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] sm:text-xs font-sans font-medium text-surface/60 text-center sm:text-left">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs font-sans font-medium text-surface/60 text-center sm:text-left">
             <span>PEMIRA 2026 — Pemilihan Raya Mahasiswa</span>
             <span>&copy; {{ date('Y') }} Komisi Pemilihan Raya (KPR). All rights reserved.</span>
         </div>
