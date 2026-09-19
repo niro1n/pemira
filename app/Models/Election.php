@@ -8,9 +8,22 @@ use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
+/**
+ * @property int $id
+ * @property string $name
+ * @property string $slug
+ * @property int $year
+ * @property \Illuminate\Support\Carbon $registration_start_at
+ * @property \Illuminate\Support\Carbon $registration_end_at
+ * @property \Illuminate\Support\Carbon $voting_start_at
+ * @property \Illuminate\Support\Carbon $voting_end_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ */
 #[Fillable(['name', 'slug', 'year', 'registration_start_at', 'registration_end_at', 'voting_start_at', 'voting_end_at'])]
 class Election extends Model
 {
@@ -117,10 +130,10 @@ class Election extends Model
         $phase = $this->currentPhase($reference);
 
         return match ($phase) {
-            ElectionPhase::UPCOMING => 'Dimulai '.$this->registration_start_at?->translatedFormat('d F Y · H:i').' WITA',
-            ElectionPhase::REGISTRATION => 'Voting Dimulai '.$this->voting_start_at?->translatedFormat('d F Y · H:i').' WITA',
-            ElectionPhase::VOTING => 'Berakhir '.$this->voting_end_at?->translatedFormat('d F Y · H:i').' WITA',
-            ElectionPhase::FINISHED => 'Telah Berakhir '.$this->voting_end_at?->translatedFormat('d F Y · H:i').' WITA',
+            ElectionPhase::UPCOMING => 'Dimulai '.$this->registration_start_at?->format('d/m/Y H:i').' WITA',
+            ElectionPhase::REGISTRATION => 'Voting Dimulai '.$this->voting_start_at?->format('d/m/Y H:i').' WITA',
+            ElectionPhase::VOTING => 'Berakhir '.$this->voting_end_at?->format('d/m/Y H:i').' WITA',
+            ElectionPhase::FINISHED => 'Telah Berakhir '.$this->voting_end_at?->format('d/m/Y H:i').' WITA',
         };
     }
 
@@ -187,5 +200,21 @@ class Election extends Model
             'feedbacks' => $feedbacks,
             'candidate_pairs' => $candidatePairs,
         ];
+    }
+
+    /**
+     * @return HasMany<CandidatePair, $this>
+     */
+    public function candidatePairs(): HasMany
+    {
+        return $this->hasMany(CandidatePair::class)->orderBy('candidate_number', 'asc');
+    }
+
+    /**
+     * @return HasMany<CandidateMember, $this>
+     */
+    public function candidateMembers(): HasMany
+    {
+        return $this->hasMany(CandidateMember::class);
     }
 }
