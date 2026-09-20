@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 #[Fillable(['user_id', 'eligible_voter_id'])]
 class VoterAccount extends Model
@@ -20,5 +21,10 @@ class VoterAccount extends Model
     public function eligibleVoter(): BelongsTo
     {
         return $this->belongsTo(EligibleVoter::class);
+    }
+
+    public function votingParticipations(): HasMany
+    {
+        return $this->hasMany(VotingParticipation::class);
     }
 }
