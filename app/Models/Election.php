@@ -217,4 +217,20 @@ class Election extends Model
     {
         return $this->hasMany(CandidateMember::class);
     }
+
+    /**
+     * @return HasMany<ElectionEmailNotification, $this>
+     */
+    public function emailNotifications(): HasMany
+    {
+        return $this->hasMany(ElectionEmailNotification::class);
+    }
+
+    /**
+     * @return HasMany<VotingParticipation, $this>
+     */
+    public function votingParticipations(): HasMany
+    {
+        return $this->hasMany(VotingParticipation::class);
+    }
 }
