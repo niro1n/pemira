@@ -85,10 +85,13 @@
                             @endif
                         </a>
 
-                        <div class="flex items-center justify-between px-3 py-2 border-2 border-transparent text-ink/40 text-xs font-semibold uppercase tracking-wide cursor-not-allowed">
+                        <a href="{{ route('admin.eligible-voters.index') }}"
+                           class="flex items-center justify-between px-3 py-2 {{ request()->routeIs('admin.eligible-voters.*') ? 'bg-brand text-surface' : 'text-ink/80 hover:bg-surface-muted' }} border-2 border-ink shadow-brutal-sm font-display font-bold text-xs uppercase tracking-wide">
                             <span>Daftar Pemilih</span>
-                            <span class="text-xs px-1.5 py-0.5 bg-surface-muted border border-ink/20 text-ink/50 font-display font-bold">SEGERA</span>
-                        </div>
+                            @if (request()->routeIs('admin.eligible-voters.*'))
+                                <span class="w-2 h-2 bg-accent inline-block"></span>
+                            @endif
+                        </a>
 
                         <div class="flex items-center justify-between px-3 py-2 border-2 border-transparent text-ink/40 text-xs font-semibold uppercase tracking-wide cursor-not-allowed">
                             <span>Hasil Perhitungan</span>

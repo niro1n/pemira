@@ -75,7 +75,7 @@ class Register extends Component
         }
 
         $this->eligibleVoterId = $voter->id;
-        $this->studentName = $voter->name;
+        $this->studentName = $voter->name ?? 'Mahasiswa';
         $this->studentNim = $voter->nim;
         $this->studentProdi = $voter->studyProgram?->name ?? 'Program Studi Terdaftar';
         $this->currentStep = 2;

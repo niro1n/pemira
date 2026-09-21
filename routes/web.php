@@ -3,6 +3,7 @@
 use App\Livewire\Admin\CandidatePairs\Index as CandidatePairIndex;
 use App\Livewire\Admin\Dashboard;
 use App\Livewire\Admin\Elections\Index as ElectionIndex;
+use App\Livewire\Admin\EligibleVoters\Index as EligibleVoterIndex;
 use App\Livewire\Auth\ForgotPassword;
 use App\Livewire\Auth\Login;
 use App\Livewire\Auth\Register;
@@ -77,4 +78,5 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::get('/', Dashboard::class)->name('admin.dashboard');
     Route::get('/elections', ElectionIndex::class)->name('admin.elections.index');
     Route::get('/paslon', CandidatePairIndex::class)->name('admin.candidate-pairs.index');
+    Route::get('/eligible-voters', EligibleVoterIndex::class)->name('admin.eligible-voters.index');
 });

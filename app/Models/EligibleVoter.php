@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -22,6 +23,55 @@ class EligibleVoter extends Model
         ];
     }
 
+    public function isComplete(): bool
+    {
+        return ! empty($this->nim)
+            && ! empty(trim((string) $this->name))
+            && ! empty($this->study_program_id)
+            && ! empty($this->date_of_birth);
+    }
+
+    public function missingFields(): array
+    {
+        $missing = [];
+
+        if (empty($this->nim)) {
+            $missing[] = 'Nomor Induk Mahasiswa (NIM)';
+        }
+
+        if (empty(trim((string) $this->name))) {
+            $missing[] = 'Nama Lengkap';
+        }
+
+        if (empty($this->study_program_id)) {
+            $missing[] = 'Jurusan / Program Studi';
+        }
+
+        if (empty($this->date_of_birth)) {
+            $missing[] = 'Tanggal Lahir';
+        }
+
+        return $missing;
+    }
+
+    public function scopeComplete(Builder $query): Builder
+    {
+        return $query->whereNotNull('name')
+            ->where('name', '!=', '')
+            ->whereNotNull('study_program_id')
+            ->whereNotNull('date_of_birth');
+    }
+
+    public function scopeIncomplete(Builder $query): Builder
+    {
+        return $query->where(function (Builder $q) {
+            $q->whereNull('name')
+                ->orWhere('name', '')
+                ->orWhereNull('study_program_id')
+                ->orWhereNull('date_of_birth');
+        });
+    }
+
     public function studyProgram(): BelongsTo
     {
         return $this->belongsTo(StudyProgram::class);
@@ -32,9 +82,6 @@ class EligibleVoter extends Model
         return $this->hasOne(VoterAccount::class);
     }
 
-    /**
-     * @return HasMany<CandidateMember, $this>
-     */
     public function candidateMembers(): HasMany
     {
         return $this->hasMany(CandidateMember::class);
