@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Enums\ElectionPhase;
 use App\Livewire\Admin\CandidatePairs\Index;
 use App\Models\CandidateMember;
+use App\Models\CandidateMission;
 use App\Models\CandidatePair;
 use App\Models\Election;
 use App\Models\EligibleVoter;
@@ -612,6 +613,87 @@ class LandingPageTest extends TestCase
         $detailResponse = $this->get('/paslon/paslon-01');
         $detailResponse->assertOk();
         $detailResponse->assertSee('Visi Terupdate Transformasi Digital');
+
+        Carbon::setTestNow();
+    }
+
+    public function test_public_candidate_detail_page_renders_ordered_missions_from_database(): void
+    {
+        $now = Carbon::parse('2026-09-18 10:00:00');
+        Carbon::setTestNow($now);
+
+        $election = Election::create([
+            'name' => 'PEMIRA BEM PNB 2026',
+            'slug' => 'pemira-bem-pnb-2026',
+            'year' => 2026,
+            'registration_start_at' => $now->copy()->addDays(2),
+            'registration_end_at' => $now->copy()->addDays(5),
+            'voting_start_at' => $now->copy()->addDays(10),
+            'voting_end_at' => $now->copy()->addDays(11),
+        ]);
+
+        $prodi = StudyProgram::create([
+            'name' => 'Teknologi Informasi',
+            'code' => 'TI',
+        ]);
+
+        $ketua = EligibleVoter::create([
+            'nim' => '2215354001',
+            'name' => 'Calon Ketua Misi Test',
+            'date_of_birth' => '2004-01-10',
+            'study_program_id' => $prodi->id,
+            'is_eligible' => true,
+        ]);
+
+        $wakil = EligibleVoter::create([
+            'nim' => '2215354002',
+            'name' => 'Calon Wakil Misi Test',
+            'date_of_birth' => '2004-02-15',
+            'study_program_id' => $prodi->id,
+            'is_eligible' => true,
+        ]);
+
+        $pair = CandidatePair::create([
+            'election_id' => $election->id,
+            'candidate_number' => 1,
+            'vision' => 'Visi Inovasi Kampus',
+            'mission' => 'Fallback Misi',
+            'is_active' => true,
+        ]);
+
+        CandidateMember::create([
+            'election_id' => $election->id,
+            'candidate_pair_id' => $pair->id,
+            'eligible_voter_id' => $ketua->id,
+            'position' => 'ketua',
+        ]);
+
+        CandidateMember::create([
+            'election_id' => $election->id,
+            'candidate_pair_id' => $pair->id,
+            'eligible_voter_id' => $wakil->id,
+            'position' => 'wakil',
+        ]);
+
+        CandidateMission::create([
+            'candidate_pair_id' => $pair->id,
+            'content' => 'Meningkatkan transparansi birokrasi kampus.',
+            'sort_order' => 1,
+        ]);
+
+        CandidateMission::create([
+            'candidate_pair_id' => $pair->id,
+            'content' => 'Mengembangkan program magang industri bersertifikat.',
+            'sort_order' => 2,
+        ]);
+
+        $response = $this->get('/paslon/paslon-01');
+        $response->assertOk();
+        $response->assertSee('MISI PASLON 01');
+        $response->assertSee('01');
+        $response->assertSee('Meningkatkan transparansi birokrasi kampus.');
+        $response->assertSee('02');
+        $response->assertSee('Mengembangkan program magang industri bersertifikat.');
 
         Carbon::setTestNow();
     }

@@ -4,6 +4,7 @@ namespace Tests\Feature\Admin;
 
 use App\Livewire\Admin\CandidatePairs\Index as CandidatePairIndex;
 use App\Models\CandidateMember;
+use App\Models\CandidateMission;
 use App\Models\CandidatePair;
 use App\Models\Election;
 use App\Models\EligibleVoter;
@@ -922,5 +923,368 @@ class CandidatePairManagementTest extends TestCase
 
         $testable->call('cancelNewPhoto')
             ->assertSet('photo', null);
+    }
+
+    public function test_candidate_pair_can_be_created_with_single_mission(): void
+    {
+        Livewire::actingAs($this->admin)
+            ->test(CandidatePairIndex::class, ['selectedElectionId' => $this->election->id])
+            ->call('openCreateModal')
+            ->set('candidate_number', 1)
+            ->set('leader_id', $this->voter1->id)
+            ->set('vice_leader_id', $this->voter2->id)
+            ->set('vision', 'Visi Paslon Mandiri')
+            ->set('missionItems', [
+                ['content' => 'Misi tunggal paslon pertama.'],
+            ])
+            ->call('createCandidatePair')
+            ->assertHasNoErrors();
+
+        $pair = CandidatePair::where('election_id', $this->election->id)
+            ->where('candidate_number', 1)
+            ->first();
+
+        $this->assertNotNull($pair);
+        $this->assertEquals(1, $pair->candidateMissions()->count());
+        $this->assertDatabaseHas('candidate_missions', [
+            'candidate_pair_id' => $pair->id,
+            'content' => 'Misi tunggal paslon pertama.',
+            'sort_order' => 1,
+        ]);
+    }
+
+    public function test_candidate_pair_can_be_created_with_multiple_missions(): void
+    {
+        Livewire::actingAs($this->admin)
+            ->test(CandidatePairIndex::class, ['selectedElectionId' => $this->election->id])
+            ->call('openCreateModal')
+            ->set('candidate_number', 1)
+            ->set('leader_id', $this->voter1->id)
+            ->set('vice_leader_id', $this->voter2->id)
+            ->set('vision', 'Visi Komprehensif')
+            ->set('missionItems', [
+                ['content' => 'Misi poin kesatu'],
+                ['content' => 'Misi poin kedua'],
+                ['content' => 'Misi poin ketiga'],
+            ])
+            ->call('createCandidatePair')
+            ->assertHasNoErrors();
+
+        $pair = CandidatePair::where('election_id', $this->election->id)
+            ->where('candidate_number', 1)
+            ->first();
+
+        $this->assertNotNull($pair);
+        $this->assertEquals(3, $pair->candidateMissions()->count());
+    }
+
+    public function test_missions_are_saved_in_exact_sort_order(): void
+    {
+        Livewire::actingAs($this->admin)
+            ->test(CandidatePairIndex::class, ['selectedElectionId' => $this->election->id])
+            ->call('openCreateModal')
+            ->set('candidate_number', 1)
+            ->set('leader_id', $this->voter1->id)
+            ->set('vice_leader_id', $this->voter2->id)
+            ->set('vision', 'Visi Urutan')
+            ->set('missionItems', [
+                ['content' => 'Urutan A'],
+                ['content' => 'Urutan B'],
+                ['content' => 'Urutan C'],
+            ])
+            ->call('createCandidatePair')
+            ->assertHasNoErrors();
+
+        $pair = CandidatePair::where('election_id', $this->election->id)
+            ->where('candidate_number', 1)
+            ->first();
+
+        $missions = $pair->candidateMissions()->orderBy('sort_order', 'asc')->get();
+        $this->assertEquals(['Urutan A', 'Urutan B', 'Urutan C'], $missions->pluck('content')->all());
+        $this->assertEquals([1, 2, 3], $missions->pluck('sort_order')->all());
+    }
+
+    public function test_empty_mission_item_is_rejected(): void
+    {
+        Livewire::actingAs($this->admin)
+            ->test(CandidatePairIndex::class, ['selectedElectionId' => $this->election->id])
+            ->call('openCreateModal')
+            ->set('candidate_number', 1)
+            ->set('leader_id', $this->voter1->id)
+            ->set('vice_leader_id', $this->voter2->id)
+            ->set('vision', 'Visi Valid')
+            ->set('missionItems', [
+                ['content' => ''],
+            ])
+            ->call('createCandidatePair')
+            ->assertHasErrors(['missionItems.0.content']);
+
+        Livewire::actingAs($this->admin)
+            ->test(CandidatePairIndex::class, ['selectedElectionId' => $this->election->id])
+            ->call('openCreateModal')
+            ->set('candidate_number', 1)
+            ->set('leader_id', $this->voter1->id)
+            ->set('vice_leader_id', $this->voter2->id)
+            ->set('vision', 'Visi Valid')
+            ->set('missionItems', [
+                ['content' => 'Misi pertama oke'],
+                ['content' => ''],
+            ])
+            ->call('createCandidatePair')
+            ->assertHasErrors(['missionItems.1.content']);
+    }
+
+    public function test_mission_can_be_added_from_edit(): void
+    {
+        $pair = CandidatePair::create([
+            'election_id' => $this->election->id,
+            'candidate_number' => 1,
+            'vision' => 'Visi Awal',
+            'mission' => 'Misi Awal',
+            'is_active' => true,
+        ]);
+
+        CandidateMember::create([
+            'election_id' => $this->election->id,
+            'candidate_pair_id' => $pair->id,
+            'eligible_voter_id' => $this->voter1->id,
+            'position' => 'ketua',
+        ]);
+
+        CandidateMember::create([
+            'election_id' => $this->election->id,
+            'candidate_pair_id' => $pair->id,
+            'eligible_voter_id' => $this->voter2->id,
+            'position' => 'wakil',
+        ]);
+
+        CandidateMission::create([
+            'candidate_pair_id' => $pair->id,
+            'content' => 'Misi awal tersimpan',
+            'sort_order' => 1,
+        ]);
+
+        $testable = Livewire::actingAs($this->admin)
+            ->test(CandidatePairIndex::class, ['selectedElectionId' => $this->election->id])
+            ->call('openEditModal', $pair->id);
+
+        $this->assertCount(1, $testable->get('missionItems'));
+
+        $testable->call('addMission');
+        $this->assertCount(2, $testable->get('missionItems'));
+
+        $testable->set('missionItems.1.content', 'Misi kedua ditambahkan dari edit');
+        $testable->call('updateCandidatePair')
+            ->assertHasNoErrors();
+
+        $this->assertEquals(2, $pair->candidateMissions()->count());
+        $this->assertEquals(
+            ['Misi awal tersimpan', 'Misi kedua ditambahkan dari edit'],
+            $pair->candidateMissions()->orderBy('sort_order', 'asc')->pluck('content')->all()
+        );
+    }
+
+    public function test_mission_can_be_removed_from_edit(): void
+    {
+        $pair = CandidatePair::create([
+            'election_id' => $this->election->id,
+            'candidate_number' => 1,
+            'vision' => 'Visi Awal',
+            'mission' => 'Misi Awal',
+            'is_active' => true,
+        ]);
+
+        CandidateMember::create([
+            'election_id' => $this->election->id,
+            'candidate_pair_id' => $pair->id,
+            'eligible_voter_id' => $this->voter1->id,
+            'position' => 'ketua',
+        ]);
+
+        CandidateMember::create([
+            'election_id' => $this->election->id,
+            'candidate_pair_id' => $pair->id,
+            'eligible_voter_id' => $this->voter2->id,
+            'position' => 'wakil',
+        ]);
+
+        CandidateMission::create([
+            'candidate_pair_id' => $pair->id,
+            'content' => 'Misi 1',
+            'sort_order' => 1,
+        ]);
+
+        CandidateMission::create([
+            'candidate_pair_id' => $pair->id,
+            'content' => 'Misi 2 untuk dihapus',
+            'sort_order' => 2,
+        ]);
+
+        CandidateMission::create([
+            'candidate_pair_id' => $pair->id,
+            'content' => 'Misi 3',
+            'sort_order' => 3,
+        ]);
+
+        $testable = Livewire::actingAs($this->admin)
+            ->test(CandidatePairIndex::class, ['selectedElectionId' => $this->election->id])
+            ->call('openEditModal', $pair->id);
+
+        $this->assertCount(3, $testable->get('missionItems'));
+
+        $testable->call('removeMission', 1);
+        $this->assertCount(2, $testable->get('missionItems'));
+
+        $testable->call('updateCandidatePair')
+            ->assertHasNoErrors();
+
+        $this->assertEquals(2, $pair->candidateMissions()->count());
+        $this->assertDatabaseMissing('candidate_missions', [
+            'candidate_pair_id' => $pair->id,
+            'content' => 'Misi 2 untuk dihapus',
+        ]);
+
+        $missions = $pair->candidateMissions()->orderBy('sort_order', 'asc')->get();
+        $this->assertEquals(['Misi 1', 'Misi 3'], $missions->pluck('content')->all());
+        $this->assertEquals([1, 2], $missions->pluck('sort_order')->all());
+    }
+
+    public function test_old_missions_do_not_remain_after_update(): void
+    {
+        $pair = CandidatePair::create([
+            'election_id' => $this->election->id,
+            'candidate_number' => 1,
+            'vision' => 'Visi Awal',
+            'mission' => 'Misi Awal',
+            'is_active' => true,
+        ]);
+
+        CandidateMember::create([
+            'election_id' => $this->election->id,
+            'candidate_pair_id' => $pair->id,
+            'eligible_voter_id' => $this->voter1->id,
+            'position' => 'ketua',
+        ]);
+
+        CandidateMember::create([
+            'election_id' => $this->election->id,
+            'candidate_pair_id' => $pair->id,
+            'eligible_voter_id' => $this->voter2->id,
+            'position' => 'wakil',
+        ]);
+
+        for ($i = 1; $i <= 4; $i++) {
+            CandidateMission::create([
+                'candidate_pair_id' => $pair->id,
+                'content' => "Misi Lama {$i}",
+                'sort_order' => $i,
+            ]);
+        }
+
+        $this->assertEquals(4, CandidateMission::where('candidate_pair_id', $pair->id)->count());
+
+        Livewire::actingAs($this->admin)
+            ->test(CandidatePairIndex::class, ['selectedElectionId' => $this->election->id])
+            ->call('openEditModal', $pair->id)
+            ->set('missionItems', [
+                ['content' => 'Misi Baru Pengganti Total'],
+            ])
+            ->call('updateCandidatePair')
+            ->assertHasNoErrors();
+
+        $this->assertEquals(1, CandidateMission::where('candidate_pair_id', $pair->id)->count());
+        $this->assertDatabaseMissing('candidate_missions', ['content' => 'Misi Lama 1']);
+        $this->assertDatabaseMissing('candidate_missions', ['content' => 'Misi Lama 2']);
+        $this->assertDatabaseMissing('candidate_missions', ['content' => 'Misi Lama 3']);
+        $this->assertDatabaseMissing('candidate_missions', ['content' => 'Misi Lama 4']);
+        $this->assertDatabaseHas('candidate_missions', ['content' => 'Misi Baru Pengganti Total', 'sort_order' => 1]);
+    }
+
+    public function test_candidate_pair_without_missions_does_not_cause_errors(): void
+    {
+        $pair = CandidatePair::create([
+            'election_id' => $this->election->id,
+            'candidate_number' => 1,
+            'vision' => 'Visi Tanpa Misi',
+            'mission' => null,
+            'is_active' => true,
+        ]);
+
+        CandidateMember::create([
+            'election_id' => $this->election->id,
+            'candidate_pair_id' => $pair->id,
+            'eligible_voter_id' => $this->voter1->id,
+            'position' => 'ketua',
+        ]);
+
+        CandidateMember::create([
+            'election_id' => $this->election->id,
+            'candidate_pair_id' => $pair->id,
+            'eligible_voter_id' => $this->voter2->id,
+            'position' => 'wakil',
+        ]);
+
+        $response = $this->get('/paslon/paslon-01');
+        $response->assertOk();
+        $response->assertSee('Belum ada butir misi yang ditetapkan.');
+
+        Livewire::actingAs($this->admin)
+            ->test(CandidatePairIndex::class, ['selectedElectionId' => $this->election->id])
+            ->call('openDetailModal', $pair->id)
+            ->assertOk()
+            ->assertSee('Belum ada butir misi yang ditetapkan.');
+    }
+
+    public function test_candidate_detail_page_renders_all_mission_items_as_ordered_list(): void
+    {
+        $pair = CandidatePair::create([
+            'election_id' => $this->election->id,
+            'candidate_number' => 1,
+            'vision' => 'Visi Sinergi Kampus',
+            'mission' => 'Misi Cadangan',
+            'is_active' => true,
+        ]);
+
+        CandidateMember::create([
+            'election_id' => $this->election->id,
+            'candidate_pair_id' => $pair->id,
+            'eligible_voter_id' => $this->voter1->id,
+            'position' => 'ketua',
+        ]);
+
+        CandidateMember::create([
+            'election_id' => $this->election->id,
+            'candidate_pair_id' => $pair->id,
+            'eligible_voter_id' => $this->voter2->id,
+            'position' => 'wakil',
+        ]);
+
+        CandidateMission::create([
+            'candidate_pair_id' => $pair->id,
+            'content' => 'Meningkatkan kualitas akademik mahasiswa.',
+            'sort_order' => 1,
+        ]);
+
+        CandidateMission::create([
+            'candidate_pair_id' => $pair->id,
+            'content' => 'Membangun kegiatan mahasiswa berbasis riset.',
+            'sort_order' => 2,
+        ]);
+
+        CandidateMission::create([
+            'candidate_pair_id' => $pair->id,
+            'content' => 'Mengembangkan fasilitas kampus berkelanjutan.',
+            'sort_order' => 3,
+        ]);
+
+        $response = $this->get('/paslon/paslon-01');
+        $response->assertOk();
+        $response->assertSee('MISI PASLON 01');
+        $response->assertSee('01');
+        $response->assertSee('Meningkatkan kualitas akademik mahasiswa.');
+        $response->assertSee('02');
+        $response->assertSee('Membangun kegiatan mahasiswa berbasis riset.');
+        $response->assertSee('03');
+        $response->assertSee('Mengembangkan fasilitas kampus berkelanjutan.');
     }
 }
