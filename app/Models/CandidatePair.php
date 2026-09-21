@@ -48,6 +48,22 @@ class CandidatePair extends Model
     }
 
     /**
+     * @return HasMany<CandidateMission, $this>
+     */
+    public function candidateMissions(): HasMany
+    {
+        return $this->hasMany(CandidateMission::class)->orderBy('sort_order', 'asc');
+    }
+
+    /**
+     * @return HasMany<CandidateMission, $this>
+     */
+    public function missions(): HasMany
+    {
+        return $this->candidateMissions();
+    }
+
+    /**
      * @return HasOne<CandidateMember, $this>
      */
     public function leaderMember(): HasOne
