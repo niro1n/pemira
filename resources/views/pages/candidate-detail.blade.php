@@ -111,14 +111,32 @@
 
                 <div class="border-t-2 border-ink/15"></div>
 
-                <div class="space-y-1.5">
+                <div class="space-y-2.5">
                     <div class="inline-flex items-center gap-1.5 px-2 py-0.5 bg-brand text-accent font-display font-bold text-[11px] uppercase tracking-wider border border-ink">
                         <span class="w-1.5 h-1.5 bg-accent inline-block"></span>
-                        <span>MISI</span>
+                        <span>MISI PASLON {{ $number }}</span>
                     </div>
-                    <div class="font-sans text-xs sm:text-sm font-medium text-ink leading-relaxed whitespace-pre-line">
-                        {{ $candidate->mission }}
-                    </div>
+
+                    @if ($candidate->candidateMissions->isNotEmpty())
+                        <ol class="space-y-2">
+                            @foreach ($candidate->candidateMissions as $idx => $missionItem)
+                                <li class="flex items-start gap-2.5 bg-surface-muted border-2 border-ink p-2.5 sm:p-3 shadow-brutal-sm">
+                                    <span class="inline-flex items-center justify-center px-2 py-0.5 bg-brand text-accent font-mono font-bold text-xs border border-ink shrink-0 select-none">
+                                        {{ str_pad((string) ($missionItem->sort_order ?: ($idx + 1)), 2, '0', STR_PAD_LEFT) }}
+                                    </span>
+                                    <span class="font-sans text-xs sm:text-sm font-medium text-ink leading-relaxed flex-1 break-words">
+                                        {{ $missionItem->content }}
+                                    </span>
+                                </li>
+                            @endforeach
+                        </ol>
+                    @elseif (! empty($candidate->mission))
+                        <div class="p-3 bg-surface-muted border-2 border-ink font-sans text-xs sm:text-sm font-medium text-ink leading-relaxed whitespace-pre-line">
+                            {{ $candidate->mission }}
+                        </div>
+                    @else
+                        <p class="text-xs font-sans text-ink/60 italic">Belum ada butir misi yang ditetapkan.</p>
+                    @endif
                 </div>
             </div>
         </div>

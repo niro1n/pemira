@@ -527,17 +527,59 @@
                             @enderror
                         </div>
 
-                        <div>
-                            <label class="block text-xs font-display font-bold uppercase tracking-wider text-ink mb-1">
-                                Misi Paslon <span class="text-red-600">*</span>
-                            </label>
-                            <textarea wire:model="mission"
-                                      rows="4"
-                                      placeholder="Tuliskan butir-butir misi pasangan calon..."
-                                      class="w-full bg-surface-muted border-2 border-ink p-3 text-xs sm:text-sm font-sans text-ink shadow-brutal-sm focus:outline-none focus:bg-surface"></textarea>
-                            @error('mission')
-                                <p class="text-xs font-sans font-bold text-red-600 mt-1">{{ $message }}</p>
+                        <div class="space-y-2">
+                            <div class="flex items-center justify-between">
+                                <label class="block text-xs font-display font-bold uppercase tracking-wider text-ink">
+                                    Misi Paslon <span class="text-red-600">*</span>
+                                </label>
+                                <span class="text-[11px] font-sans text-ink/60 font-medium">
+                                    Minimal 1 butir misi
+                                </span>
+                            </div>
+
+                            @error('missionItems')
+                                <p class="text-xs font-sans font-bold text-red-600">{{ $message }}</p>
                             @enderror
+
+                            <div class="space-y-2">
+                                @foreach ($missionItems as $index => $item)
+                                    <div wire:key="create-mission-item-{{ $index }}" class="space-y-1">
+                                        <div class="flex items-center gap-2">
+                                            <span class="px-2.5 py-2 bg-brand text-accent font-display font-black text-xs border-2 border-ink shadow-brutal-sm shrink-0 select-none">
+                                                MISI {{ str_pad((string) ($index + 1), 2, '0', STR_PAD_LEFT) }}
+                                            </span>
+
+                                            <input type="text"
+                                                   wire:model="missionItems.{{ $index }}.content"
+                                                   placeholder="Tuliskan butir misi ke-{{ $index + 1 }}..."
+                                                   class="flex-1 bg-surface-muted border-2 border-ink px-3 py-2 text-xs sm:text-sm font-sans text-ink shadow-brutal-sm focus:outline-none focus:bg-surface min-h-10" />
+
+                                            @if (count($missionItems) > 1)
+                                                <button type="button"
+                                                        wire:click="removeMission({{ $index }})"
+                                                        class="w-10 h-10 bg-surface hover:bg-red-600 hover:text-white border-2 border-ink shadow-brutal-sm flex items-center justify-center shrink-0 transition-colors cursor-pointer text-ink font-bold text-base"
+                                                        title="Hapus butir misi {{ $index + 1 }}"
+                                                        aria-label="Hapus butir misi {{ $index + 1 }}">
+                                                    &times;
+                                                </button>
+                                            @endif
+                                        </div>
+
+                                        @error("missionItems.{$index}.content")
+                                            <p class="text-xs font-sans font-bold text-red-600 pl-1">{{ $message }}</p>
+                                        @enderror
+                                    </div>
+                                @endforeach
+                            </div>
+
+                            <button type="button"
+                                    wire:click="addMission"
+                                    class="w-full py-2.5 bg-surface hover:bg-accent border-2 border-ink shadow-brutal-sm text-xs font-display font-black uppercase tracking-wider transition-colors flex items-center justify-center gap-2 cursor-pointer min-h-10">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/>
+                                </svg>
+                                <span>+ TAMBAH MISI</span>
+                            </button>
                         </div>
                     </div>
 
@@ -867,16 +909,59 @@
                             @enderror
                         </div>
 
-                        <div>
-                            <label class="block text-xs font-display font-bold uppercase tracking-wider text-ink mb-1">
-                                Misi Paslon <span class="text-red-600">*</span>
-                            </label>
-                            <textarea wire:model="mission"
-                                      rows="4"
-                                      class="w-full bg-surface-muted border-2 border-ink p-3 text-xs sm:text-sm font-sans text-ink shadow-brutal-sm focus:outline-none focus:bg-surface"></textarea>
-                            @error('mission')
-                                <p class="text-xs font-sans font-bold text-red-600 mt-1">{{ $message }}</p>
+                        <div class="space-y-2">
+                            <div class="flex items-center justify-between">
+                                <label class="block text-xs font-display font-bold uppercase tracking-wider text-ink">
+                                    Misi Paslon <span class="text-red-600">*</span>
+                                </label>
+                                <span class="text-[11px] font-sans text-ink/60 font-medium">
+                                    Minimal 1 butir misi
+                                </span>
+                            </div>
+
+                            @error('missionItems')
+                                <p class="text-xs font-sans font-bold text-red-600">{{ $message }}</p>
                             @enderror
+
+                            <div class="space-y-2">
+                                @foreach ($missionItems as $index => $item)
+                                    <div wire:key="edit-mission-item-{{ $index }}" class="space-y-1">
+                                        <div class="flex items-center gap-2">
+                                            <span class="px-2.5 py-2 bg-brand text-accent font-display font-black text-xs border-2 border-ink shadow-brutal-sm shrink-0 select-none">
+                                                MISI {{ str_pad((string) ($index + 1), 2, '0', STR_PAD_LEFT) }}
+                                            </span>
+
+                                            <input type="text"
+                                                   wire:model="missionItems.{{ $index }}.content"
+                                                   placeholder="Tuliskan butir misi ke-{{ $index + 1 }}..."
+                                                   class="flex-1 bg-surface-muted border-2 border-ink px-3 py-2 text-xs sm:text-sm font-sans text-ink shadow-brutal-sm focus:outline-none focus:bg-surface min-h-10" />
+
+                                            @if (count($missionItems) > 1)
+                                                <button type="button"
+                                                        wire:click="removeMission({{ $index }})"
+                                                        class="w-10 h-10 bg-surface hover:bg-red-600 hover:text-white border-2 border-ink shadow-brutal-sm flex items-center justify-center shrink-0 transition-colors cursor-pointer text-ink font-bold text-base"
+                                                        title="Hapus butir misi {{ $index + 1 }}"
+                                                        aria-label="Hapus butir misi {{ $index + 1 }}">
+                                                    &times;
+                                                </button>
+                                            @endif
+                                        </div>
+
+                                        @error("missionItems.{$index}.content")
+                                            <p class="text-xs font-sans font-bold text-red-600 pl-1">{{ $message }}</p>
+                                        @enderror
+                                    </div>
+                                @endforeach
+                            </div>
+
+                            <button type="button"
+                                    wire:click="addMission"
+                                    class="w-full py-2.5 bg-surface hover:bg-accent border-2 border-ink shadow-brutal-sm text-xs font-display font-black uppercase tracking-wider transition-colors flex items-center justify-center gap-2 cursor-pointer min-h-10">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/>
+                                </svg>
+                                <span>+ TAMBAH MISI</span>
+                            </button>
                         </div>
                     </div>
 
@@ -989,8 +1074,27 @@
 
                     <div class="space-y-1.5">
                         <span class="text-xs font-display font-black text-brand uppercase block">MISI</span>
-                        <div class="p-3 bg-surface-muted border-2 border-ink leading-relaxed font-sans text-ink whitespace-pre-line">
-                            {{ $selectedCandidatePair->mission }}
+                        <div class="p-3 bg-surface-muted border-2 border-ink space-y-2">
+                            @if ($selectedCandidatePair->candidateMissions->isNotEmpty())
+                                <ol class="space-y-2">
+                                    @foreach ($selectedCandidatePair->candidateMissions as $idx => $missionItem)
+                                        <li class="flex items-start gap-2.5 text-xs font-sans text-ink">
+                                            <span class="inline-flex items-center justify-center px-1.5 py-0.5 bg-brand text-accent font-mono font-bold text-[10px] border border-ink shrink-0">
+                                                {{ str_pad((string) ($missionItem->sort_order ?: ($idx + 1)), 2, '0', STR_PAD_LEFT) }}
+                                            </span>
+                                            <span class="leading-relaxed flex-1 break-words">
+                                                {{ $missionItem->content }}
+                                            </span>
+                                        </li>
+                                    @endforeach
+                                </ol>
+                            @elseif (! empty($selectedCandidatePair->mission))
+                                <div class="leading-relaxed font-sans text-ink whitespace-pre-line">
+                                    {{ $selectedCandidatePair->mission }}
+                                </div>
+                            @else
+                                <p class="text-xs font-sans text-ink/60 italic">Belum ada butir misi yang ditetapkan.</p>
+                            @endif
                         </div>
                     </div>
                 </div>
