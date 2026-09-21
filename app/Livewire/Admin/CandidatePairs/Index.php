@@ -67,6 +67,11 @@ class Index extends Component
 
     public string $mission = '';
 
+    /** @var array<int, array{id?: int|null, content: string}> */
+    public array $missionItems = [
+        ['content' => ''],
+    ];
+
     public int|bool|string $is_active = 1;
 
     public string $leaderSearch = '';
@@ -187,6 +192,9 @@ class Index extends Component
         $maxNumber = CandidatePair::where('election_id', $this->selectedElectionId)->max('candidate_number');
         $this->candidate_number = $maxNumber ? ((int) $maxNumber + 1) : 1;
         $this->is_active = 1;
+        $this->missionItems = [
+            ['content' => ''],
+        ];
 
         $this->showCreateModal = true;
     }
@@ -208,13 +216,28 @@ class Index extends Component
             ]);
         }
 
+        if ((count($this->missionItems) === 1 && trim($this->missionItems[0]['content'] ?? '') === '') && trim($this->mission) !== '') {
+            $lines = preg_split('/\r\n|\r|\n/', trim($this->mission));
+            $items = [];
+            foreach ($lines as $line) {
+                $trimmed = trim($line);
+                if ($trimmed !== '') {
+                    $items[] = ['content' => $trimmed];
+                }
+            }
+            $this->missionItems = ! empty($items) ? $items : [
+                ['content' => trim($this->mission)],
+            ];
+        }
+
         $this->validate([
             'candidate_number' => ['required', 'integer', 'min:1', 'max:999'],
             'leader_id' => ['required', 'integer', 'exists:eligible_voters,id'],
             'vice_leader_id' => ['required', 'integer', 'exists:eligible_voters,id'],
             'photo' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:2048'],
             'vision' => ['required', 'string', 'max:5000'],
-            'mission' => ['required', 'string', 'max:5000'],
+            'missionItems' => ['required', 'array', 'min:1'],
+            'missionItems.*.content' => ['required', 'string', 'max:1000'],
             'is_active' => ['required', 'boolean'],
         ], [
             'candidate_number.required' => 'Nomor urut paslon wajib diisi.',
@@ -228,7 +251,11 @@ class Index extends Component
             'photo.mimes' => 'Format gambar yang diperbolehkan adalah JPEG, PNG, JPG, atau WebP.',
             'photo.max' => 'Ukuran foto maksimal adalah 2MB.',
             'vision.required' => 'Visi paslon wajib diisi.',
-            'mission.required' => 'Misi paslon wajib diisi.',
+            'missionItems.required' => 'Misi paslon wajib diisi minimal satu butir.',
+            'missionItems.min' => 'Misi paslon wajib diisi minimal satu butir.',
+            'missionItems.*.content.required' => 'Poin misi tidak boleh kosong.',
+            'missionItems.*.content.string' => 'Poin misi harus berupa teks.',
+            'missionItems.*.content.max' => 'Poin misi maksimal 1000 karakter.',
         ]);
 
         $duplicateNumber = CandidatePair::where('election_id', $this->selectedElectionId)
@@ -280,6 +307,8 @@ class Index extends Component
             $photoPath = $this->photo->store('candidate-photos', 'public');
         }
 
+        $this->mission = implode("\n", array_filter(array_column($this->missionItems, 'content')));
+
         DB::transaction(function () use ($photoPath) {
             $pair = CandidatePair::create([
                 'election_id' => $this->selectedElectionId,
@@ -289,6 +318,8 @@ class Index extends Component
                 'mission' => $this->mission,
                 'is_active' => filter_var($this->is_active, FILTER_VALIDATE_BOOLEAN),
             ]);
+
+            $this->persistMissionItems($pair);
 
             CandidateMember::create([
                 'election_id' => $this->selectedElectionId,
@@ -331,7 +362,10 @@ class Index extends Component
     {
         Gate::authorize('access-admin-panel');
 
-        $pair = CandidatePair::with(['candidateMembers.eligibleVoter.studyProgram'])->findOrFail($id);
+        $pair = CandidatePair::with([
+            'candidateMembers.eligibleVoter.studyProgram',
+            'candidateMissions',
+        ])->findOrFail($id);
 
         $this->resetValidation();
         $this->resetForm();
@@ -340,7 +374,8 @@ class Index extends Component
         $this->selectedCandidatePair = $pair;
         $this->candidate_number = $pair->candidate_number;
         $this->vision = $pair->vision;
-        $this->mission = $pair->mission;
+        $this->mission = $pair->mission ?? '';
+        $this->loadMissionItems($pair);
         $this->is_active = $pair->is_active ? 1 : 0;
         $this->existingPhoto = $pair->photo;
         $this->photo = null;
@@ -383,13 +418,28 @@ class Index extends Component
 
         $pair = CandidatePair::findOrFail($this->selectedCandidatePairId);
 
+        if ((count($this->missionItems) === 1 && trim($this->missionItems[0]['content'] ?? '') === '') && trim($this->mission) !== '') {
+            $lines = preg_split('/\r\n|\r|\n/', trim($this->mission));
+            $items = [];
+            foreach ($lines as $line) {
+                $trimmed = trim($line);
+                if ($trimmed !== '') {
+                    $items[] = ['content' => $trimmed];
+                }
+            }
+            $this->missionItems = ! empty($items) ? $items : [
+                ['content' => trim($this->mission)],
+            ];
+        }
+
         $this->validate([
             'candidate_number' => ['required', 'integer', 'min:1', 'max:999'],
             'leader_id' => ['required', 'integer', 'exists:eligible_voters,id'],
             'vice_leader_id' => ['required', 'integer', 'exists:eligible_voters,id'],
             'photo' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:2048'],
             'vision' => ['required', 'string', 'max:5000'],
-            'mission' => ['required', 'string', 'max:5000'],
+            'missionItems' => ['required', 'array', 'min:1'],
+            'missionItems.*.content' => ['required', 'string', 'max:1000'],
             'is_active' => ['required', 'boolean'],
         ], [
             'candidate_number.required' => 'Nomor urut paslon wajib diisi.',
@@ -403,7 +453,11 @@ class Index extends Component
             'photo.mimes' => 'Format gambar yang diperbolehkan adalah JPEG, PNG, JPG, atau WebP.',
             'photo.max' => 'Ukuran foto maksimal adalah 2MB.',
             'vision.required' => 'Visi paslon wajib diisi.',
-            'mission.required' => 'Misi paslon wajib diisi.',
+            'missionItems.required' => 'Misi paslon wajib diisi minimal satu butir.',
+            'missionItems.min' => 'Misi paslon wajib diisi minimal satu butir.',
+            'missionItems.*.content.required' => 'Poin misi tidak boleh kosong.',
+            'missionItems.*.content.string' => 'Poin misi harus berupa teks.',
+            'missionItems.*.content.max' => 'Poin misi maksimal 1000 karakter.',
         ]);
 
         $duplicateNumber = CandidatePair::where('election_id', $pair->election_id)
@@ -466,6 +520,8 @@ class Index extends Component
             $photoPath = $this->photo->store('candidate-photos', 'public');
         }
 
+        $this->mission = implode("\n", array_filter(array_column($this->missionItems, 'content')));
+
         DB::transaction(function () use ($pair, $photoPath) {
             $pair->update([
                 'candidate_number' => (int) $this->candidate_number,
@@ -474,6 +530,8 @@ class Index extends Component
                 'mission' => $this->mission,
                 'is_active' => filter_var($this->is_active, FILTER_VALIDATE_BOOLEAN),
             ]);
+
+            $this->persistMissionItems($pair);
 
             CandidateMember::updateOrCreate(
                 [
@@ -531,6 +589,7 @@ class Index extends Component
         $this->selectedCandidatePair = CandidatePair::with([
             'election',
             'candidateMembers.eligibleVoter.studyProgram',
+            'candidateMissions',
         ])->findOrFail($id);
 
         $this->selectedCandidatePairId = $this->selectedCandidatePair->id;
@@ -635,6 +694,69 @@ class Index extends Component
         session()->flash('success', 'Status Paslon '.$pair->formattedNumber().' berhasil diubah menjadi '.($pair->is_active ? 'Aktif' : 'Tidak Aktif').'.');
     }
 
+    public function addMission(): void
+    {
+        $this->missionItems[] = ['content' => ''];
+    }
+
+    public function removeMission(int $index): void
+    {
+        unset($this->missionItems[$index]);
+        $this->missionItems = array_values($this->missionItems);
+
+        if (empty($this->missionItems)) {
+            $this->missionItems = [
+                ['content' => ''],
+            ];
+        }
+    }
+
+    public function loadMissionItems(CandidatePair $candidatePair): void
+    {
+        $missions = $candidatePair->candidateMissions()
+            ->orderBy('sort_order', 'asc')
+            ->get();
+
+        if ($missions->isNotEmpty()) {
+            $this->missionItems = $missions->map(fn ($m) => [
+                'id' => $m->id,
+                'content' => $m->content,
+            ])->all();
+        } elseif (! empty($candidatePair->mission)) {
+            $lines = preg_split('/\r\n|\r|\n/', trim($candidatePair->mission));
+            $items = [];
+            foreach ($lines as $line) {
+                $trimmed = trim($line);
+                if ($trimmed !== '') {
+                    $items[] = ['content' => $trimmed];
+                }
+            }
+            $this->missionItems = ! empty($items) ? $items : [
+                ['content' => trim($candidatePair->mission)],
+            ];
+        } else {
+            $this->missionItems = [
+                ['content' => ''],
+            ];
+        }
+    }
+
+    public function persistMissionItems(CandidatePair $candidatePair): void
+    {
+        $candidatePair->candidateMissions()->delete();
+
+        $sortOrder = 1;
+        foreach ($this->missionItems as $item) {
+            $content = trim($item['content'] ?? '');
+            if ($content !== '') {
+                $candidatePair->candidateMissions()->create([
+                    'content' => $content,
+                    'sort_order' => $sortOrder++,
+                ]);
+            }
+        }
+    }
+
     protected function resetForm(): void
     {
         $this->selectedCandidatePairId = null;
@@ -647,6 +769,9 @@ class Index extends Component
         $this->removePhoto = false;
         $this->vision = '';
         $this->mission = '';
+        $this->missionItems = [
+            ['content' => ''],
+        ];
         $this->is_active = 1;
         $this->leaderSearch = '';
         $this->viceLeaderSearch = '';
@@ -668,6 +793,7 @@ class Index extends Component
                 ->where('election_id', $this->selectedElectionId)
                 ->with([
                     'candidateMembers.eligibleVoter.studyProgram',
+                    'candidateMissions',
                 ]);
 
             if (trim($this->search) !== '') {

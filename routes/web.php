@@ -22,6 +22,7 @@ Route::get('/', function () {
                     ->orderBy('candidate_number', 'asc')
                     ->with([
                         'candidateMembers.eligibleVoter.studyProgram',
+                        'candidateMissions',
                     ]);
             },
         ]);
@@ -42,6 +43,7 @@ Route::get('/paslon/{candidatePair}', function (CandidatePair $candidatePair) {
     $candidatePair->load([
         'candidateMembers.eligibleVoter.studyProgram',
         'election',
+        'candidateMissions',
     ]);
 
     return view('pages.candidate-detail', [
