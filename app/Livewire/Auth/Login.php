@@ -3,6 +3,7 @@
 namespace App\Livewire\Auth;
 
 use App\Models\AuditLog;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
@@ -57,7 +58,9 @@ class Login extends Component
             return;
         }
 
-        if (! Auth::user()->hasVerifiedEmail()) {
+        $user = Auth::user();
+
+        if ($user instanceof User && ! $user->hasVerifiedEmail()) {
             Auth::logout();
             $this->addError('email', 'Email Anda belum diverifikasi. Silakan lakukan registrasi atau verifikasi OTP.');
 
@@ -77,8 +80,7 @@ class Login extends Component
             'user_agent' => request()->userAgent(),
         ]);
 
-        $user = Auth::user();
-        if ($user->canAccessAdminPanel()) {
+        if ($user instanceof User && $user->canAccessAdminPanel()) {
             return redirect()->intended('/admin');
         }
 
