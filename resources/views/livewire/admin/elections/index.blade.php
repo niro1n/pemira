@@ -25,7 +25,7 @@
         <div class="p-3 sm:p-4 bg-accent/20 border-2 border-ink shadow-brutal flex items-center justify-between gap-3 text-xs sm:text-sm font-sans font-bold text-ink min-w-0">
             <div class="flex items-center gap-2 min-w-0">
                 <span class="w-2.5 h-2.5 bg-brand shrink-0 inline-block"></span>
-                <span class="break-words">{{ session('success') }}</span>
+                <span class="wrap-break-word">{{ session('success') }}</span>
             </div>
             <button type="button" @click="$el.parentElement.remove()" class="p-1 hover:bg-ink/10 text-ink shrink-0" aria-label="Tutup pesan">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -39,7 +39,7 @@
         <div class="p-3 sm:p-4 bg-red-100 border-2 border-ink shadow-brutal flex items-center justify-between gap-3 text-xs sm:text-sm font-sans font-bold text-red-900 min-w-0">
             <div class="flex items-center gap-2 min-w-0">
                 <span class="w-2.5 h-2.5 bg-red-600 shrink-0 inline-block"></span>
-                <span class="break-words">{{ session('error') }}</span>
+                <span class="wrap-break-word">{{ session('error') }}</span>
             </div>
             <button type="button" @click="$el.parentElement.remove()" class="p-1 hover:bg-red-200 text-red-900 shrink-0" aria-label="Tutup pesan">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -153,7 +153,7 @@
                 <div class="p-3.5 sm:p-4 space-y-3 min-w-0">
                     <div class="flex items-start justify-between gap-2 min-w-0">
                         <div class="min-w-0 flex-1">
-                            <div class="font-display font-black text-sm text-brand uppercase break-words leading-tight">
+                            <div class="font-display font-black text-sm text-brand uppercase wrap-break-word leading-tight">
                                 {{ $elec->name }}
                             </div>
                             <div class="text-xs font-mono text-ink/60 mt-0.5 break-all">
@@ -615,7 +615,7 @@
                     <h3 class="font-display font-black text-lg text-red-600 uppercase">
                         HAPUS PEMIRA?
                     </h3>
-                    <div class="font-display font-extrabold text-base text-brand uppercase break-words leading-tight">
+                    <div class="font-display font-extrabold text-base text-brand uppercase wrap-break-word leading-tight">
                         {{ $selectedElection->name }}
                     </div>
                     <p class="text-xs font-sans text-ink/80 leading-relaxed">
