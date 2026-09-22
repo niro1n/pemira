@@ -102,13 +102,13 @@
                                 </div>
 
                                 @if ($candidate->photo && \Illuminate\Support\Facades\Storage::disk('public')->exists($candidate->photo))
-                                    <div class="border-2 border-ink shadow-brutal-sm aspect-4/5 max-w-[240px] mx-auto bg-surface overflow-hidden relative z-10">
+                                    <div class="border-2 border-ink shadow-brutal-sm aspect-4/5 max-w-60 mx-auto bg-surface overflow-hidden relative z-10">
                                         <img src="{{ \Illuminate\Support\Facades\Storage::url($candidate->photo) }}"
                                              alt="Foto Paslon {{ $number }}"
                                              class="w-full h-full object-cover object-top" />
                                     </div>
                                 @else
-                                    <div class="border-2 border-ink shadow-brutal-sm aspect-4/5 max-w-[240px] mx-auto bg-surface overflow-hidden relative z-10 flex flex-col items-center justify-center p-4 text-center">
+                                    <div class="border-2 border-ink shadow-brutal-sm aspect-4/5 max-w-60 mx-auto bg-surface overflow-hidden relative z-10 flex flex-col items-center justify-center p-4 text-center">
                                         <div class="w-12 h-12 bg-surface-muted border-2 border-ink shadow-brutal-sm flex items-center justify-center mb-1">
                                             <svg class="w-6 h-6 text-ink/40" fill="currentColor" viewBox="0 0 24 24">
                                                 <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
@@ -197,13 +197,13 @@
                                 </div>
 
                                 @if ($candidate->photo && \Illuminate\Support\Facades\Storage::disk('public')->exists($candidate->photo))
-                                    <div class="border-2 border-ink shadow-brutal-sm aspect-4/5 max-w-[220px] mx-auto bg-surface overflow-hidden relative z-10">
+                                    <div class="border-2 border-ink shadow-brutal-sm aspect-4/5 max-w-55 mx-auto bg-surface overflow-hidden relative z-10">
                                         <img src="{{ \Illuminate\Support\Facades\Storage::url($candidate->photo) }}"
                                              alt="Foto Paslon {{ $number }}"
                                              class="w-full h-full object-cover object-top" />
                                     </div>
                                 @else
-                                    <div class="border-2 border-ink shadow-brutal-sm aspect-4/5 max-w-[220px] mx-auto bg-surface overflow-hidden relative z-10 flex flex-col items-center justify-center p-3 text-center">
+                                    <div class="border-2 border-ink shadow-brutal-sm aspect-4/5 max-w-55 mx-auto bg-surface overflow-hidden relative z-10 flex flex-col items-center justify-center p-3 text-center">
                                         <div class="w-10 h-10 bg-surface-muted border border-ink flex items-center justify-center mb-1">
                                             <svg class="w-5 h-5 text-ink/40" fill="currentColor" viewBox="0 0 24 24">
                                                 <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
@@ -354,13 +354,13 @@
                                             </div>
 
                                             @if ($candidate->photo && \Illuminate\Support\Facades\Storage::disk('public')->exists($candidate->photo))
-                                                <div class="border-2 border-ink shadow-brutal-sm aspect-4/5 max-w-[220px] mx-auto bg-surface overflow-hidden relative z-10">
+                                                <div class="border-2 border-ink shadow-brutal-sm aspect-4/5 max-w-55 mx-auto bg-surface overflow-hidden relative z-10">
                                                     <img src="{{ \Illuminate\Support\Facades\Storage::url($candidate->photo) }}"
                                                          alt="Foto Paslon {{ $number }}"
                                                          class="w-full h-full object-cover object-top" />
                                                 </div>
                                             @else
-                                                <div class="border-2 border-ink shadow-brutal-sm aspect-4/5 max-w-[220px] mx-auto bg-surface overflow-hidden relative z-10 flex flex-col items-center justify-center p-3 text-center">
+                                                <div class="border-2 border-ink shadow-brutal-sm aspect-4/5 max-w-55 mx-auto bg-surface overflow-hidden relative z-10 flex flex-col items-center justify-center p-3 text-center">
                                                     <div class="w-10 h-10 bg-surface-muted border border-ink flex items-center justify-center mb-1">
                                                         <svg class="w-5 h-5 text-ink/40" fill="currentColor" viewBox="0 0 24 24">
                                                             <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
