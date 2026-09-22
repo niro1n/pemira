@@ -123,21 +123,9 @@
                             </td>
                             <td class="p-3.5 sm:p-4 text-right whitespace-nowrap">
                                 <div class="inline-flex items-center gap-1.5">
-                                    <button wire:click="openDetailModal({{ $elec->id }})"
-                                            type="button"
-                                            class="px-2.5 py-1 bg-surface-muted hover:bg-accent border border-ink font-display font-bold text-xs uppercase transition-colors">
-                                        DETAIL
-                                    </button>
-                                    <button wire:click="openEditModal({{ $elec->id }})"
-                                            type="button"
-                                            class="px-2.5 py-1 bg-brand text-surface hover:bg-brand-dark border border-ink font-display font-bold text-xs uppercase transition-colors">
-                                        EDIT
-                                    </button>
-                                    <button wire:click="openDeleteModal({{ $elec->id }})"
-                                            type="button"
-                                            class="px-2.5 py-1 bg-surface-muted hover:bg-red-600 hover:text-white border border-ink font-display font-bold text-xs uppercase transition-colors">
-                                        HAPUS
-                                    </button>
+                                    <x-action-button variant="detail" label="Lihat detail" wire:click="openDetailModal({{ $elec->id }})" />
+                                    <x-action-button variant="edit" label="Edit pemilihan" wire:click="openEditModal({{ $elec->id }})" />
+                                    <x-action-button variant="delete" label="Hapus pemilihan" wire:click="openDeleteModal({{ $elec->id }})" />
                                 </div>
                             </td>
                         </tr>
@@ -192,22 +180,10 @@
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-3 gap-2 pt-0.5">
-                        <button wire:click="openDetailModal({{ $elec->id }})"
-                                type="button"
-                                class="w-full py-2 bg-surface-muted hover:bg-accent border border-ink font-display font-bold text-xs uppercase text-center transition-colors min-h-9">
-                            DETAIL
-                        </button>
-                        <button wire:click="openEditModal({{ $elec->id }})"
-                                type="button"
-                                class="w-full py-2 bg-brand text-surface hover:bg-brand-dark border border-ink font-display font-bold text-xs uppercase text-center transition-colors min-h-9">
-                            EDIT
-                        </button>
-                        <button wire:click="openDeleteModal({{ $elec->id }})"
-                                type="button"
-                                class="w-full py-2 bg-surface-muted hover:bg-red-600 hover:text-white border border-ink font-display font-bold text-xs uppercase text-center transition-colors min-h-9">
-                            HAPUS
-                        </button>
+                    <div class="pt-2 border-t border-ink/10 flex items-center justify-end gap-2">
+                        <x-action-button variant="detail" label="Lihat detail" wire:click="openDetailModal({{ $elec->id }})" />
+                        <x-action-button variant="edit" label="Edit pemilihan" wire:click="openEditModal({{ $elec->id }})" />
+                        <x-action-button variant="delete" label="Hapus pemilihan" wire:click="openDeleteModal({{ $elec->id }})" />
                     </div>
                 </div>
             @empty
