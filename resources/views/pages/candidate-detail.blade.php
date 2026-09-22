@@ -41,7 +41,7 @@
 
             <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-stretch">
                 <div class="md:col-span-5 bg-surface-muted border-2 border-ink p-2.5 shadow-brutal flex items-center justify-center">
-                    <div class="w-full aspect-4/5 max-w-[200px] sm:max-w-[220px] md:max-w-none mx-auto bg-surface border-2 border-ink overflow-hidden relative shadow-brutal-sm flex items-center justify-center">
+                    <div class="w-full aspect-4/5 max-w-50 sm:max-w-55 md:max-w-none mx-auto bg-surface border-2 border-ink overflow-hidden relative shadow-brutal-sm flex items-center justify-center">
                         @if ($candidate->photo && \Illuminate\Support\Facades\Storage::disk('public')->exists($candidate->photo))
                             <img src="{{ \Illuminate\Support\Facades\Storage::url($candidate->photo) }}"
                                  alt="Foto Resmi Paslon {{ $number }}"
@@ -124,7 +124,7 @@
                                     <span class="inline-flex items-center justify-center px-2 py-0.5 bg-brand text-accent font-mono font-bold text-xs border border-ink shrink-0 select-none">
                                         {{ str_pad((string) ($missionItem->sort_order ?: ($idx + 1)), 2, '0', STR_PAD_LEFT) }}
                                     </span>
-                                    <span class="font-sans text-xs sm:text-sm font-medium text-ink leading-relaxed flex-1 break-words">
+                                    <span class="font-sans text-xs sm:text-sm font-medium text-ink leading-relaxed flex-1 wrap-break-word">
                                         {{ $missionItem->content }}
                                     </span>
                                 </li>

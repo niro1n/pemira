@@ -98,33 +98,45 @@
                             <span class="text-xs px-1.5 py-0.5 bg-surface-muted border border-ink/20 text-ink/50 font-display font-bold">SEGERA</span>
                         </div>
 
-                        <div class="flex items-center justify-between px-3 py-2 border-2 border-transparent text-ink/40 text-xs font-semibold uppercase tracking-wide cursor-not-allowed">
+                        <a href="{{ route('admin.feedbacks.index') }}"
+                           class="flex items-center justify-between px-3 py-2 {{ request()->routeIs('admin.feedbacks.*') ? 'bg-brand text-surface' : 'text-ink/80 hover:bg-surface-muted' }} border-2 border-ink shadow-brutal-sm font-display font-bold text-xs uppercase tracking-wide">
                             <span>Masukan Pemilih</span>
-                            <span class="text-xs px-1.5 py-0.5 bg-surface-muted border border-ink/20 text-ink/50 font-display font-bold">SEGERA</span>
-                        </div>
+                            @if (request()->routeIs('admin.feedbacks.*'))
+                                <span class="w-2 h-2 bg-accent inline-block"></span>
+                            @endif
+                        </a>
 
-                        <div class="flex items-center justify-between px-3 py-2 border-2 border-transparent text-ink/40 text-xs font-semibold uppercase tracking-wide cursor-not-allowed">
+                        <a href="{{ route('admin.audit-logs.index') }}"
+                           class="flex items-center justify-between px-3 py-2 {{ request()->routeIs('admin.audit-logs.*') ? 'bg-brand text-surface' : 'text-ink/80 hover:bg-surface-muted' }} border-2 border-ink shadow-brutal-sm font-display font-bold text-xs uppercase tracking-wide">
                             <span>Audit & Log</span>
-                            <span class="text-xs px-1.5 py-0.5 bg-surface-muted border border-ink/20 text-ink/50 font-display font-bold">SEGERA</span>
-                        </div>
+                            @if (request()->routeIs('admin.audit-logs.*'))
+                                <span class="w-2 h-2 bg-accent inline-block"></span>
+                            @endif
+                        </a>
 
                         @if (auth()->user()?->isSuperAdmin())
                             <div class="pt-3 mt-3 border-t-2 border-ink/15">
                                 <div class="px-3 pb-1 text-xs font-display font-black text-brand uppercase tracking-wider">
                                     Super Admin
                                 </div>
-                                <div class="flex items-center justify-between px-3 py-2 border-2 border-transparent text-ink/40 text-xs font-semibold uppercase tracking-wide cursor-not-allowed">
+                                <a href="{{ route('admin.admins.index') }}"
+                                   class="flex items-center justify-between px-3 py-2 {{ request()->routeIs('admin.admins.*') ? 'bg-brand text-surface' : 'text-ink/80 hover:bg-surface-muted' }} border-2 border-ink shadow-brutal-sm font-display font-bold text-xs uppercase tracking-wide">
                                     <span>Manajemen Admin</span>
-                                    <span class="text-xs px-1.5 py-0.5 bg-accent/20 border border-ink/20 text-brand font-display font-bold">SEGERA</span>
-                                </div>
+                                    @if (request()->routeIs('admin.admins.*'))
+                                        <span class="w-2 h-2 bg-accent inline-block"></span>
+                                    @endif
+                                </a>
                                 <div class="flex items-center justify-between px-3 py-2 border-2 border-transparent text-ink/40 text-xs font-semibold uppercase tracking-wide cursor-not-allowed">
                                     <span>Pengajuan Jadwal</span>
                                     <span class="text-xs px-1.5 py-0.5 bg-accent/20 border border-ink/20 text-brand font-display font-bold">SEGERA</span>
                                 </div>
-                                <div class="flex items-center justify-between px-3 py-2 border-2 border-transparent text-ink/40 text-xs font-semibold uppercase tracking-wide cursor-not-allowed">
+                                <a href="{{ route('admin.special-actions.index') }}"
+                                   class="flex items-center justify-between px-3 py-2 {{ request()->routeIs('admin.special-actions.*') ? 'bg-brand text-surface' : 'text-ink/80 hover:bg-surface-muted' }} border-2 border-ink shadow-brutal-sm font-display font-bold text-xs uppercase tracking-wide">
                                     <span>Tindakan Khusus</span>
-                                    <span class="text-xs px-1.5 py-0.5 bg-accent/20 border border-ink/20 text-brand font-display font-bold">SEGERA</span>
-                                </div>
+                                    @if (request()->routeIs('admin.special-actions.*'))
+                                        <span class="w-2 h-2 bg-accent inline-block"></span>
+                                    @endif
+                                </a>
                             </div>
                         @endif
                     </nav>

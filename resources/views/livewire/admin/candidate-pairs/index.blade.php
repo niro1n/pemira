@@ -51,7 +51,7 @@
         <div class="p-3 sm:p-4 bg-accent/20 border-2 border-ink shadow-brutal flex items-center justify-between gap-3 text-xs sm:text-sm font-sans font-bold text-ink min-w-0">
             <div class="flex items-center gap-2 min-w-0">
                 <span class="w-2.5 h-2.5 bg-brand shrink-0 inline-block"></span>
-                <span class="break-words">{{ session('success') }}</span>
+                <span class="wrap-break-word">{{ session('success') }}</span>
             </div>
             <button type="button" @click="$el.parentElement.remove()" class="p-1 hover:bg-ink/10 text-ink shrink-0" aria-label="Tutup pesan">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -65,7 +65,7 @@
         <div class="p-3 sm:p-4 bg-red-100 border-2 border-ink shadow-brutal flex items-center justify-between gap-3 text-xs sm:text-sm font-sans font-bold text-red-900 min-w-0">
             <div class="flex items-center gap-2 min-w-0">
                 <span class="w-2.5 h-2.5 bg-red-600 shrink-0 inline-block"></span>
-                <span class="break-words">{{ session('error') }}</span>
+                <span class="wrap-break-word">{{ session('error') }}</span>
             </div>
             <button type="button" @click="$el.parentElement.remove()" class="p-1 hover:bg-red-200 text-red-900 shrink-0" aria-label="Tutup pesan">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1070,7 +1070,7 @@
                                             <span class="inline-flex items-center justify-center px-1.5 py-0.5 bg-brand text-accent font-mono font-bold text-[10px] border border-ink shrink-0">
                                                 {{ str_pad((string) ($missionItem->sort_order ?: ($idx + 1)), 2, '0', STR_PAD_LEFT) }}
                                             </span>
-                                            <span class="leading-relaxed flex-1 break-words">
+                                            <span class="leading-relaxed flex-1 wrap-break-word">
                                                 {{ $missionItem->content }}
                                             </span>
                                         </li>
@@ -1117,7 +1117,7 @@
                     <h3 class="font-display font-black text-lg text-red-600 uppercase">
                         HAPUS PASANGAN CALON?
                     </h3>
-                    <div class="font-display font-extrabold text-base text-brand uppercase break-words leading-tight">
+                    <div class="font-display font-extrabold text-base text-brand uppercase wrap-break-word leading-tight">
                         PASLON {{ $selectedCandidatePair->formattedNumber() }}
                     </div>
                     <div class="text-xs font-sans text-ink/80 space-y-1 bg-surface-muted p-2.5 border border-ink/20">
@@ -1147,7 +1147,7 @@
 
     <div x-show="showCropModal"
          x-cloak
-         class="fixed inset-0 z-[60] overflow-y-auto flex items-center justify-center p-3 sm:p-4 bg-ink/80 backdrop-blur-xs"
+         class="fixed inset-0 z-60 overflow-y-auto flex items-center justify-center p-3 sm:p-4 bg-ink/80 backdrop-blur-xs"
          role="dialog"
          aria-modal="true"
          aria-labelledby="cropper-modal-title">

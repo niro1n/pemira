@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\CheckMaintenanceMode;
 use App\Http\Middleware\EnsureAdminAccess;
 use App\Http\Middleware\EnsureRole;
 use Illuminate\Foundation\Application;
@@ -15,6 +16,9 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->trustProxies(at: '*');
+        $middleware->web(append: [
+            CheckMaintenanceMode::class,
+        ]);
         $middleware->alias([
             'admin' => EnsureAdminAccess::class,
             'role' => EnsureRole::class,

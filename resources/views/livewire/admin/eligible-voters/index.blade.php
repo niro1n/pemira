@@ -38,7 +38,7 @@
         <div class="p-3 sm:p-4 bg-accent/20 border-2 border-ink shadow-brutal flex items-center justify-between gap-3 text-xs sm:text-sm font-sans font-bold text-ink min-w-0">
             <div class="flex items-center gap-2 min-w-0">
                 <span class="w-2.5 h-2.5 bg-brand shrink-0 inline-block"></span>
-                <span class="break-words">{{ session('success') }}</span>
+                <span class="wrap-break-word">{{ session('success') }}</span>
             </div>
             <button type="button" @click="$el.parentElement.remove()" class="p-1 hover:bg-ink/10 text-ink shrink-0" aria-label="Tutup pesan">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -52,7 +52,7 @@
         <div class="p-3 sm:p-4 bg-red-100 border-2 border-ink shadow-brutal flex items-center justify-between gap-3 text-xs sm:text-sm font-sans font-bold text-red-900 min-w-0">
             <div class="flex items-center gap-2 min-w-0">
                 <span class="w-2.5 h-2.5 bg-red-600 shrink-0 inline-block"></span>
-                <span class="break-words">{{ session('error') }}</span>
+                <span class="wrap-break-word">{{ session('error') }}</span>
             </div>
             <button type="button" @click="$el.parentElement.remove()" class="p-1 hover:bg-red-200 text-red-900 shrink-0" aria-label="Tutup pesan">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -62,65 +62,67 @@
         </div>
     @endif
 
-    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
-        <div class="bg-surface border-2 border-ink p-3.5 sm:p-4 shadow-brutal">
-            <span class="text-xs font-display font-bold uppercase tracking-wider text-ink/60 block">TOTAL ELIGIBLE</span>
-            <div class="font-display font-black text-xl sm:text-2xl text-brand mt-1">
-                {{ number_format($this->statistics['total'], 0, ',', '.') }}
-            </div>
-            <span class="text-xs text-ink/50 mt-0.5 block">Mahasiswa</span>
-        </div>
-
-        <div class="bg-surface border-2 border-ink p-3.5 sm:p-4 shadow-brutal">
-            <span class="text-xs font-display font-bold uppercase tracking-wider text-emerald-800 block">DATA LENGKAP</span>
-            <div class="font-display font-black text-xl sm:text-2xl text-emerald-700 mt-1">
-                {{ number_format($this->statistics['complete'], 0, ',', '.') }}
-            </div>
-            <span class="text-xs text-ink/50 mt-0.5 block">Siap voting</span>
-        </div>
-
-        <div class="bg-surface border-2 border-ink p-3.5 sm:p-4 shadow-brutal">
-            <span class="text-xs font-display font-bold uppercase tracking-wider text-amber-800 block">TIDAK LENGKAP</span>
-            <div class="font-display font-black text-xl sm:text-2xl text-amber-700 mt-1">
-                {{ number_format($this->statistics['incomplete'], 0, ',', '.') }}
-            </div>
-            <span class="text-xs text-ink/50 mt-0.5 block">Perlu dilengkapi</span>
-        </div>
-
-        <div class="bg-surface border-2 border-ink p-3.5 sm:p-4 shadow-brutal">
-            <span class="text-xs font-display font-bold uppercase tracking-wider text-brand block">SUDAH TERDAFTAR</span>
-            <div class="font-display font-black text-xl sm:text-2xl text-brand mt-1">
-                {{ number_format($this->statistics['registered'], 0, ',', '.') }}
-            </div>
-            <span class="text-xs text-ink/50 mt-0.5 block">Memiliki akun</span>
-        </div>
-
-        <div class="bg-surface border-2 border-ink p-3.5 sm:p-4 shadow-brutal">
-            <span class="text-xs font-display font-bold uppercase tracking-wider text-brand block">SUDAH VOTING</span>
-            @if ($this->statistics['has_current_election'])
-                <div class="font-display font-black text-xl sm:text-2xl text-brand mt-1">
-                    {{ number_format($this->statistics['voted'], 0, ',', '.') }}
+    <div class="overflow-x-auto pb-1 -mx-1 px-1">
+        <div class="grid grid-cols-6 min-w-170 lg:min-w-0 gap-2 sm:gap-3">
+            <div class="bg-surface border-2 border-ink p-2.5 sm:p-3 shadow-brutal min-w-0">
+                <span class="text-[10px] sm:text-xs font-display font-bold uppercase tracking-wider text-ink/60 block truncate">TOTAL ELIGIBLE</span>
+                <div class="font-display font-black text-lg sm:text-2xl text-brand mt-0.5 sm:mt-1 truncate">
+                    {{ number_format($this->statistics['total'], 0, ',', '.') }}
                 </div>
-                <span class="text-xs text-ink/50 mt-0.5 block truncate" title="{{ $this->statistics['election_name'] }}">{{ $this->statistics['election_name'] }}</span>
-            @else
-                <div class="font-display font-bold text-xs sm:text-sm text-ink/50 mt-2 italic">
-                    Tidak ada PEMIRA
-                </div>
-            @endif
-        </div>
+                <span class="text-[10px] sm:text-xs text-ink/50 mt-0.5 block truncate">Mahasiswa</span>
+            </div>
 
-        <div class="bg-surface border-2 border-ink p-3.5 sm:p-4 shadow-brutal">
-            <span class="text-xs font-display font-bold uppercase tracking-wider text-ink/70 block">BELUM VOTING</span>
-            @if ($this->statistics['has_current_election'])
-                <div class="font-display font-black text-xl sm:text-2xl text-ink/80 mt-1">
-                    {{ number_format($this->statistics['unvoted'], 0, ',', '.') }}
+            <div class="bg-surface border-2 border-ink p-2.5 sm:p-3 shadow-brutal min-w-0">
+                <span class="text-[10px] sm:text-xs font-display font-bold uppercase tracking-wider text-emerald-800 block truncate">DATA LENGKAP</span>
+                <div class="font-display font-black text-lg sm:text-2xl text-emerald-700 mt-0.5 sm:mt-1 truncate">
+                    {{ number_format($this->statistics['complete'], 0, ',', '.') }}
                 </div>
-                <span class="text-xs text-ink/50 mt-0.5 block truncate" title="{{ $this->statistics['election_name'] }}">{{ $this->statistics['election_name'] }}</span>
-            @else
-                <div class="font-display font-bold text-xs sm:text-sm text-ink/50 mt-2 italic">
-                    Tidak ada PEMIRA
+                <span class="text-[10px] sm:text-xs text-ink/50 mt-0.5 block truncate">Siap voting</span>
+            </div>
+
+            <div class="bg-surface border-2 border-ink p-2.5 sm:p-3 shadow-brutal min-w-0">
+                <span class="text-[10px] sm:text-xs font-display font-bold uppercase tracking-wider text-amber-800 block truncate">TIDAK LENGKAP</span>
+                <div class="font-display font-black text-lg sm:text-2xl text-amber-700 mt-0.5 sm:mt-1 truncate">
+                    {{ number_format($this->statistics['incomplete'], 0, ',', '.') }}
                 </div>
-            @endif
+                <span class="text-[10px] sm:text-xs text-ink/50 mt-0.5 block truncate">Perlu dilengkapi</span>
+            </div>
+
+            <div class="bg-surface border-2 border-ink p-2.5 sm:p-3 shadow-brutal min-w-0">
+                <span class="text-[10px] sm:text-xs font-display font-bold uppercase tracking-wider text-brand block truncate">SUDAH TERDAFTAR</span>
+                <div class="font-display font-black text-lg sm:text-2xl text-brand mt-0.5 sm:mt-1 truncate">
+                    {{ number_format($this->statistics['registered'], 0, ',', '.') }}
+                </div>
+                <span class="text-[10px] sm:text-xs text-ink/50 mt-0.5 block truncate">Memiliki akun</span>
+            </div>
+
+            <div class="bg-surface border-2 border-ink p-2.5 sm:p-3 shadow-brutal min-w-0">
+                <span class="text-[10px] sm:text-xs font-display font-bold uppercase tracking-wider text-brand block truncate">SUDAH VOTING</span>
+                @if ($this->statistics['has_current_election'])
+                    <div class="font-display font-black text-lg sm:text-2xl text-brand mt-0.5 sm:mt-1 truncate">
+                        {{ number_format($this->statistics['voted'], 0, ',', '.') }}
+                    </div>
+                    <span class="text-[10px] sm:text-xs text-ink/50 mt-0.5 block truncate" title="{{ $this->statistics['election_name'] }}">{{ $this->statistics['election_name'] }}</span>
+                @else
+                    <div class="font-display font-bold text-[11px] sm:text-xs text-ink/50 mt-1 sm:mt-2 italic truncate">
+                        Tidak ada PEMIRA
+                    </div>
+                @endif
+            </div>
+
+            <div class="bg-surface border-2 border-ink p-2.5 sm:p-3 shadow-brutal min-w-0">
+                <span class="text-[10px] sm:text-xs font-display font-bold uppercase tracking-wider text-ink/70 block truncate">BELUM VOTING</span>
+                @if ($this->statistics['has_current_election'])
+                    <div class="font-display font-black text-lg sm:text-2xl text-ink/80 mt-0.5 sm:mt-1 truncate">
+                        {{ number_format($this->statistics['unvoted'], 0, ',', '.') }}
+                    </div>
+                    <span class="text-[10px] sm:text-xs text-ink/50 mt-0.5 block truncate" title="{{ $this->statistics['election_name'] }}">{{ $this->statistics['election_name'] }}</span>
+                @else
+                    <div class="font-display font-bold text-[11px] sm:text-xs text-ink/50 mt-1 sm:mt-2 italic truncate">
+                        Tidak ada PEMIRA
+                    </div>
+                @endif
+            </div>
         </div>
     </div>
 
@@ -260,66 +262,66 @@
         </div>
     @else
         <div class="hidden md:block bg-surface border-2 border-ink shadow-brutal overflow-hidden">
-            <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse">
-                    <thead>
-                        <tr class="bg-surface-muted border-b-2 border-ink">
-                            <th class="px-3 py-3 text-xs font-display font-black text-brand uppercase tracking-wider text-center w-12 sm:w-16">NO</th>
-                            <th class="px-4 py-3 text-xs font-display font-black text-brand uppercase tracking-wider">NIM</th>
-                            <th class="px-4 py-3 text-xs font-display font-black text-brand uppercase tracking-wider">NAMA</th>
-                            <th class="px-4 py-3 text-xs font-display font-black text-brand uppercase tracking-wider">JURUSAN</th>
-                            <th class="px-4 py-3 text-xs font-display font-black text-brand uppercase tracking-wider">TGL LAHIR</th>
-                            <th class="px-4 py-3 text-xs font-display font-black text-brand uppercase tracking-wider">STATUS DATA</th>
-                            <th class="px-4 py-3 text-xs font-display font-black text-brand uppercase tracking-wider">REGISTRASI</th>
-                            <th class="px-4 py-3 text-xs font-display font-black text-brand uppercase tracking-wider">VOTING</th>
-                            <th class="px-4 py-3 text-xs font-display font-black text-brand uppercase tracking-wider text-right">AKSI</th>
+            <div class="overflow-auto max-h-[calc(100vh-280px)] min-h-105">
+                <table class="w-full text-left border-separate border-spacing-0">
+                    <thead class="sticky top-0 z-20">
+                        <tr class="bg-surface-muted">
+                            <th class="sticky top-0 z-20 bg-surface-muted border-b-2 border-ink px-3 py-3 text-xs font-display font-black text-brand uppercase tracking-wider text-center w-12 sm:w-16">NO</th>
+                            <th class="sticky top-0 z-20 bg-surface-muted border-b-2 border-ink px-4 py-3 text-xs font-display font-black text-brand uppercase tracking-wider text-center">NIM</th>
+                            <th class="sticky top-0 z-20 bg-surface-muted border-b-2 border-ink px-4 py-3 text-xs font-display font-black text-brand uppercase tracking-wider text-center">NAMA</th>
+                            <th class="sticky top-0 z-20 bg-surface-muted border-b-2 border-ink px-4 py-3 text-xs font-display font-black text-brand uppercase tracking-wider text-center">JURUSAN</th>
+                            <th class="sticky top-0 z-20 bg-surface-muted border-b-2 border-ink px-4 py-3 text-xs font-display font-black text-brand uppercase tracking-wider text-center">TGL LAHIR</th>
+                            <th class="sticky top-0 z-20 bg-surface-muted border-b-2 border-ink px-4 py-3 text-xs font-display font-black text-brand uppercase tracking-wider text-center">STATUS DATA</th>
+                            <th class="sticky top-0 z-20 bg-surface-muted border-b-2 border-ink px-4 py-3 text-xs font-display font-black text-brand uppercase tracking-wider text-center">REGISTRASI</th>
+                            <th class="sticky top-0 z-20 bg-surface-muted border-b-2 border-ink px-4 py-3 text-xs font-display font-black text-brand uppercase tracking-wider text-center">VOTING</th>
+                            <th class="sticky top-0 z-20 bg-surface-muted border-b-2 border-ink px-4 py-3 text-xs font-display font-black text-brand uppercase tracking-wider text-center">AKSI</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y border-ink/20">
+                    <tbody>
                         @foreach ($this->eligibleVoters as $voter)
                             <tr class="hover:bg-surface-muted/50 transition-colors {{ ! $voter->isComplete() ? 'bg-amber-50/40' : '' }}">
-                                <td class="px-3 py-3 text-xs sm:text-sm font-mono font-bold text-ink/70 text-center whitespace-nowrap">
+                                <td class="px-3 py-3 text-xs sm:text-sm font-mono font-bold text-ink/70 text-center whitespace-nowrap border-b border-ink/10">
                                     {{ ($this->eligibleVoters->currentPage() - 1) * $this->eligibleVoters->perPage() + $loop->iteration }}
                                 </td>
-                                <td class="px-4 py-3 text-xs sm:text-sm font-mono font-bold text-brand whitespace-nowrap">
+                                <td class="px-4 py-3 text-xs sm:text-sm font-mono font-bold text-brand whitespace-nowrap border-b border-ink/10">
                                     {{ $voter->nim }}
                                 </td>
-                                <td class="px-4 py-3 text-xs sm:text-sm font-sans font-bold text-ink uppercase">
+                                <td class="px-4 py-3 text-xs sm:text-sm font-sans font-bold text-ink uppercase border-b border-ink/10">
                                     {{ $voter->name ?: '—' }}
                                 </td>
-                                <td class="px-4 py-3 text-xs sm:text-sm font-sans text-ink/80">
+                                <td class="px-4 py-3 text-xs sm:text-sm font-sans text-ink/80 text-center border-b border-ink/10">
                                     {{ $voter->studyProgram?->name ?? '—' }}
                                 </td>
-                                <td class="px-4 py-3 text-xs sm:text-sm font-sans text-ink/70 whitespace-nowrap">
+                                <td class="px-4 py-3 text-xs sm:text-sm font-sans text-ink/70 whitespace-nowrap text-center border-b border-ink/10">
                                     {{ $voter->date_of_birth?->format('d-m-Y') ?? '—' }}
                                 </td>
-                                <td class="px-4 py-3 whitespace-nowrap">
+                                <td class="px-4 py-3 whitespace-nowrap text-center border-b border-ink/10">
                                     @if ($voter->isComplete())
-                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 bg-emerald-100 text-emerald-800 border border-ink text-xs font-display font-bold uppercase">
-                                            <span class="w-1.5 h-1.5 bg-emerald-600 inline-block"></span>
+                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 bg-emerald-200 text-emerald-950 border border-ink text-xs font-display font-bold uppercase">
+                                            <span class="w-1.5 h-1.5 bg-emerald-700 inline-block"></span>
                                             LENGKAP
                                         </span>
                                     @else
-                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 bg-amber-100 text-amber-900 border border-ink text-xs font-display font-bold uppercase">
-                                            <span class="w-1.5 h-1.5 bg-amber-600 inline-block"></span>
+                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 bg-amber-200 text-amber-950 border border-ink text-xs font-display font-bold uppercase">
+                                            <span class="w-1.5 h-1.5 bg-amber-700 inline-block"></span>
                                             TIDAK LENGKAP
                                         </span>
                                     @endif
                                 </td>
-                                <td class="px-4 py-3 whitespace-nowrap">
+                                <td class="px-4 py-3 whitespace-nowrap text-center border-b border-ink/10">
                                     @if ($voter->voter_account_exists)
-                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 bg-emerald-100 text-emerald-800 border border-ink text-xs font-display font-bold uppercase">
-                                            <span class="w-1.5 h-1.5 bg-emerald-600 inline-block"></span>
+                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 bg-emerald-200 text-emerald-950 border border-ink text-xs font-display font-bold uppercase">
+                                            <span class="w-1.5 h-1.5 bg-emerald-700 inline-block"></span>
                                             TERDAFTAR
                                         </span>
                                     @else
-                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 bg-surface-muted text-ink/70 border border-ink text-xs font-display font-bold uppercase">
-                                            <span class="w-1.5 h-1.5 bg-ink/40 inline-block"></span>
+                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 bg-red-100 text-red-900 border border-ink text-xs font-display font-bold uppercase">
+                                            <span class="w-1.5 h-1.5 bg-red-600 inline-block"></span>
                                             BELUM TERDAFTAR
                                         </span>
                                     @endif
                                 </td>
-                                <td class="px-4 py-3 whitespace-nowrap">
+                                <td class="px-4 py-3 whitespace-nowrap text-center border-b border-ink/10">
                                     @if (! $this->statistics['has_current_election'])
                                         <span class="text-ink/40 text-xs font-sans italic">-</span>
                                     @elseif ($voter->has_voted)
@@ -328,13 +330,13 @@
                                             SUDAH VOTING
                                         </span>
                                     @else
-                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 bg-surface-muted text-ink/70 border border-ink text-xs font-display font-bold uppercase">
-                                            <span class="w-1.5 h-1.5 bg-ink/40 inline-block"></span>
+                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 bg-amber-100 text-amber-900 border border-ink text-xs font-display font-bold uppercase">
+                                            <span class="w-1.5 h-1.5 bg-amber-600 inline-block"></span>
                                             BELUM VOTING
                                         </span>
                                     @endif
                                 </td>
-                                <td class="px-4 py-3 text-right whitespace-nowrap">
+                                <td class="px-4 py-3 text-center whitespace-nowrap border-b border-ink/10">
                                     <div class="inline-flex items-center gap-1.5">
                                         <x-action-button variant="detail" label="Lihat detail" wire:click="openDetailModal({{ $voter->id }})" />
                                         <x-action-button variant="edit" label="Edit data pemilih" wire:click="openEditModal({{ $voter->id }})" />
@@ -360,21 +362,21 @@
                         </div>
                         <div class="flex flex-wrap items-center gap-1.5">
                             @if ($voter->isComplete())
-                                <span class="px-1.5 py-0.5 bg-emerald-100 text-emerald-800 border border-ink text-[10px] font-display font-bold uppercase">
+                                <span class="px-1.5 py-0.5 bg-emerald-200 text-emerald-950 border border-ink text-[10px] font-display font-bold uppercase">
                                     LENGKAP
                                 </span>
                             @else
-                                <span class="px-1.5 py-0.5 bg-amber-100 text-amber-900 border border-ink text-[10px] font-display font-bold uppercase">
+                                <span class="px-1.5 py-0.5 bg-amber-200 text-amber-950 border border-ink text-[10px] font-display font-bold uppercase">
                                     TIDAK LENGKAP
                                 </span>
                             @endif
 
                             @if ($voter->voter_account_exists)
-                                <span class="px-1.5 py-0.5 bg-emerald-100 text-emerald-800 border border-ink text-[10px] font-display font-bold uppercase">
+                                <span class="px-1.5 py-0.5 bg-emerald-200 text-emerald-950 border border-ink text-[10px] font-display font-bold uppercase">
                                     TERDAFTAR
                                 </span>
                             @else
-                                <span class="px-1.5 py-0.5 bg-surface-muted text-ink/70 border border-ink text-[10px] font-display font-bold uppercase">
+                                <span class="px-1.5 py-0.5 bg-red-100 text-red-900 border border-ink text-[10px] font-display font-bold uppercase">
                                     BELUM TERDAFTAR
                                 </span>
                             @endif
@@ -810,11 +812,13 @@
                             <span class="text-xs font-display font-bold uppercase tracking-wider text-ink/60 block">STATUS REGISTRASI</span>
                             <div>
                                 @if ($selectedEligibleVoter->voter_account_exists)
-                                    <span class="inline-flex items-center gap-1.5 px-2 py-0.5 bg-emerald-100 text-emerald-800 border border-ink text-xs font-display font-bold uppercase">
+                                    <span class="inline-flex items-center gap-1.5 px-2 py-0.5 bg-emerald-200 text-emerald-950 border border-ink text-xs font-display font-bold uppercase">
+                                        <span class="w-1.5 h-1.5 bg-emerald-700 inline-block"></span>
                                         TERDAFTAR
                                     </span>
                                 @else
-                                    <span class="inline-flex items-center gap-1.5 px-2 py-0.5 bg-amber-100 text-amber-900 border border-ink text-xs font-display font-bold uppercase">
+                                    <span class="inline-flex items-center gap-1.5 px-2 py-0.5 bg-red-100 text-red-900 border border-ink text-xs font-display font-bold uppercase">
+                                        <span class="w-1.5 h-1.5 bg-red-600 inline-block"></span>
                                         BELUM TERDAFTAR
                                     </span>
                                 @endif

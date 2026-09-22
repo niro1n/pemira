@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Admin;
 
+use App\Models\User;
 use App\Services\Dashboard\DashboardDataProviderInterface;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
@@ -53,7 +54,9 @@ class Dashboard extends Component
     #[Computed]
     public function systemInfo(): ?array
     {
-        return app(DashboardDataProviderInterface::class)->getSystemInfo(Auth::user());
+        $user = Auth::user();
+
+        return app(DashboardDataProviderInterface::class)->getSystemInfo($user instanceof User ? $user : null);
     }
 
     public function render(): View
