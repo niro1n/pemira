@@ -792,4 +792,50 @@ class EligibleVoterManagementTest extends TestCase
         $componentFiltered->assertSee('#1');
         $componentFiltered->assertSee('2215350005');
     }
+
+    public function test_filter_modal_opens_closes_and_calculates_counter_correctly(): void
+    {
+        $component = Livewire::actingAs($this->admin)
+            ->test(EligibleVoterIndex::class)
+            ->assertSet('showFilterModal', false)
+            ->assertSee('FILTER')
+            ->call('openFilterModal')
+            ->assertSet('showFilterModal', true)
+            ->assertSee('FILTER PEMILIH')
+            ->set('completenessFilter', 'complete')
+            ->set('registrationFilter', 'registered')
+            ->assertSee('FILTER · 2')
+            ->call('closeFilterModal')
+            ->assertSet('showFilterModal', false);
+
+        $this->assertSame(2, $component->get('activeFilterCount'));
+    }
+
+    public function test_clear_filter_resets_individual_filters(): void
+    {
+        $component = Livewire::actingAs($this->admin)
+            ->test(EligibleVoterIndex::class)
+            ->set('studyProgramFilter', $this->tiProdi->id)
+            ->set('completenessFilter', 'incomplete')
+            ->set('registrationFilter', 'unregistered')
+            ->set('votingFilter', 'not_voted');
+
+        $this->assertSame(4, $component->get('activeFilterCount'));
+
+        $component->call('clearFilter', 'study_program');
+        $this->assertNull($component->get('studyProgramFilter'));
+        $this->assertSame(3, $component->get('activeFilterCount'));
+
+        $component->call('clearFilter', 'completeness');
+        $this->assertSame('all', $component->get('completenessFilter'));
+        $this->assertSame(2, $component->get('activeFilterCount'));
+
+        $component->call('clearFilter', 'registration');
+        $this->assertSame('all', $component->get('registrationFilter'));
+        $this->assertSame(1, $component->get('activeFilterCount'));
+
+        $component->call('clearFilter', 'voting');
+        $this->assertSame('all', $component->get('votingFilter'));
+        $this->assertSame(0, $component->get('activeFilterCount'));
+    }
 }
