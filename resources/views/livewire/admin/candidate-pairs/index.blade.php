@@ -231,22 +231,10 @@
                             </div>
                         </div>
 
-                        <div class="p-3.5 sm:p-4 pt-0 border-t border-ink/15 mt-3 grid grid-cols-3 gap-2">
-                            <button wire:click="openDetailModal({{ $pair->id }})"
-                                    type="button"
-                                    class="w-full py-2 bg-surface-muted hover:bg-accent border border-ink font-display font-bold text-xs uppercase text-center transition-colors min-h-9">
-                                LIHAT
-                            </button>
-                            <button wire:click="openEditModal({{ $pair->id }})"
-                                    type="button"
-                                    class="w-full py-2 bg-brand text-surface hover:bg-brand-dark border border-ink font-display font-bold text-xs uppercase text-center transition-colors min-h-9">
-                                EDIT
-                            </button>
-                            <button wire:click="openDeleteModal({{ $pair->id }})"
-                                    type="button"
-                                    class="w-full py-2 bg-surface-muted hover:bg-red-600 hover:text-white border border-ink font-display font-bold text-xs uppercase text-center transition-colors min-h-9">
-                                HAPUS
-                            </button>
+                        <div class="p-3.5 sm:p-4 pt-0 border-t border-ink/15 mt-3 flex items-center justify-end gap-2">
+                            <x-action-button variant="detail" label="Lihat detail" wire:click="openDetailModal({{ $pair->id }})" />
+                            <x-action-button variant="edit" label="Edit paslon" wire:click="openEditModal({{ $pair->id }})" />
+                            <x-action-button variant="delete" label="Hapus paslon" wire:click="openDeleteModal({{ $pair->id }})" />
                         </div>
                     </div>
                 @endforeach
