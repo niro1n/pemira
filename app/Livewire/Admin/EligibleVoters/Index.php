@@ -61,6 +61,8 @@ class Index extends Component
 
     public bool $showImportModal = false;
 
+    public bool $showFilterModal = false;
+
     public ?int $selectedEligibleVoterId = null;
 
     public ?EligibleVoter $selectedEligibleVoter = null;
@@ -149,6 +151,65 @@ class Index extends Component
         $this->votingFilter = 'all';
         $this->completenessFilter = 'all';
         $this->resetPage();
+    }
+
+    public function openFilterModal(): void
+    {
+        $this->showFilterModal = true;
+    }
+
+    public function closeFilterModal(): void
+    {
+        $this->showFilterModal = false;
+    }
+
+    public function openFilterDrawer(): void
+    {
+        $this->openFilterModal();
+    }
+
+    public function closeFilterDrawer(): void
+    {
+        $this->closeFilterModal();
+    }
+
+    public function clearFilter(string $filter): void
+    {
+        if ($filter === 'study_program') {
+            $this->studyProgramFilter = null;
+        } elseif ($filter === 'completeness') {
+            $this->completenessFilter = 'all';
+        } elseif ($filter === 'registration') {
+            $this->registrationFilter = 'all';
+        } elseif ($filter === 'voting') {
+            $this->votingFilter = 'all';
+        }
+
+        $this->resetPage();
+    }
+
+    #[Computed]
+    public function activeFilterCount(): int
+    {
+        $count = 0;
+
+        if (! empty($this->studyProgramFilter)) {
+            $count++;
+        }
+
+        if ($this->completenessFilter !== 'all') {
+            $count++;
+        }
+
+        if ($this->registrationFilter !== 'all') {
+            $count++;
+        }
+
+        if ($this->votingFilter !== 'all') {
+            $count++;
+        }
+
+        return $count;
     }
 
     #[Computed]

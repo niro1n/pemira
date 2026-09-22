@@ -125,54 +125,34 @@
     </div>
 
     <div class="bg-surface border-2 border-ink p-3.5 sm:p-4 shadow-brutal space-y-3">
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-3 items-center">
-            <div class="lg:col-span-3 relative">
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+            <div class="relative flex-1 min-w-0">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-ink/40">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                </div>
                 <input type="text"
                        wire:model.live.debounce.300ms="search"
-                       placeholder="Cari NIM atau Nama..."
-                       class="w-full bg-surface-muted border-2 border-ink px-3 py-2 text-xs sm:text-sm font-sans font-medium text-ink placeholder:text-ink/40 shadow-brutal-sm focus:outline-none focus:bg-surface min-h-10" />
+                       placeholder="Cari NIM atau Nama pemilih..."
+                       aria-label="Cari pemilih"
+                       class="w-full bg-surface-muted border-2 border-ink pl-9 pr-3 py-2 text-xs sm:text-sm font-sans font-medium text-ink placeholder:text-ink/40 shadow-brutal-sm focus:outline-none focus:bg-surface min-h-10" />
             </div>
 
-            <div class="lg:col-span-2">
-                <select wire:model.live="studyProgramFilter"
-                        class="w-full bg-surface-muted border-2 border-ink px-3 py-2 text-xs sm:text-sm font-sans font-bold text-ink shadow-brutal-sm focus:outline-none focus:bg-surface cursor-pointer min-h-10">
-                    <option value="">Semua Jurusan</option>
-                    @foreach ($this->studyPrograms as $sp)
-                        <option value="{{ $sp->id }}">{{ $sp->name }} ({{ $sp->code }})</option>
-                    @endforeach
-                </select>
-            </div>
+            <div class="flex items-center gap-2.5 shrink-0">
+                <button wire:click="openFilterModal"
+                        type="button"
+                        aria-label="Buka filter pemilih"
+                        class="inline-flex items-center justify-center gap-2 px-3.5 py-2 border-2 border-ink shadow-brutal-sm font-display font-bold text-xs uppercase tracking-wider transition-all cursor-pointer min-h-10 {{ $this->activeFilterCount > 0 ? 'bg-accent text-ink' : 'bg-surface-muted hover:bg-accent text-ink' }}">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
+                    </svg>
+                    <span>{{ $this->activeFilterCount > 0 ? 'FILTER · ' . $this->activeFilterCount : 'FILTER' }}</span>
+                </button>
 
-            <div class="lg:col-span-2">
-                <select wire:model.live="completenessFilter"
-                        class="w-full bg-surface-muted border-2 border-ink px-3 py-2 text-xs sm:text-sm font-sans font-bold text-ink shadow-brutal-sm focus:outline-none focus:bg-surface cursor-pointer min-h-10">
-                    <option value="all">Semua Kelengkapan</option>
-                    <option value="complete">Data Lengkap</option>
-                    <option value="incomplete">Data Tidak Lengkap</option>
-                </select>
-            </div>
-
-            <div class="lg:col-span-2">
-                <select wire:model.live="registrationFilter"
-                        class="w-full bg-surface-muted border-2 border-ink px-3 py-2 text-xs sm:text-sm font-sans font-bold text-ink shadow-brutal-sm focus:outline-none focus:bg-surface cursor-pointer min-h-10">
-                    <option value="all">Semua Registrasi</option>
-                    <option value="registered">Terdaftar</option>
-                    <option value="unregistered">Belum Terdaftar</option>
-                </select>
-            </div>
-
-            <div class="lg:col-span-2">
-                <select wire:model.live="votingFilter"
-                        class="w-full bg-surface-muted border-2 border-ink px-3 py-2 text-xs sm:text-sm font-sans font-bold text-ink shadow-brutal-sm focus:outline-none focus:bg-surface cursor-pointer min-h-10">
-                    <option value="all">Semua Voting</option>
-                    <option value="voted">Sudah Voting</option>
-                    <option value="not_voted">Belum Voting</option>
-                </select>
-            </div>
-
-            <div class="lg:col-span-1">
                 <select wire:model.live="perPage"
-                        class="w-full bg-surface-muted border-2 border-ink px-2 py-2 text-xs sm:text-sm font-sans font-bold text-ink shadow-brutal-sm focus:outline-none focus:bg-surface cursor-pointer min-h-10">
+                        aria-label="Jumlah per halaman"
+                        class="bg-surface-muted border-2 border-ink px-2.5 py-2 text-xs sm:text-sm font-sans font-bold text-ink shadow-brutal-sm focus:outline-none focus:bg-surface cursor-pointer min-h-10">
                     <option value="25">25 / hal</option>
                     <option value="50">50 / hal</option>
                     <option value="100">100 / hal</option>
@@ -180,13 +160,53 @@
             </div>
         </div>
 
-        @if ($search !== '' || $studyProgramFilter || $completenessFilter !== 'all' || $registrationFilter !== 'all' || $votingFilter !== 'all')
-            <div class="flex items-center justify-between pt-2 border-t border-ink/10 text-xs font-sans">
-                <span class="text-ink/60">Filter aktif diterapkan</span>
+        @if ($this->activeFilterCount > 0)
+            <div class="flex flex-wrap items-center gap-2 pt-2 border-t border-ink/10">
+                <span class="text-xs font-display font-bold uppercase text-ink/60 tracking-wider">Filter Aktif:</span>
+
+                @if (! empty($this->studyProgramFilter))
+                    @php
+                        $selectedSp = $this->studyPrograms->firstWhere('id', $this->studyProgramFilter);
+                    @endphp
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-surface-muted border border-ink text-xs font-sans font-bold text-ink shadow-2xs">
+                        <span>Jurusan: {{ $selectedSp?->name ?? 'Pilihan' }}</span>
+                        <button wire:click="clearFilter('study_program')" type="button" aria-label="Hapus filter jurusan" class="hover:text-red-600 cursor-pointer p-0.5">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg>
+                        </button>
+                    </span>
+                @endif
+
+                @if ($this->completenessFilter !== 'all')
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-surface-muted border border-ink text-xs font-sans font-bold text-ink shadow-2xs">
+                        <span>Status: {{ $this->completenessFilter === 'complete' ? 'Data Lengkap' : 'Data Tidak Lengkap' }}</span>
+                        <button wire:click="clearFilter('completeness')" type="button" aria-label="Hapus filter kelengkapan" class="hover:text-red-600 cursor-pointer p-0.5">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg>
+                        </button>
+                    </span>
+                @endif
+
+                @if ($this->registrationFilter !== 'all')
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-surface-muted border border-ink text-xs font-sans font-bold text-ink shadow-2xs">
+                        <span>Registrasi: {{ $this->registrationFilter === 'registered' ? 'Terdaftar' : 'Belum Terdaftar' }}</span>
+                        <button wire:click="clearFilter('registration')" type="button" aria-label="Hapus filter registrasi" class="hover:text-red-600 cursor-pointer p-0.5">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg>
+                        </button>
+                    </span>
+                @endif
+
+                @if ($this->votingFilter !== 'all')
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-surface-muted border border-ink text-xs font-sans font-bold text-ink shadow-2xs">
+                        <span>Voting: {{ $this->votingFilter === 'voted' ? 'Sudah Voting' : 'Belum Voting' }}</span>
+                        <button wire:click="clearFilter('voting')" type="button" aria-label="Hapus filter voting" class="hover:text-red-600 cursor-pointer p-0.5">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg>
+                        </button>
+                    </span>
+                @endif
+
                 <button wire:click="resetFilters"
                         type="button"
-                        class="font-display font-bold text-brand hover:underline cursor-pointer uppercase">
-                    Reset Semua Filter
+                        class="text-xs font-display font-bold text-red-700 hover:text-red-900 hover:underline uppercase cursor-pointer ml-1">
+                    Reset Semua
                 </button>
             </div>
         @endif
@@ -316,21 +336,9 @@
                                 </td>
                                 <td class="px-4 py-3 text-right whitespace-nowrap">
                                     <div class="inline-flex items-center gap-1.5">
-                                        <button wire:click="openDetailModal({{ $voter->id }})"
-                                                type="button"
-                                                class="px-2.5 py-1 bg-surface-muted hover:bg-accent border border-ink font-display font-bold text-xs uppercase transition-colors cursor-pointer min-h-7.5">
-                                            DETAIL
-                                        </button>
-                                        <button wire:click="openEditModal({{ $voter->id }})"
-                                                type="button"
-                                                class="px-2.5 py-1 bg-brand text-surface hover:bg-brand-dark border border-ink font-display font-bold text-xs uppercase transition-colors cursor-pointer min-h-7.5">
-                                            EDIT
-                                        </button>
-                                        <button wire:click="openDeleteModal({{ $voter->id }})"
-                                                type="button"
-                                                class="px-2.5 py-1 bg-surface-muted hover:bg-red-600 hover:text-white border border-ink font-display font-bold text-xs uppercase transition-colors cursor-pointer min-h-7.5">
-                                            HAPUS
-                                        </button>
+                                        <x-action-button variant="detail" label="Lihat detail" wire:click="openDetailModal({{ $voter->id }})" />
+                                        <x-action-button variant="edit" label="Edit data pemilih" wire:click="openEditModal({{ $voter->id }})" />
+                                        <x-action-button variant="delete" label="Hapus data pemilih" wire:click="openDeleteModal({{ $voter->id }})" />
                                     </div>
                                 </td>
                             </tr>
@@ -383,21 +391,9 @@
                     </div>
 
                     <div class="pt-2 border-t border-ink/10 flex items-center justify-end gap-2">
-                        <button wire:click="openDetailModal({{ $voter->id }})"
-                                type="button"
-                                class="px-3 py-1.5 bg-surface-muted hover:bg-accent border border-ink text-xs font-display font-bold uppercase cursor-pointer min-h-8">
-                            DETAIL
-                        </button>
-                        <button wire:click="openEditModal({{ $voter->id }})"
-                                type="button"
-                                class="px-3 py-1.5 bg-brand text-surface hover:bg-brand-dark border border-ink text-xs font-display font-bold uppercase cursor-pointer min-h-8">
-                            EDIT
-                        </button>
-                        <button wire:click="openDeleteModal({{ $voter->id }})"
-                                type="button"
-                                class="px-3 py-1.5 bg-surface-muted hover:bg-red-600 hover:text-white border border-ink text-xs font-display font-bold uppercase cursor-pointer min-h-8">
-                            HAPUS
-                        </button>
+                        <x-action-button variant="detail" label="Lihat detail" wire:click="openDetailModal({{ $voter->id }})" />
+                        <x-action-button variant="edit" label="Edit data pemilih" wire:click="openEditModal({{ $voter->id }})" />
+                        <x-action-button variant="delete" label="Hapus data pemilih" wire:click="openDeleteModal({{ $voter->id }})" />
                     </div>
                 </div>
             @endforeach
@@ -405,6 +401,131 @@
 
         <div class="mt-4">
             {{ $this->eligibleVoters->links() }}
+        </div>
+    @endif
+
+    @if ($showFilterModal)
+        <div class="fixed inset-0 z-50 overflow-y-auto flex items-end sm:items-center justify-center p-2.5 sm:p-4 bg-ink/70 backdrop-blur-xs"
+             role="dialog"
+             aria-modal="true"
+             aria-labelledby="filter-modal-title">
+            <div class="w-full sm:max-w-lg bg-surface border-2 border-ink shadow-brutal max-h-[92dvh] sm:max-h-[90vh] flex flex-col min-w-0">
+                <div class="px-4 py-3 sm:px-5 sm:py-4 border-b-2 border-ink flex items-center justify-between bg-surface-muted shrink-0">
+                    <div>
+                        <span class="text-xs font-display font-bold uppercase tracking-wider text-ink/60 block">PILIHAN FILTER</span>
+                        <h3 id="filter-modal-title" class="font-display font-black text-sm sm:text-lg text-brand uppercase truncate min-w-0">
+                            FILTER PEMILIH
+                        </h3>
+                    </div>
+                    <button wire:click="closeFilterModal"
+                            type="button"
+                            class="w-10 h-10 border-2 border-ink bg-surface hover:bg-accent flex items-center justify-center shrink-0 transition-colors shadow-brutal-sm cursor-pointer"
+                            aria-label="Tutup modal">
+                        <svg class="w-4 h-4 text-ink" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="p-4 sm:p-5 space-y-4 sm:space-y-5 overflow-y-auto flex-1 min-w-0">
+                    <div class="space-y-1.5">
+                        <label class="font-display font-bold text-xs uppercase tracking-wider text-ink block">
+                            Status Kelengkapan Data
+                        </label>
+                        <div class="grid grid-cols-3 gap-1.5 p-1 bg-surface-muted border-2 border-ink">
+                            <button type="button"
+                                    wire:click="$set('completenessFilter', 'all')"
+                                    class="py-2 text-xs font-display font-bold uppercase transition-colors cursor-pointer {{ $completenessFilter === 'all' ? 'bg-brand text-surface shadow-xs' : 'text-ink hover:bg-ink/10' }}">
+                                Semua
+                            </button>
+                            <button type="button"
+                                    wire:click="$set('completenessFilter', 'complete')"
+                                    class="py-2 text-xs font-display font-bold uppercase transition-colors cursor-pointer {{ $completenessFilter === 'complete' ? 'bg-brand text-surface shadow-xs' : 'text-ink hover:bg-ink/10' }}">
+                                Lengkap
+                            </button>
+                            <button type="button"
+                                    wire:click="$set('completenessFilter', 'incomplete')"
+                                    class="py-2 text-xs font-display font-bold uppercase transition-colors cursor-pointer {{ $completenessFilter === 'incomplete' ? 'bg-brand text-surface shadow-xs' : 'text-ink hover:bg-ink/10' }}">
+                                Tidak Lengkap
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label class="font-display font-bold text-xs uppercase tracking-wider text-ink block">
+                            Program Studi / Jurusan
+                        </label>
+                        <select wire:model.live="studyProgramFilter"
+                                aria-label="Pilih program studi"
+                                class="w-full bg-surface-muted border-2 border-ink px-3 py-2.5 text-xs sm:text-sm font-sans font-bold text-ink shadow-brutal-sm focus:outline-none focus:bg-surface cursor-pointer">
+                            <option value="">Semua Program Studi</option>
+                            @foreach ($this->studyPrograms as $sp)
+                                <option value="{{ $sp->id }}">{{ $sp->name }} ({{ $sp->code }})</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label class="font-display font-bold text-xs uppercase tracking-wider text-ink block">
+                            Status Registrasi Akun
+                        </label>
+                        <div class="grid grid-cols-3 gap-1.5 p-1 bg-surface-muted border-2 border-ink">
+                            <button type="button"
+                                    wire:click="$set('registrationFilter', 'all')"
+                                    class="py-2 text-xs font-display font-bold uppercase transition-colors cursor-pointer {{ $registrationFilter === 'all' ? 'bg-brand text-surface shadow-xs' : 'text-ink hover:bg-ink/10' }}">
+                                Semua
+                            </button>
+                            <button type="button"
+                                    wire:click="$set('registrationFilter', 'registered')"
+                                    class="py-2 text-xs font-display font-bold uppercase transition-colors cursor-pointer {{ $registrationFilter === 'registered' ? 'bg-brand text-surface shadow-xs' : 'text-ink hover:bg-ink/10' }}">
+                                Terdaftar
+                            </button>
+                            <button type="button"
+                                    wire:click="$set('registrationFilter', 'unregistered')"
+                                    class="py-2 text-xs font-display font-bold uppercase transition-colors cursor-pointer {{ $registrationFilter === 'unregistered' ? 'bg-brand text-surface shadow-xs' : 'text-ink hover:bg-ink/10' }}">
+                                Belum
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label class="font-display font-bold text-xs uppercase tracking-wider text-ink block">
+                            Status Partisipasi Voting
+                        </label>
+                        <div class="grid grid-cols-3 gap-1.5 p-1 bg-surface-muted border-2 border-ink">
+                            <button type="button"
+                                    wire:click="$set('votingFilter', 'all')"
+                                    class="py-2 text-xs font-display font-bold uppercase transition-colors cursor-pointer {{ $votingFilter === 'all' ? 'bg-brand text-surface shadow-xs' : 'text-ink hover:bg-ink/10' }}">
+                                Semua
+                            </button>
+                            <button type="button"
+                                    wire:click="$set('votingFilter', 'voted')"
+                                    class="py-2 text-xs font-display font-bold uppercase transition-colors cursor-pointer {{ $votingFilter === 'voted' ? 'bg-brand text-surface shadow-xs' : 'text-ink hover:bg-ink/10' }}">
+                                Sudah
+                            </button>
+                            <button type="button"
+                                    wire:click="$set('votingFilter', 'not_voted')"
+                                    class="py-2 text-xs font-display font-bold uppercase transition-colors cursor-pointer {{ $votingFilter === 'not_voted' ? 'bg-brand text-surface shadow-xs' : 'text-ink hover:bg-ink/10' }}">
+                                Belum
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="px-4 py-3 sm:px-5 sm:py-3.5 border-t-2 border-ink flex items-center justify-between bg-surface-muted shrink-0">
+                    <button wire:click="resetFilters"
+                            type="button"
+                            class="px-4 py-2 bg-surface hover:bg-red-50 text-red-700 border-2 border-ink font-display font-black text-xs uppercase tracking-wider transition-colors cursor-pointer">
+                        RESET
+                    </button>
+
+                    <button wire:click="closeFilterModal"
+                            type="button"
+                            class="px-5 py-2.5 bg-brand text-surface hover:bg-brand-dark border-2 border-ink shadow-brutal-sm font-display font-black text-xs uppercase tracking-wider transition-all cursor-pointer">
+                        TERAPKAN FILTER
+                    </button>
+                </div>
+            </div>
         </div>
     @endif
 
