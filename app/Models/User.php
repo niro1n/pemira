@@ -34,6 +34,16 @@ class User extends Authenticatable
         return $this->hasMany(ElectionEmailNotification::class);
     }
 
+    public function scheduleChangeRequests(): HasMany
+    {
+        return $this->hasMany(ScheduleChangeRequest::class, 'requested_by');
+    }
+
+    public function reviewedScheduleChangeRequests(): HasMany
+    {
+        return $this->hasMany(ScheduleChangeRequest::class, 'approved_by');
+    }
+
     public function isVoter(): bool
     {
         return $this->role === 'voter';

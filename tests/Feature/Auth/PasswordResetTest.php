@@ -203,7 +203,7 @@ class PasswordResetTest extends TestCase
             ->set('password', 'NewPassword123!')
             ->call('login')
             ->assertHasNoErrors()
-            ->assertRedirect(route('home'));
+            ->assertRedirect(route('voter.dashboard'));
 
         $this->assertAuthenticatedAs($user);
     }

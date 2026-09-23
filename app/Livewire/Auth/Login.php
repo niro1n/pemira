@@ -84,6 +84,10 @@ class Login extends Component
             return redirect()->intended('/admin');
         }
 
+        if ($user instanceof User && $user->isVoter()) {
+            return redirect()->intended(route('voter.dashboard'));
+        }
+
         return redirect()->intended(route('home'));
     }
 

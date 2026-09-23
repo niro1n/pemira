@@ -6,6 +6,7 @@ use App\Enums\ElectionPhase;
 use App\Livewire\Admin\Elections\Index as ElectionIndex;
 use App\Models\Election;
 use App\Models\EligibleVoter;
+use App\Models\ScheduleChangeRequest;
 use App\Models\StudyProgram;
 use App\Models\User;
 use App\Models\VoterAccount;
@@ -182,7 +183,10 @@ class ElectionManagementTest extends TestCase
             ->assertSet('isVotingActive', true)
             ->set('voting_end_at', $now->copy()->addHours(8)->format('Y-m-d\TH:i'))
             ->call('updateElection')
-            ->assertHasErrors(['voting_start_at']);
+            ->assertHasErrors(['scheduleChangeReason']);
+
+        $election->refresh();
+        $this->assertEquals($now->copy()->addHours(4)->toDateTimeString(), $election->voting_end_at->toDateTimeString());
 
         Carbon::setTestNow();
     }
@@ -465,5 +469,34 @@ class ElectionManagementTest extends TestCase
             ->assertSet('registration_end_at', '2026-09-24T16:00')
             ->assertSet('voting_start_at', '2026-09-26T08:00')
             ->assertSet('voting_end_at', '2026-09-26T16:00');
+    }
+
+    public function test_election_with_pending_schedule_request_displays_indicator(): void
+    {
+        $election = Election::create([
+            'name' => 'PEMIRA Pending Badge Test',
+            'slug' => 'pemira-pending-badge-test-2026',
+            'year' => 2026,
+            'registration_start_at' => Carbon::parse('2026-09-20 08:00:00'),
+            'registration_end_at' => Carbon::parse('2026-09-24 16:00:00'),
+            'voting_start_at' => Carbon::parse('2026-09-26 08:00:00'),
+            'voting_end_at' => Carbon::parse('2026-09-26 16:00:00'),
+        ]);
+
+        ScheduleChangeRequest::create([
+            'election_id' => $election->id,
+            'requested_by' => $this->admin->id,
+            'old_voting_start_at' => $election->voting_start_at,
+            'old_voting_end_at' => $election->voting_end_at,
+            'new_voting_start_at' => Carbon::parse('2026-09-28 08:00:00'),
+            'new_voting_end_at' => Carbon::parse('2026-09-28 16:00:00'),
+            'reason' => 'Perpanjangan jadwal karena kendala teknis kampus.',
+            'status' => 'pending',
+        ]);
+
+        Livewire::actingAs($this->admin)
+            ->test(ElectionIndex::class)
+            ->assertSee('Menunggu Review Super Admin')
+            ->assertSee('28/09/2026');
     }
 }

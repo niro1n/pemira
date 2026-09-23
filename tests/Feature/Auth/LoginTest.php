@@ -34,7 +34,7 @@ class LoginTest extends TestCase
             ->set('password', 'password123')
             ->call('login')
             ->assertHasNoErrors()
-            ->assertRedirect(route('home'));
+            ->assertRedirect(route('voter.dashboard'));
 
         $this->assertAuthenticatedAs($user);
     }
@@ -54,7 +54,7 @@ class LoginTest extends TestCase
             ->set('remember', true)
             ->call('login')
             ->assertHasNoErrors()
-            ->assertRedirect(route('home'));
+            ->assertRedirect(route('voter.dashboard'));
 
         $this->assertAuthenticatedAs($user);
     }

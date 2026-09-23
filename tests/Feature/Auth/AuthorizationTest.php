@@ -45,7 +45,7 @@ class AuthorizationTest extends TestCase
             ->set('password', 'password123')
             ->call('login')
             ->assertHasNoErrors()
-            ->assertRedirect(route('home'));
+            ->assertRedirect(route('voter.dashboard'));
 
         $this->assertAuthenticatedAs($voter);
         $this->assertTrue($voter->isVoter());
@@ -317,7 +317,7 @@ class AuthorizationTest extends TestCase
         $admin = User::factory()->admin()->create();
         $superAdmin = User::factory()->superAdmin()->create();
 
-        $this->actingAs($voter)->get('/profile')->assertRedirect(route('home'));
+        $this->actingAs($voter)->get('/profile')->assertRedirect(route('voter.profile'));
         $this->actingAs($admin)->get('/profile')->assertRedirect('/admin');
         $this->actingAs($superAdmin)->get('/profile')->assertRedirect('/admin');
     }
