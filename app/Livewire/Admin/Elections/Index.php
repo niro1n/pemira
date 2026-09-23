@@ -2,9 +2,13 @@
 
 namespace App\Livewire\Admin\Elections;
 
+use App\Models\AuditLog;
 use App\Models\Election;
+use App\Models\ScheduleChangeRequest;
 use Carbon\Carbon;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
@@ -55,11 +59,19 @@ class Index extends Component
 
     public string $voting_end_at = '';
 
-    public bool $isVotingActive = false;
+    public ?string $originalRegistrationStart = null;
+
+    public ?string $originalRegistrationEnd = null;
 
     public ?string $originalVotingStart = null;
 
     public ?string $originalVotingEnd = null;
+
+    public bool $isVotingActive = false;
+
+    public string $scheduleChangeReason = '';
+
+    public ?ScheduleChangeRequest $activeScheduleRequest = null;
 
     protected function rules(): array
     {
@@ -177,9 +189,13 @@ class Index extends Component
         $this->voting_start_at = $election->voting_start_at->format('Y-m-d\TH:i');
         $this->voting_end_at = $election->voting_end_at->format('Y-m-d\TH:i');
 
+        $this->originalRegistrationStart = $this->registration_start_at;
+        $this->originalRegistrationEnd = $this->registration_end_at;
         $this->originalVotingStart = $this->voting_start_at;
         $this->originalVotingEnd = $this->voting_end_at;
         $this->isVotingActive = $election->isVotingActive();
+        $this->activeScheduleRequest = ScheduleChangeRequest::where('election_id', $election->id)->pending()->first();
+        $this->scheduleChangeReason = '';
 
         $this->showEditModal = true;
     }
@@ -198,16 +214,23 @@ class Index extends Component
         if (! $this->selectedElectionId) {
             return;
         }
-
         $election = Election::findOrFail($this->selectedElectionId);
+        $isSuperAdmin = Auth::user()?->isSuperAdmin() ?? false;
 
-        if ($this->isVotingActive) {
-            $hasAttemptedVotingChange = ($this->voting_start_at !== $this->originalVotingStart)
-                || ($this->voting_end_at !== $this->originalVotingEnd);
+        $hasAttemptedVotingChange = ($this->voting_start_at !== $this->originalVotingStart)
+            || ($this->voting_end_at !== $this->originalVotingEnd);
+        $hasAttemptedRegistrationChange = ($this->registration_start_at !== $this->originalRegistrationStart)
+            || ($this->registration_end_at !== $this->originalRegistrationEnd);
+        $hasAttemptedScheduleChange = $hasAttemptedVotingChange || $hasAttemptedRegistrationChange;
 
-            if ($hasAttemptedVotingChange) {
+        if (! $isSuperAdmin && $hasAttemptedScheduleChange) {
+            $hasPendingRequest = ScheduleChangeRequest::where('election_id', $election->id)
+                ->pending()
+                ->exists();
+
+            if ($hasPendingRequest) {
                 throw ValidationException::withMessages([
-                    'voting_start_at' => 'Jadwal pemungutan suara yang sedang aktif tidak dapat diubah secara langsung. Perubahan memerlukan persetujuan Super Admin.',
+                    'voting_start_at' => 'Pemilihan ini sudah memiliki pengajuan perubahan jadwal yang sedang menunggu persetujuan Super Admin.',
                 ]);
             }
 
@@ -216,6 +239,77 @@ class Index extends Component
                 'year' => ['required', 'integer', 'min:2020', 'max:2099'],
                 'registration_start_at' => ['required', 'date'],
                 'registration_end_at' => ['required', 'date', 'after:registration_start_at'],
+                'voting_start_at' => ['required', 'date', 'after_or_equal:registration_end_at'],
+                'voting_end_at' => ['required', 'date', 'after:voting_start_at'],
+                'scheduleChangeReason' => ['required', 'string', 'min:10', 'max:1000'],
+            ], [
+                'scheduleChangeReason.required' => 'Alasan perubahan jadwal wajib diisi.',
+                'scheduleChangeReason.min' => 'Alasan perubahan jadwal minimal 10 karakter.',
+                'scheduleChangeReason.max' => 'Alasan perubahan jadwal maksimal 1000 karakter.',
+            ]);
+
+            $newRegStart = Carbon::parse($validated['registration_start_at']);
+            $newRegEnd = Carbon::parse($validated['registration_end_at']);
+            $newVotingStart = Carbon::parse($validated['voting_start_at']);
+            $newVotingEnd = Carbon::parse($validated['voting_end_at']);
+            $slug = $this->generateUniqueSlug($validated['name'], (int) $validated['year'], $election->id);
+
+            DB::transaction(function () use ($election, $validated, $newRegStart, $newRegEnd, $newVotingStart, $newVotingEnd, $slug) {
+                $req = ScheduleChangeRequest::create([
+                    'election_id' => $election->id,
+                    'requested_by' => Auth::id(),
+                    'old_registration_start_at' => $election->registration_start_at,
+                    'old_registration_end_at' => $election->registration_end_at,
+                    'new_registration_start_at' => $newRegStart,
+                    'new_registration_end_at' => $newRegEnd,
+                    'old_voting_start_at' => $election->voting_start_at,
+                    'old_voting_end_at' => $election->voting_end_at,
+                    'new_voting_start_at' => $newVotingStart,
+                    'new_voting_end_at' => $newVotingEnd,
+                    'reason' => trim($validated['scheduleChangeReason']),
+                    'status' => 'pending',
+                ]);
+
+                AuditLog::create([
+                    'user_id' => Auth::id(),
+                    'action' => 'schedule_change_requested',
+                    'entity_type' => 'ScheduleChangeRequest',
+                    'entity_id' => $req->id,
+                    'description' => "Pengajuan perubahan jadwal diajukan untuk PEMIRA '{$election->name}'",
+                    'ip_address' => request()->ip(),
+                    'user_agent' => request()->userAgent(),
+                    'metadata' => [
+                        'election_id' => $election->id,
+                        'old_registration_start_at' => $election->registration_start_at?->toDateTimeString(),
+                        'old_registration_end_at' => $election->registration_end_at?->toDateTimeString(),
+                        'new_registration_start_at' => $newRegStart->toDateTimeString(),
+                        'new_registration_end_at' => $newRegEnd->toDateTimeString(),
+                        'old_voting_start_at' => $election->voting_start_at?->toDateTimeString(),
+                        'old_voting_end_at' => $election->voting_end_at?->toDateTimeString(),
+                        'new_voting_start_at' => $newVotingStart->toDateTimeString(),
+                        'new_voting_end_at' => $newVotingEnd->toDateTimeString(),
+                        'reason' => $validated['scheduleChangeReason'],
+                    ],
+                ]);
+
+                $election->update([
+                    'name' => $validated['name'],
+                    'slug' => $slug,
+                    'year' => (int) $validated['year'],
+                ]);
+            });
+
+            session()->flash('success', "Permohonan perubahan jadwal untuk PEMIRA '{$election->name}' berhasil diajukan dan sedang menunggu persetujuan Super Admin.");
+
+            $this->closeEditModal();
+
+            return;
+        }
+
+        if (! $isSuperAdmin) {
+            $validated = $this->validate([
+                'name' => ['required', 'string', 'max:255'],
+                'year' => ['required', 'integer', 'min:2020', 'max:2099'],
             ]);
 
             $slug = $this->generateUniqueSlug($validated['name'], (int) $validated['year'], $election->id);
@@ -224,8 +318,6 @@ class Index extends Component
                 'name' => $validated['name'],
                 'slug' => $slug,
                 'year' => (int) $validated['year'],
-                'registration_start_at' => Carbon::parse($validated['registration_start_at']),
-                'registration_end_at' => Carbon::parse($validated['registration_end_at']),
             ]);
         } else {
             $validated = $this->validate();
@@ -319,8 +411,12 @@ class Index extends Component
         $this->voting_start_at = '';
         $this->voting_end_at = '';
         $this->isVotingActive = false;
+        $this->originalRegistrationStart = null;
+        $this->originalRegistrationEnd = null;
         $this->originalVotingStart = null;
         $this->originalVotingEnd = null;
+        $this->scheduleChangeReason = '';
+        $this->activeScheduleRequest = null;
     }
 
     protected function generateUniqueSlug(string $name, int $year, ?int $ignoreId = null): string
@@ -361,7 +457,8 @@ class Index extends Component
             $query->where('year', (int) $this->yearFilter);
         }
 
-        $elections = $query->latest('year')
+        $elections = $query->with(['scheduleChangeRequests' => fn ($q) => $q->pending()])
+            ->latest('year')
             ->latest('id')
             ->paginate(10);
 

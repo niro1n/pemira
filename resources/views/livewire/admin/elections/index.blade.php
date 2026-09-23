@@ -116,10 +116,29 @@
                             <td class="p-3.5 sm:p-4 text-ink/80">
                                 <div>{{ $elec->registration_start_at->format('d/m/Y H:i') }}</div>
                                 <div class="text-xs text-ink/60">s.d. {{ $elec->registration_end_at->format('d/m/Y H:i') }} WITA</div>
+                                @php $pendingReq = $elec->scheduleChangeRequests->first(); @endphp
+                                @if ($pendingReq && $pendingReq->hasRegistrationChange())
+                                    <div class="mt-2 p-1.5 bg-amber-100 border border-ink text-[11px] font-sans font-bold text-amber-950 shadow-2xs">
+                                        <div class="font-display font-black text-amber-800 uppercase text-[10px] flex items-center gap-1">
+                                            <span class="w-1.5 h-1.5 bg-amber-600 rounded-full inline-block"></span>
+                                            <span>Menunggu Review:</span>
+                                        </div>
+                                        <div class="font-mono text-[10px] mt-0.5">{{ $pendingReq->new_registration_start_at?->format('d/m H:i') }} — {{ $pendingReq->new_registration_end_at?->format('d/m H:i') }} WITA</div>
+                                    </div>
+                                @endif
                             </td>
                             <td class="p-3.5 sm:p-4 text-ink/80">
                                 <div>{{ $elec->voting_start_at->format('d/m/Y H:i') }}</div>
                                 <div class="text-xs text-ink/60">s.d. {{ $elec->voting_end_at->format('d/m/Y H:i') }} WITA</div>
+                                @if ($pendingReq && ($pendingReq->hasVotingChange() || ! $pendingReq->hasRegistrationChange()))
+                                    <div class="mt-2 p-1.5 bg-amber-100 border border-ink text-[11px] font-sans font-bold text-amber-950 shadow-2xs">
+                                        <div class="font-display font-black text-amber-800 uppercase text-[10px] flex items-center gap-1">
+                                            <span class="w-1.5 h-1.5 bg-amber-600 rounded-full inline-block"></span>
+                                            <span>Menunggu Review:</span>
+                                        </div>
+                                        <div class="font-mono text-[10px] mt-0.5">{{ $pendingReq->new_voting_start_at->format('d/m H:i') }} — {{ $pendingReq->new_voting_end_at->format('d/m H:i') }} WITA</div>
+                                    </div>
+                                @endif
                             </td>
                             <td class="p-3.5 sm:p-4 text-right whitespace-nowrap">
                                 <div class="inline-flex items-center gap-1.5">
@@ -171,12 +190,25 @@
                             <span class="text-ink/90 font-medium">
                                 {{ $elec->registration_start_at->format('d/m/Y H:i') }} — {{ $elec->registration_end_at->format('d/m/Y H:i') }} WITA
                             </span>
+                            @php $pendingReq = $elec->scheduleChangeRequests->first(); @endphp
+                            @if ($pendingReq && $pendingReq->hasRegistrationChange())
+                                <div class="mt-1.5 p-1.5 bg-amber-100 border border-ink text-xs font-sans text-amber-950">
+                                    <div class="font-display font-black text-amber-800 uppercase text-[10px]">Menunggu Review Super Admin:</div>
+                                    <div class="font-mono text-[11px]">{{ $pendingReq->new_registration_start_at?->format('d/m/Y H:i') }} — {{ $pendingReq->new_registration_end_at?->format('d/m/Y H:i') }} WITA</div>
+                                </div>
+                            @endif
                         </div>
                         <div>
                             <span class="text-xs font-bold text-ink/60 uppercase block">Jadwal Voting</span>
                             <span class="text-brand font-bold">
                                 {{ $elec->voting_start_at->format('d/m/Y H:i') }} — {{ $elec->voting_end_at->format('d/m/Y H:i') }} WITA
                             </span>
+                            @if ($pendingReq && ($pendingReq->hasVotingChange() || ! $pendingReq->hasRegistrationChange()))
+                                <div class="mt-1.5 p-1.5 bg-amber-100 border border-ink text-xs font-sans text-amber-950">
+                                    <div class="font-display font-black text-amber-800 uppercase text-[10px]">Menunggu Review Super Admin:</div>
+                                    <div class="font-mono text-[11px]">{{ $pendingReq->new_voting_start_at->format('d/m/Y H:i') }} — {{ $pendingReq->new_voting_end_at->format('d/m/Y H:i') }} WITA</div>
+                                </div>
+                            @endif
                         </div>
                     </div>
 
@@ -354,13 +386,37 @@
 
                 <form wire:submit="updateElection" class="flex flex-col flex-1 min-h-0 overflow-hidden">
                     <div class="p-3.5 sm:p-5 space-y-3 sm:space-y-4 overflow-y-auto flex-1 min-w-0">
-                        @if ($isVotingActive)
-                            <div class="p-3 bg-accent/20 border-2 border-ink shadow-brutal-sm text-xs font-sans font-bold text-ink space-y-1">
+                        @if ($activeScheduleRequest)
+                            <div class="p-3 bg-amber-100 border-2 border-ink shadow-brutal-sm text-xs font-sans font-bold text-ink space-y-1.5">
+                                <div class="font-display font-black uppercase text-amber-900 flex items-center justify-between">
+                                    <span>PENGAJUAN SEDANG MENUNGGU PERSETUJUAN</span>
+                                    <span class="text-[10px] bg-amber-600 text-surface px-1.5 py-0.5 font-mono">PENDING</span>
+                                </div>
+                                <p class="text-xs text-ink/80 leading-relaxed font-normal">
+                                    Pemilihan ini sedang memiliki permohonan perubahan jadwal yang menunggu persetujuan Super Admin:
+                                </p>
+                                <div class="text-[11px] font-mono bg-surface p-2 border border-ink/20 space-y-0.5">
+                                    <div><strong>Mulai Diajukan:</strong> {{ $activeScheduleRequest->new_voting_start_at->timezone('Asia/Makassar')->format('d M Y, H:i') }} WITA</div>
+                                    <div><strong>Selesai Diajukan:</strong> {{ $activeScheduleRequest->new_voting_end_at->timezone('Asia/Makassar')->format('d M Y, H:i') }} WITA</div>
+                                    <div class="italic text-ink/70 font-sans mt-1">&ldquo;{{ $activeScheduleRequest->reason }}&rdquo;</div>
+                                </div>
+                            </div>
+                        @elseif ($isVotingActive && ! auth()->user()?->isSuperAdmin())
+                            <div class="p-3 bg-accent/20 border-2 border-ink shadow-brutal-sm text-xs font-sans font-bold text-ink space-y-1.5">
                                 <div class="font-display font-black uppercase text-brand">
                                     PERHATIAN: VOTING SEDANG BERLANGSUNG
                                 </div>
                                 <p class="text-ink/80 text-xs font-normal leading-relaxed">
-                                    Jadwal pemungutan suara sedang aktif dan dikunci dari perubahan langsung. Perubahan jadwal voting yang sedang berjalan memerlukan persetujuan Super Admin.
+                                    Karena voting sedang aktif, setiap perubahan jadwal voting yang Anda simpan akan otomatis diajukan ke Super Admin untuk disetujui.
+                                </p>
+                            </div>
+                        @elseif ($isVotingActive && auth()->user()?->isSuperAdmin())
+                            <div class="p-3 bg-amber-100 border-2 border-ink shadow-brutal-sm text-xs font-sans font-bold text-ink space-y-1.5">
+                                <div class="font-display font-black uppercase text-amber-900">
+                                    SUPER ADMIN: VOTING SEDANG BERLANGSUNG
+                                </div>
+                                <p class="text-ink/80 text-xs font-normal leading-relaxed">
+                                    Voting sedang aktif. Sebagai Super Admin, Anda memiliki wewenang untuk memperbarui jadwal voting secara langsung jika diperlukan.
                                 </p>
                             </div>
                         @endif
@@ -392,8 +448,15 @@
                         </div>
 
                         <div class="p-3 bg-surface-muted border-2 border-ink/40 space-y-2.5 sm:space-y-3">
-                            <div class="text-xs font-display font-black uppercase text-brand">
-                                JADWAL PENDAFTARAN
+                            <div class="flex items-center justify-between">
+                                <div class="text-xs font-display font-black uppercase text-brand">
+                                    JADWAL PENDAFTARAN
+                                </div>
+                                @if (! auth()->user()?->isSuperAdmin())
+                                    <span class="text-xs font-display font-black uppercase px-1.5 py-0.5 bg-amber-600 text-surface">MEMERLUKAN APPROVAL</span>
+                                @else
+                                    <span class="text-xs font-display font-black uppercase px-1.5 py-0.5 bg-amber-600 text-surface">SUPER ADMIN</span>
+                                @endif
                             </div>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
                                 <div>
@@ -402,7 +465,7 @@
                                     </label>
                                     <input type="datetime-local"
                                            lang="id-ID"
-                                           wire:model="registration_start_at"
+                                           wire:model.live="registration_start_at"
                                            class="w-full bg-surface border-2 border-ink px-2.5 py-1.5 text-xs font-sans text-ink focus:outline-none min-h-9.5" />
                                     @error('registration_start_at')
                                         <p class="text-xs font-sans font-bold text-red-600 mt-0.5">{{ $message }}</p>
@@ -414,7 +477,7 @@
                                     </label>
                                     <input type="datetime-local"
                                            lang="id-ID"
-                                           wire:model="registration_end_at"
+                                           wire:model.live="registration_end_at"
                                            class="w-full bg-surface border-2 border-ink px-2.5 py-1.5 text-xs font-sans text-ink focus:outline-none min-h-9.5" />
                                     @error('registration_end_at')
                                         <p class="text-xs font-sans font-bold text-red-600 mt-0.5">{{ $message }}</p>
@@ -428,8 +491,10 @@
                                 <div class="text-xs font-display font-black uppercase text-brand">
                                     JADWAL VOTING
                                 </div>
-                                @if ($isVotingActive)
-                                    <span class="text-xs font-display font-black uppercase px-1.5 py-0.5 bg-ink text-surface">TERKUNCI</span>
+                                @if (! auth()->user()?->isSuperAdmin())
+                                    <span class="text-xs font-display font-black uppercase px-1.5 py-0.5 bg-amber-600 text-surface">MEMERLUKAN APPROVAL</span>
+                                @else
+                                    <span class="text-xs font-display font-black uppercase px-1.5 py-0.5 bg-amber-600 text-surface">SUPER ADMIN</span>
                                 @endif
                             </div>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
@@ -439,9 +504,8 @@
                                     </label>
                                     <input type="datetime-local"
                                            lang="id-ID"
-                                           wire:model="voting_start_at"
-                                           @if ($isVotingActive) disabled @endif
-                                           class="w-full bg-surface border-2 border-ink px-2.5 py-1.5 text-xs font-sans text-ink focus:outline-none disabled:bg-surface-muted disabled:text-ink/40 disabled:cursor-not-allowed min-h-9.5" />
+                                           wire:model.live="voting_start_at"
+                                           class="w-full bg-surface border-2 border-ink px-2.5 py-1.5 text-xs font-sans text-ink focus:outline-none min-h-9.5" />
                                     @error('voting_start_at')
                                         <p class="text-xs font-sans font-bold text-red-600 mt-0.5">{{ $message }}</p>
                                     @enderror
@@ -452,14 +516,35 @@
                                     </label>
                                     <input type="datetime-local"
                                            lang="id-ID"
-                                           wire:model="voting_end_at"
-                                           @if ($isVotingActive) disabled @endif
-                                           class="w-full bg-surface border-2 border-ink px-2.5 py-1.5 text-xs font-sans text-ink focus:outline-none disabled:bg-surface-muted disabled:text-ink/40 disabled:cursor-not-allowed min-h-9.5" />
+                                           wire:model.live="voting_end_at"
+                                           class="w-full bg-surface border-2 border-ink px-2.5 py-1.5 text-xs font-sans text-ink focus:outline-none min-h-9.5" />
                                     @error('voting_end_at')
                                         <p class="text-xs font-sans font-bold text-red-600 mt-0.5">{{ $message }}</p>
                                     @enderror
                                 </div>
                             </div>
+
+                            @php
+                                $hasScheduleChange = ($registration_start_at !== $originalRegistrationStart)
+                                    || ($registration_end_at !== $originalRegistrationEnd)
+                                    || ($voting_start_at !== $originalVotingStart)
+                                    || ($voting_end_at !== $originalVotingEnd);
+                            @endphp
+
+                            @if (! auth()->user()?->isSuperAdmin())
+                                <div class="pt-2 border-t border-ink/20 space-y-1">
+                                    <label class="block text-xs font-sans font-bold text-ink">
+                                        Alasan Perubahan Jadwal @if ($hasScheduleChange)<span class="text-red-600">* (Wajib Diisi)</span>@endif
+                                    </label>
+                                    <textarea wire:model="scheduleChangeReason"
+                                              rows="3"
+                                              placeholder="Jelaskan alasan mengapa jadwal pendaftaran / voting perlu diubah (minimal 10 karakter)..."
+                                              class="w-full bg-surface border-2 border-ink p-2 text-xs font-sans text-ink focus:outline-none focus:bg-surface-muted min-h-16"></textarea>
+                                    @error('scheduleChangeReason')
+                                        <p class="text-xs font-sans font-bold text-red-600 mt-0.5">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                            @endif
                         </div>
                     </div>
 
@@ -472,7 +557,9 @@
                         <button type="submit"
                                 wire:loading.attr="disabled"
                                 class="flex-1 sm:flex-initial px-5 py-2.5 bg-brand text-accent hover:bg-brand-dark border-2 border-ink shadow-brutal-sm text-xs font-display font-black uppercase tracking-wider transition-all disabled:opacity-50 cursor-pointer text-center min-h-10">
-                            <span wire:loading.remove wire:target="updateElection">SIMPAN PERUBAHAN</span>
+                            <span wire:loading.remove wire:target="updateElection">
+                                {{ (! auth()->user()?->isSuperAdmin() && $hasScheduleChange) ? 'AJUKAN PERUBAHAN JADWAL' : 'SIMPAN PEMIRA' }}
+                            </span>
                             <span wire:loading wire:target="updateElection">MENYIMPAN...</span>
                         </button>
                     </div>
@@ -480,6 +567,7 @@
             </div>
         </div>
     @endif
+
 
     @if ($showDetailModal && $selectedElection)
         @php
