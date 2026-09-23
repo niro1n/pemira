@@ -238,4 +238,9 @@ class Election extends Model
     {
         return $this->hasMany(Feedback::class);
     }
+
+    public function scheduleChangeRequests(): HasMany
+    {
+        return $this->hasMany(ScheduleChangeRequest::class);
+    }
 }
