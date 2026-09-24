@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['email', 'password', 'role', 'email_verified_at'])]
+#[Fillable(['name', 'email', 'password', 'role', 'email_verified_at'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -32,6 +32,11 @@ class User extends Authenticatable
     public function electionEmailNotifications(): HasMany
     {
         return $this->hasMany(ElectionEmailNotification::class);
+    }
+
+    public function adminInvitationsSent(): HasMany
+    {
+        return $this->hasMany(AdminInvitation::class, 'invited_by');
     }
 
     public function scheduleChangeRequests(): HasMany
@@ -66,7 +71,8 @@ class User extends Authenticatable
 
     public function getAdminDisplayName(): string
     {
-        return $this->voterAccount?->eligibleVoter?->name
+        return $this->name
+            ?? $this->voterAccount?->eligibleVoter?->name
             ?? ($this->isSuperAdmin() ? 'Super Administrator' : ($this->isAdmin() ? 'Admin KPR' : $this->email));
     }
 }

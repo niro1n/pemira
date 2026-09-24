@@ -11,6 +11,7 @@ use App\Livewire\Admin\Results\Index as ResultIndex;
 use App\Livewire\Admin\ScheduleRequests\Index as ScheduleRequestIndex;
 use App\Livewire\Admin\SpecialActions\Index as SpecialActionIndex;
 use App\Livewire\Admin\Sponsors\Index as SponsorIndex;
+use App\Livewire\Auth\AcceptInvitation;
 use App\Livewire\Auth\ForgotPassword;
 use App\Livewire\Auth\Login;
 use App\Livewire\Auth\Register;
@@ -81,6 +82,7 @@ Route::get('/login', Login::class)->middleware('guest')->name('login');
 Route::get('/register', Register::class)->middleware('guest')->name('register');
 Route::get('/forgot-password', ForgotPassword::class)->middleware('guest')->name('password.request');
 Route::get('/reset-password/{token}', ResetPassword::class)->middleware('guest')->name('password.reset');
+Route::get('/admin/invitations/accept/{token}', AcceptInvitation::class)->middleware('guest')->name('admin.invitations.accept');
 
 Route::get('/profile', function () {
     $user = Auth::user();

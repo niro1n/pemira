@@ -14,13 +14,13 @@
         </div>
 
         <div class="flex flex-wrap items-center gap-3 shrink-0">
-            <button wire:click="openCreateModal"
+            <button wire:click="openInviteModal"
                     type="button"
                     class="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-brand text-accent hover:bg-brand-dark border-2 border-ink shadow-brutal font-display font-black text-xs uppercase tracking-wider transition-all cursor-pointer min-h-10.5">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
                 </svg>
-                <span>+ TAMBAH ADMIN</span>
+                <span>UNDANG ADMIN</span>
             </button>
         </div>
     </div>
@@ -53,7 +53,7 @@
         </div>
     @endif
 
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+    <div class="grid grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
         <div class="bg-surface border-2 border-ink p-3.5 sm:p-4 shadow-brutal flex flex-col justify-between">
             <span class="text-xs font-display font-bold uppercase tracking-wider text-ink/60 block">TOTAL AKUN</span>
             <div class="flex items-baseline justify-between mt-2">
@@ -83,6 +83,14 @@
             <div class="flex items-baseline justify-between mt-2">
                 <span class="font-display font-black text-2xl sm:text-3xl text-emerald-800">{{ $statistics['active_count'] }}</span>
                 <span class="text-xs font-sans font-bold text-ink/60 uppercase">DARI {{ $statistics['total'] }}</span>
+            </div>
+        </div>
+
+        <div class="bg-surface border-2 border-ink p-3.5 sm:p-4 shadow-brutal flex flex-col justify-between col-span-2 sm:col-span-1">
+            <span class="text-xs font-display font-bold uppercase tracking-wider text-ink/60 block">UNDANGAN PENDING</span>
+            <div class="flex items-baseline justify-between mt-2">
+                <span class="font-display font-black text-2xl sm:text-3xl text-amber-800">{{ $statistics['pending_invitations_count'] }}</span>
+                <span class="text-xs font-sans font-bold text-amber-800/80 uppercase">MENUNGGU</span>
             </div>
         </div>
     </div>
@@ -345,6 +353,197 @@
         @if ($admins->hasPages())
             <div class="p-3 sm:p-4 border-t-2 border-ink bg-surface-muted">
                 {{ $admins->links() }}
+            </div>
+        @endif
+    </div>
+
+    <!-- ADMIN INVITATIONS SECTION -->
+    <div class="bg-surface border-2 border-ink shadow-brutal mt-8">
+        <div class="p-4 sm:p-5 border-b-2 border-ink flex flex-col md:flex-row md:items-center justify-between gap-4 bg-surface-muted">
+            <div>
+                <div class="inline-flex items-center gap-2 px-2.5 py-0.5 bg-brand text-accent border border-ink text-xs font-sans font-bold uppercase tracking-wider mb-1.5">
+                    <span>INVITATION TRACKING</span>
+                </div>
+                <h3 class="font-display font-black text-lg sm:text-2xl text-brand uppercase tracking-tight">
+                    ADMIN INVITATIONS
+                </h3>
+                <p class="text-xs font-sans text-ink/70 mt-0.5">
+                    Riwayat undangan calon admin melalui email. Token pendaftaran berlaku 24 jam dan satu kali pakai.
+                </p>
+            </div>
+
+            <div class="flex items-center gap-2">
+                <button wire:click="openInviteModal"
+                        type="button"
+                        class="inline-flex items-center gap-2 px-3.5 py-2 bg-brand text-accent hover:bg-brand-dark border-2 border-ink shadow-brutal-sm font-display font-black text-xs uppercase tracking-wider transition-all cursor-pointer">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                    </svg>
+                    <span>UNDANG ADMIN BARU</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="p-3 sm:p-4 border-b-2 border-ink bg-surface flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+            <div class="relative flex-1 min-w-0 sm:min-w-64">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-ink/40">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                </div>
+                <input type="text"
+                       wire:model.live.debounce.300ms="invitationSearch"
+                       placeholder="Cari email undangan..."
+                       class="w-full pl-9 pr-8 py-2 bg-surface-muted border-2 border-ink text-xs sm:text-sm font-sans font-bold text-ink placeholder:text-ink/40 shadow-brutal-sm focus:outline-none focus:bg-surface" />
+                @if ($invitationSearch !== '')
+                    <button wire:click="$set('invitationSearch', '')"
+                            type="button"
+                            class="absolute inset-y-0 right-0 pr-2.5 flex items-center text-ink/50 hover:text-ink cursor-pointer"
+                            aria-label="Bersihkan pencarian">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                @endif
+            </div>
+
+            <div class="flex items-center gap-1.5 p-1 bg-surface-muted border-2 border-ink overflow-x-auto">
+                <button type="button"
+                        wire:click="$set('invitationStatusFilter', 'all')"
+                        class="px-2.5 py-1 text-xs font-display font-bold uppercase transition-colors cursor-pointer {{ $invitationStatusFilter === 'all' ? 'bg-brand text-surface shadow-xs' : 'text-ink hover:bg-ink/10' }}">
+                    Semua
+                </button>
+                <button type="button"
+                        wire:click="$set('invitationStatusFilter', 'pending')"
+                        class="px-2.5 py-1 text-xs font-display font-bold uppercase transition-colors cursor-pointer {{ $invitationStatusFilter === 'pending' ? 'bg-amber-400 text-ink shadow-xs' : 'text-ink hover:bg-ink/10' }}">
+                    Pending
+                </button>
+                <button type="button"
+                        wire:click="$set('invitationStatusFilter', 'accepted')"
+                        class="px-2.5 py-1 text-xs font-display font-bold uppercase transition-colors cursor-pointer {{ $invitationStatusFilter === 'accepted' ? 'bg-emerald-400 text-ink shadow-xs' : 'text-ink hover:bg-ink/10' }}">
+                    Diterima
+                </button>
+                <button type="button"
+                        wire:click="$set('invitationStatusFilter', 'expired')"
+                        class="px-2.5 py-1 text-xs font-display font-bold uppercase transition-colors cursor-pointer {{ $invitationStatusFilter === 'expired' ? 'bg-ink/20 text-ink shadow-xs' : 'text-ink hover:bg-ink/10' }}">
+                    Kedaluwarsa
+                </button>
+                <button type="button"
+                        wire:click="$set('invitationStatusFilter', 'revoked')"
+                        class="px-2.5 py-1 text-xs font-display font-bold uppercase transition-colors cursor-pointer {{ $invitationStatusFilter === 'revoked' ? 'bg-rose-400 text-ink shadow-xs' : 'text-ink hover:bg-ink/10' }}">
+                    Dibatalkan
+                </button>
+            </div>
+        </div>
+
+        <div class="overflow-x-auto min-w-0">
+            <table class="w-full text-left border-collapse text-xs sm:text-sm font-sans min-w-[750px]">
+                <thead>
+                    <tr class="border-b-2 border-ink bg-surface-muted text-ink font-display font-black text-xs uppercase tracking-wider">
+                        <th class="p-3 sm:p-3.5">EMAIL CALON ADMIN</th>
+                        <th class="p-3 sm:p-3.5">STATUS</th>
+                        <th class="p-3 sm:p-3.5">DIUNDANG OLEH</th>
+                        <th class="p-3 sm:p-3.5">DIBUAT PADA</th>
+                        <th class="p-3 sm:p-3.5">KEDALUWARSA</th>
+                        <th class="p-3 sm:p-3.5">DITERIMA PADA</th>
+                        <th class="p-3 sm:p-3.5 text-right">AKSI</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y-2 divide-ink">
+                    @forelse ($adminInvitations as $invitation)
+                        <tr class="hover:bg-surface-muted/50 transition-colors">
+                            <td class="p-3 sm:p-3.5">
+                                <span class="font-bold text-ink font-mono text-xs sm:text-sm">{{ $invitation->email }}</span>
+                            </td>
+                            <td class="p-3 sm:p-3.5">
+                                <span class="inline-flex items-center px-2 py-0.5 border text-[11px] font-display font-black uppercase {{ $invitation->status()->badgeClass() }}">
+                                    {{ $invitation->status()->label() }}
+                                </span>
+                            </td>
+                            <td class="p-3 sm:p-3.5 font-bold text-ink/80">
+                                {{ $invitation->inviter?->getAdminDisplayName() ?? $invitation->inviter?->email ?? 'Sistem' }}
+                            </td>
+                            <td class="p-3 sm:p-3.5 text-xs text-ink/70 whitespace-nowrap">
+                                {{ $invitation->created_at->format('d M Y, H:i') }}
+                            </td>
+                            <td class="p-3 sm:p-3.5 text-xs whitespace-nowrap {{ $invitation->isExpired() ? 'text-rose-700 font-bold' : 'text-ink/70' }}">
+                                {{ $invitation->expires_at->format('d M Y, H:i') }}
+                            </td>
+                            <td class="p-3 sm:p-3.5 text-xs text-ink/70 whitespace-nowrap">
+                                {{ $invitation->accepted_at ? $invitation->accepted_at->format('d M Y, H:i') : '-' }}
+                            </td>
+                            <td class="p-3 sm:p-3.5 text-right whitespace-nowrap">
+                                <div class="flex items-center justify-end gap-1.5">
+                                    @if ($invitation->isPending())
+                                        <button wire:click="resendInvitation({{ $invitation->id }})"
+                                                type="button"
+                                                wire:loading.attr="disabled"
+                                                class="inline-flex items-center gap-1 px-2.5 py-1 bg-surface hover:bg-accent border border-ink text-[11px] font-display font-bold uppercase transition-colors shadow-brutal-sm cursor-pointer"
+                                                title="Kirim ulang email undangan dengan token baru">
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                                            </svg>
+                                            <span>KIRIM ULANG</span>
+                                        </button>
+
+                                        <button wire:click="openRevokeModal({{ $invitation->id }})"
+                                                type="button"
+                                                class="inline-flex items-center gap-1 px-2.5 py-1 bg-surface hover:bg-rose-100 text-rose-700 border border-ink text-[11px] font-display font-bold uppercase transition-colors shadow-brutal-sm cursor-pointer"
+                                                title="Batalkan undangan ini">
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                            </svg>
+                                            <span>BATALKAN</span>
+                                        </button>
+                                    @elseif ($invitation->isExpired())
+                                        <button wire:click="resendInvitation({{ $invitation->id }})"
+                                                type="button"
+                                                wire:loading.attr="disabled"
+                                                class="inline-flex items-center gap-1 px-2.5 py-1 bg-surface hover:bg-accent border border-ink text-[11px] font-display font-bold uppercase transition-colors shadow-brutal-sm cursor-pointer"
+                                                title="Kirim undangan baru">
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                                            </svg>
+                                            <span>KIRIM ULANG</span>
+                                        </button>
+                                    @elseif ($invitation->isAccepted())
+                                        <span class="text-[11px] font-display font-bold text-emerald-700 uppercase">AKUN AKTIF</span>
+                                    @elseif ($invitation->isRevoked())
+                                        <span class="text-[11px] font-display font-bold text-rose-700 uppercase">DIBATALKAN</span>
+                                    @endif
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="7" class="p-8 text-center">
+                                <div class="max-w-sm mx-auto space-y-2">
+                                    <div class="w-10 h-10 bg-surface-muted border-2 border-ink flex items-center justify-center mx-auto shadow-brutal-sm">
+                                        <svg class="w-5 h-5 text-ink/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                                        </svg>
+                                    </div>
+                                    <div class="font-display font-black text-sm uppercase text-ink">
+                                        Tidak Ada Undangan Admin
+                                    </div>
+                                    <p class="text-xs font-sans text-ink/60">
+                                        @if ($invitationSearch !== '' || $invitationStatusFilter !== 'all')
+                                            Tidak ditemukan data undangan yang sesuai dengan filter pencarian.
+                                        @else
+                                            Belum ada undangan admin yang dikirimkan.
+                                        @endif
+                                    </p>
+                                </div>
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+
+        @if ($adminInvitations->hasPages())
+            <div class="p-3 sm:p-4 border-t-2 border-ink bg-surface-muted">
+                {{ $adminInvitations->links() }}
             </div>
         @endif
     </div>
@@ -878,6 +1077,137 @@
                             type="button"
                             class="px-5 py-2.5 bg-rose-700 hover:bg-rose-800 text-surface border-2 border-ink shadow-brutal-sm font-display font-black text-xs uppercase tracking-wider transition-all cursor-pointer">
                         HAPUS PERMANEN
+                    </button>
+                </div>
+            </div>
+        </div>
+    @endif
+    @if ($showInviteModal)
+        <div class="fixed inset-0 z-50 overflow-y-auto flex items-end sm:items-center justify-center p-2.5 sm:p-4 bg-ink/70 backdrop-blur-xs"
+             role="dialog"
+             aria-modal="true"
+             aria-labelledby="invite-modal-title">
+            <div class="w-full sm:max-w-lg bg-surface border-2 border-ink shadow-brutal max-h-[92dvh] sm:max-h-[90vh] flex flex-col min-w-0">
+                <div class="px-4 py-3 sm:px-5 sm:py-4 border-b-2 border-ink flex items-center justify-between bg-surface-muted shrink-0">
+                    <div>
+                        <span class="text-xs font-display font-bold uppercase tracking-wider text-ink/60 block">UNDANGAN EMAIL</span>
+                        <h3 id="invite-modal-title" class="font-display font-black text-sm sm:text-lg text-brand uppercase truncate min-w-0">
+                            UNDANG CALON ADMIN
+                        </h3>
+                    </div>
+                    <button wire:click="closeInviteModal"
+                            type="button"
+                            class="w-10 h-10 border-2 border-ink bg-surface hover:bg-accent flex items-center justify-center shrink-0 transition-colors shadow-brutal-sm cursor-pointer"
+                            aria-label="Tutup modal">
+                        <svg class="w-4 h-4 text-ink" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <form wire:submit="sendInvitation" class="flex flex-col flex-1 min-h-0 overflow-hidden font-sans">
+                    <div class="p-4 sm:p-5 space-y-4 overflow-y-auto flex-1 min-w-0">
+                        <div class="p-3 bg-accent/20 border-2 border-ink text-xs font-sans text-ink space-y-1">
+                            <div class="flex items-center gap-2 font-display font-black uppercase text-brand">
+                                <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                                <span>Informasi Onboarding Admin</span>
+                            </div>
+                            <p class="text-ink/80 text-[11px] leading-relaxed">
+                                Calon admin akan menerima email berisi tautan pendaftaran aman <strong>satu kali pakai</strong> (berlaku 24 jam). Calon admin akan mengisi nama lengkap dan menentukan kata sandi sendiri.
+                            </p>
+                        </div>
+
+                        <div class="space-y-1.5">
+                            <label for="invite-email" class="font-display font-bold text-xs uppercase tracking-wider text-ink block">
+                                Alamat Email Calon Admin <span class="text-red-600">*</span>
+                            </label>
+                            <input type="email"
+                                   id="invite-email"
+                                   wire:model="inviteEmail"
+                                   placeholder="contoh: calon.admin@pnb.ac.id"
+                                   autofocus
+                                   class="w-full bg-surface-muted border-2 border-ink px-3 py-2 text-xs sm:text-sm font-bold text-ink shadow-brutal-sm focus:outline-none focus:bg-surface" />
+                            @error('inviteEmail')
+                                <span class="text-xs font-bold text-red-600 block">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="px-4 py-3 sm:px-5 sm:py-3.5 border-t-2 border-ink flex items-center justify-between bg-surface-muted shrink-0">
+                        <button wire:click="closeInviteModal"
+                                type="button"
+                                class="px-4 py-2 bg-surface hover:bg-ink/10 border-2 border-ink font-display font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer">
+                            BATAL
+                        </button>
+
+                        <button type="submit"
+                                wire:loading.attr="disabled"
+                                class="px-5 py-2.5 bg-brand text-accent hover:bg-brand-dark border-2 border-ink shadow-brutal-sm font-display font-black text-xs uppercase tracking-wider transition-all cursor-pointer flex items-center gap-2">
+                            <span wire:loading.remove wire:target="sendInvitation">KIRIM UNDANGAN</span>
+                            <span wire:loading wire:target="sendInvitation" class="inline-flex items-center gap-2">
+                                <svg class="animate-spin h-4 w-4" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                                <span>MENGIRIM...</span>
+                            </span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    @endif
+
+    @if ($showRevokeModal && $selectedInvitation)
+        <div class="fixed inset-0 z-50 overflow-y-auto flex items-end sm:items-center justify-center p-2.5 sm:p-4 bg-ink/70 backdrop-blur-xs"
+             role="dialog"
+             aria-modal="true"
+             aria-labelledby="revoke-modal-title">
+            <div class="w-full sm:max-w-md bg-surface border-2 border-ink shadow-brutal max-h-[92dvh] sm:max-h-[90vh] flex flex-col min-w-0">
+                <div class="px-4 py-3 sm:px-5 sm:py-4 border-b-2 border-ink flex items-center justify-between bg-rose-100 shrink-0">
+                    <div>
+                        <span class="text-xs font-display font-bold uppercase tracking-wider text-rose-900 block">KONFIRMASI PEMBATALAN</span>
+                        <h3 id="revoke-modal-title" class="font-display font-black text-sm sm:text-lg text-rose-950 uppercase truncate min-w-0">
+                            BATALKAN UNDANGAN
+                        </h3>
+                    </div>
+                    <button wire:click="closeRevokeModal"
+                            type="button"
+                            class="w-10 h-10 border-2 border-ink bg-surface hover:bg-accent flex items-center justify-center shrink-0 transition-colors shadow-brutal-sm cursor-pointer"
+                            aria-label="Tutup modal">
+                        <svg class="w-4 h-4 text-ink" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="p-4 sm:p-5 space-y-4 font-sans text-xs sm:text-sm text-ink">
+                    <p class="leading-relaxed">
+                        Apakah Anda yakin ingin membatalkan undangan untuk calon admin:
+                    </p>
+                    <div class="p-3 bg-surface-muted border-2 border-ink font-bold font-mono text-xs sm:text-sm text-brand break-all">
+                        {{ $selectedInvitation->email }}
+                    </div>
+                    <p class="text-ink/70 text-xs leading-relaxed">
+                        Setelah dibatalkan, tautan pendaftaran yang telah dikirimkan tidak akan dapat digunakan lagi.
+                    </p>
+                </div>
+
+                <div class="px-4 py-3 sm:px-5 sm:py-3.5 border-t-2 border-ink flex items-center justify-between bg-surface-muted shrink-0">
+                    <button wire:click="closeRevokeModal"
+                            type="button"
+                            class="px-4 py-2 bg-surface hover:bg-ink/10 border-2 border-ink font-display font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer">
+                        BATAL
+                    </button>
+
+                    <button wire:click="revokeInvitation"
+                            type="button"
+                            wire:loading.attr="disabled"
+                            class="px-5 py-2.5 bg-rose-600 text-surface hover:bg-rose-700 border-2 border-ink shadow-brutal-sm font-display font-black text-xs uppercase tracking-wider transition-all cursor-pointer">
+                        <span wire:loading.remove wire:target="revokeInvitation">YA, BATALKAN UNDANGAN</span>
+                        <span wire:loading wire:target="revokeInvitation">MEMPROSES...</span>
                     </button>
                 </div>
             </div>
