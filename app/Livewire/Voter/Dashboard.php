@@ -2,7 +2,6 @@
 
 namespace App\Livewire\Voter;
 
-use App\Enums\ElectionPhase;
 use App\Models\CandidatePair;
 use App\Models\Election;
 use App\Models\User;

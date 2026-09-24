@@ -3,7 +3,6 @@
 namespace Tests\Feature\Admin;
 
 use App\Livewire\Admin\Sponsors\Index as SponsorIndex;
-use App\Models\AuditLog;
 use App\Models\Sponsor;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
