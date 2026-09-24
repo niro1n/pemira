@@ -560,7 +560,7 @@
                             </div>
                             <label class="relative inline-flex items-center cursor-pointer">
                                 <input type="checkbox" wire:model="isActive" class="sr-only peer">
-                                <div class="w-11 h-6 bg-surface border-2 border-ink peer-focus:outline-none peer-checked:after:translate-x-full peer-checked:after:border-ink after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-ink after:border-2 after:border-ink after:h-5 after:w-5 after:transition-all peer-checked:bg-brand"></div>
+                                <div class="w-11 h-6 bg-surface border-2 border-ink peer-focus:outline-none peer-checked:after:translate-x-full peer-checked:after:border-ink after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-ink after:border-2 after:border-ink after:h-5 after:w-5 after:transition-all peer-checked:bg-brand"></div>
                             </label>
                         </div>
                     </div>
@@ -657,7 +657,7 @@
                             </div>
                             <label class="relative inline-flex items-center cursor-pointer">
                                 <input type="checkbox" wire:model="isActive" class="sr-only peer">
-                                <div class="w-11 h-6 bg-surface border-2 border-ink peer-focus:outline-none peer-checked:after:translate-x-full peer-checked:after:border-ink after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-ink after:border-2 after:border-ink after:h-5 after:w-5 after:transition-all peer-checked:bg-brand"></div>
+                                <div class="w-11 h-6 bg-surface border-2 border-ink peer-focus:outline-none peer-checked:after:translate-x-full peer-checked:after:border-ink after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-ink after:border-2 after:border-ink after:h-5 after:w-5 after:transition-all peer-checked:bg-brand"></div>
                             </label>
                         </div>
                         @error('isActive')
@@ -1008,7 +1008,7 @@
 
                 <!-- Table Content (Scrollable) -->
                 <div class="overflow-y-auto overflow-x-auto flex-1 min-w-0">
-                    <table class="w-full text-left border-collapse text-xs sm:text-sm font-sans min-w-[700px]">
+                    <table class="w-full text-left border-collapse text-xs sm:text-sm font-sans min-w-175">
                         <thead class="sticky top-0 z-10">
                             <tr class="border-b-2 border-ink bg-surface-muted text-ink font-display font-black text-xs uppercase tracking-wider">
                                 <th class="p-3 sm:p-3.5">EMAIL CALON ADMIN</th>
@@ -1194,7 +1194,7 @@
     @endif
 
     @if ($showInviteModal)
-        <div class="fixed inset-0 z-[60] overflow-y-auto flex items-end sm:items-center justify-center p-2.5 sm:p-4 bg-ink/70 backdrop-blur-xs"
+        <div class="fixed inset-0 z-60 overflow-y-auto flex items-end sm:items-center justify-center p-2.5 sm:p-4 bg-ink/70 backdrop-blur-xs"
              role="dialog"
              aria-modal="true"
              aria-labelledby="invite-modal-title">
@@ -1272,7 +1272,7 @@
     @endif
 
     @if ($showRevokeModal && $selectedInvitation)
-        <div class="fixed inset-0 z-[60] overflow-y-auto flex items-end sm:items-center justify-center p-2.5 sm:p-4 bg-ink/70 backdrop-blur-xs"
+        <div class="fixed inset-0 z-60 overflow-y-auto flex items-end sm:items-center justify-center p-2.5 sm:p-4 bg-ink/70 backdrop-blur-xs"
              role="dialog"
              aria-modal="true"
              aria-labelledby="revoke-modal-title">
