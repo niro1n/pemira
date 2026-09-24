@@ -171,19 +171,28 @@ class ElectionResultService
         $departmentTurnout = collect();
         if (Schema::hasTable('study_programs') && Schema::hasTable('eligible_voters')) {
             $programs = StudyProgram::query()->orderBy('name')->get();
-            $departmentTurnout = $programs->map(function (StudyProgram $prog) use ($election) {
-                $eligible = (int) EligibleVoter::where('study_program_id', $prog->id)->where('is_eligible', true)->count();
-                $voted = 0;
 
-                if (Schema::hasTable('voting_participations') && Schema::hasTable('voter_accounts')) {
-                    $voted = (int) DB::table('voting_participations')
-                        ->where('voting_participations.election_id', $election->id)
-                        ->join('voter_accounts', 'voting_participations.voter_account_id', '=', 'voter_accounts.id')
-                        ->join('eligible_voters', 'voter_accounts.eligible_voter_id', '=', 'eligible_voters.id')
-                        ->where('eligible_voters.study_program_id', $prog->id)
-                        ->count();
-                }
+            $eligibleCounts = EligibleVoter::where('is_eligible', true)
+                ->groupBy('study_program_id')
+                ->selectRaw('study_program_id, count(*) as aggregate')
+                ->pluck('aggregate', 'study_program_id')
+                ->all();
 
+            $votedCounts = [];
+            if (Schema::hasTable('voting_participations') && Schema::hasTable('voter_accounts')) {
+                $votedCounts = DB::table('voting_participations')
+                    ->where('voting_participations.election_id', $election->id)
+                    ->join('voter_accounts', 'voting_participations.voter_account_id', '=', 'voter_accounts.id')
+                    ->join('eligible_voters', 'voter_accounts.eligible_voter_id', '=', 'eligible_voters.id')
+                    ->groupBy('eligible_voters.study_program_id')
+                    ->selectRaw('eligible_voters.study_program_id, count(*) as aggregate')
+                    ->pluck('aggregate', 'study_program_id')
+                    ->all();
+            }
+
+            $departmentTurnout = $programs->map(function (StudyProgram $prog) use ($eligibleCounts, $votedCounts) {
+                $eligible = (int) ($eligibleCounts[$prog->id] ?? 0);
+                $voted = (int) ($votedCounts[$prog->id] ?? 0);
                 $rate = $eligible > 0 ? round(($voted / $eligible) * 100, 2) : 0.0;
 
                 return [

@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Schema;
 
 #[Fillable(['key', 'value'])]
 class SystemSetting extends Model
@@ -13,17 +15,41 @@ class SystemSetting extends Model
 
     public static function get(string $key, mixed $default = null): mixed
     {
-        $setting = static::where('key', $key)->first();
+        return Cache::rememberForever("system_setting:{$key}", function () use ($key, $default) {
+            try {
+                if (! Schema::hasTable('system_settings')) {
+                    return $default;
+                }
 
-        return $setting !== null ? $setting->value : $default;
+                $setting = static::where('key', $key)->first();
+
+                return $setting !== null ? $setting->value : $default;
+            } catch (\Throwable) {
+                return $default;
+            }
+        });
     }
 
     public static function set(string $key, mixed $value): void
     {
+        $normalized = is_bool($value) ? ($value ? '1' : '0') : (string) $value;
+
         static::updateOrCreate(
             ['key' => $key],
-            ['value' => is_bool($value) ? ($value ? '1' : '0') : (string) $value]
+            ['value' => $normalized]
         );
+
+        Cache::forget("system_setting:{$key}");
+    }
+
+    public static function clearCache(?string $key = null): void
+    {
+        if ($key !== null) {
+            Cache::forget("system_setting:{$key}");
+        } else {
+            Cache::forget('system_setting:maintenance_mode');
+            Cache::forget('system_setting:humas_whatsapp');
+        }
     }
 
     public static function isMaintenanceMode(): bool

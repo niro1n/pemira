@@ -226,19 +226,30 @@ class DashboardDataProvider implements DashboardDataProviderInterface
             $programs = StudyProgram::query()->orderBy('name')->get();
 
             if ($programs->isNotEmpty()) {
-                return $programs->map(function (StudyProgram $program) {
-                    $eligible = Schema::hasTable('eligible_voters')
-                        ? (int) EligibleVoter::where('study_program_id', $program->id)->where('is_eligible', true)->count()
-                        : 0;
+                $hasEligibleTable = Schema::hasTable('eligible_voters');
+                $hasVotingTables = (Schema::hasTable('voting_participations') && Schema::hasTable('voter_accounts') && $hasEligibleTable);
 
-                    $voted = (Schema::hasTable('voting_participations') && Schema::hasTable('voter_accounts') && Schema::hasTable('eligible_voters'))
-                        ? (int) DB::table('voting_participations')
-                            ->join('voter_accounts', 'voting_participations.voter_account_id', '=', 'voter_accounts.id')
-                            ->join('eligible_voters', 'voter_accounts.eligible_voter_id', '=', 'eligible_voters.id')
-                            ->where('eligible_voters.study_program_id', $program->id)
-                            ->count()
-                        : 0;
+                $eligibleCounts = $hasEligibleTable
+                    ? EligibleVoter::where('is_eligible', true)
+                        ->groupBy('study_program_id')
+                        ->selectRaw('study_program_id, count(*) as aggregate')
+                        ->pluck('aggregate', 'study_program_id')
+                        ->all()
+                    : [];
 
+                $votedCounts = $hasVotingTables
+                    ? DB::table('voting_participations')
+                        ->join('voter_accounts', 'voting_participations.voter_account_id', '=', 'voter_accounts.id')
+                        ->join('eligible_voters', 'voter_accounts.eligible_voter_id', '=', 'eligible_voters.id')
+                        ->groupBy('eligible_voters.study_program_id')
+                        ->selectRaw('eligible_voters.study_program_id, count(*) as aggregate')
+                        ->pluck('aggregate', 'study_program_id')
+                        ->all()
+                    : [];
+
+                return $programs->map(function (StudyProgram $program) use ($eligibleCounts, $votedCounts) {
+                    $eligible = (int) ($eligibleCounts[$program->id] ?? 0);
+                    $voted = (int) ($votedCounts[$program->id] ?? 0);
                     $rate = $eligible > 0 ? round(($voted / $eligible) * 100, 2) : 0.0;
 
                     return [

@@ -59,8 +59,40 @@ class Election extends Model
         return ElectionPhase::FINISHED;
     }
 
+    protected static function booted(): void
+    {
+        static::saved(function () {
+            static::flushCurrentMemo();
+        });
+
+        static::deleted(function () {
+            static::flushCurrentMemo();
+        });
+    }
+
+    public static function flushCurrentMemo(): void
+    {
+        try {
+            if (app()->has('request')) {
+                request()?->attributes?->remove('election.current.memo');
+            }
+        } catch (\Throwable) {
+            // Ignore if outside HTTP context
+        }
+    }
+
     public static function current(?CarbonInterface $reference = null): ?self
     {
+        $hasRequest = false;
+        try {
+            $hasRequest = ($reference === null && app()->has('request') && request() !== null);
+            if ($hasRequest && request()->attributes->has('election.current.memo')) {
+                return request()->attributes->get('election.current.memo');
+            }
+        } catch (\Throwable) {
+            $hasRequest = false;
+        }
+
         $now = $reference ?? Carbon::now();
 
         $voting = self::query()
@@ -70,6 +102,10 @@ class Election extends Model
             ->first();
 
         if ($voting) {
+            if ($hasRequest) {
+                request()->attributes->set('election.current.memo', $voting);
+            }
+
             return $voting;
         }
 
@@ -79,6 +115,10 @@ class Election extends Model
             ->first();
 
         if ($upcoming) {
+            if ($hasRequest) {
+                request()->attributes->set('election.current.memo', $upcoming);
+            }
+
             return $upcoming;
         }
 
@@ -89,13 +129,23 @@ class Election extends Model
             ->first();
 
         if ($registration) {
+            if ($hasRequest) {
+                request()->attributes->set('election.current.memo', $registration);
+            }
+
             return $registration;
         }
 
-        return self::query()
+        $finished = self::query()
             ->where('voting_end_at', '<', $now)
             ->orderBy('voting_end_at', 'desc')
             ->first();
+
+        if ($hasRequest) {
+            request()->attributes->set('election.current.memo', $finished);
+        }
+
+        return $finished;
     }
 
     public function countdownTarget(?CarbonInterface $reference = null): ?CarbonInterface
