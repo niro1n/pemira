@@ -603,6 +603,14 @@ class Index extends Component
         $this->resetValidation();
     }
 
+    public function updatedUpdateExisting(): void
+    {
+        $sourceCsv = $this->getTempSourceCsvPath();
+        if (file_exists($sourceCsv) && $this->importStep === 'preview') {
+            $this->parseAndProcessCsv($sourceCsv);
+        }
+    }
+
     public function processUpload(): void
     {
         Gate::authorize('access-admin-panel');
@@ -616,8 +624,20 @@ class Index extends Component
             'importFile.max' => 'Ukuran file CSV maksimal 20 MB.',
         ]);
 
-        $filePath = $this->importFile->getRealPath();
-        $handle = fopen($filePath, 'r');
+        $sourcePath = $this->getTempSourceCsvPath();
+        if (! copy($this->importFile->getRealPath(), $sourcePath)) {
+            throw ValidationException::withMessages([
+                'importFile' => 'Gagal menyimpan file CSV sementara untuk proses import.',
+            ]);
+        }
+
+        $this->parseAndProcessCsv($sourcePath);
+        $this->importStep = 'preview';
+    }
+
+    protected function parseAndProcessCsv(string $sourcePath): void
+    {
+        $handle = fopen($sourcePath, 'r');
 
         if (! $handle) {
             throw ValidationException::withMessages([
@@ -644,7 +664,8 @@ class Index extends Component
             ]);
         }
 
-        $studyProgramMap = $this->getStudyProgramMap();
+        $programs = StudyProgram::all();
+        $studyProgramMap = $this->getStudyProgramMap($programs);
         $existingNims = EligibleVoter::pluck('id', 'nim')->all();
 
         $tempPath = $this->getTempFilePath();
@@ -663,6 +684,8 @@ class Index extends Component
         $incompleteCount = 0;
         $duplicateCount = 0;
         $errorCount = 0;
+        $toUpdateCount = 0;
+        $toInsertCount = 0;
         $seenNimsInFile = [];
         $previewRows = [];
         $errorsList = [];
@@ -720,27 +743,25 @@ class Index extends Component
                 continue;
             }
 
-            $name = $nameRaw !== '' ? $nameRaw : null;
-
-            $studyProgramId = null;
-            if ($jurusanRaw !== '') {
-                $jurusanClean = strtolower($jurusanRaw);
-                $studyProgramId = $studyProgramMap[$jurusanClean] ?? null;
+            if ($alreadyInDb) {
+                $toUpdateCount++;
+            } else {
+                $toInsertCount++;
             }
+
+            $name = $nameRaw !== '' ? $nameRaw : null;
+            $studyProgramId = $this->matchStudyProgram($jurusanRaw, $studyProgramMap, $programs);
 
             $parsedDob = null;
             if ($dobRaw !== '') {
                 $parsedDob = $this->parseCsvDate($dobRaw);
                 if ($parsedDob === null) {
-                    $errorCount++;
                     if (count($errorsList) < 100) {
                         $errorsList[] = [
                             'row' => $rowNumber,
-                            'message' => "Tanggal lahir '{$dobRaw}' tidak valid (NIM: {$nimRaw}).",
+                            'message' => "Tanggal lahir '{$dobRaw}' tidak valid (NIM: {$nimRaw}) -> Dikosongkan (status: TIDAK LENGKAP).",
                         ];
                     }
-
-                    continue;
                 }
             }
 
@@ -771,7 +792,9 @@ class Index extends Component
                     'jurusan' => $jurusanRaw !== '' ? $jurusanRaw : '—',
                     'date_of_birth' => $parsedDob ?? '—',
                     'is_complete' => $isComplete,
-                    'status' => $isComplete ? 'LENGKAP' : 'TIDAK LENGKAP',
+                    'status' => $alreadyInDb
+                        ? ($isComplete ? 'LENGKAP (PERBARUI)' : 'PARSIAL (PERBARUI)')
+                        : ($isComplete ? 'LENGKAP' : 'TIDAK LENGKAP'),
                     'is_existing' => $alreadyInDb,
                 ];
             }
@@ -789,11 +812,12 @@ class Index extends Component
             'incomplete' => $incompleteCount,
             'duplicates' => $duplicateCount,
             'errors' => $errorCount,
+            'to_update' => $toUpdateCount,
+            'to_insert' => $toInsertCount,
         ];
         $this->importPreview = $previewRows;
         $this->importErrors = $errorsList;
-        $this->totalErrorsCount = $errorCount + $duplicateCount;
-        $this->importStep = 'preview';
+        $this->totalErrorsCount = count($errorsList);
     }
 
     public function confirmImport(): void
@@ -856,7 +880,9 @@ class Index extends Component
             'action' => 'eligible_voter_import',
             'entity_type' => 'EligibleVoter',
             'entity_id' => null,
-            'description' => "Mengimpor {$insertedCount} data mahasiswa eligible dari CSV",
+            'description' => $this->updateExisting
+                ? "Mengimpor & memperbarui {$insertedCount} data mahasiswa eligible dari CSV"
+                : "Mengimpor {$insertedCount} data mahasiswa eligible dari CSV",
             'ip_address' => request()->ip(),
             'user_agent' => request()->userAgent(),
             'metadata' => [
@@ -866,6 +892,8 @@ class Index extends Component
                 'incomplete' => $this->importSummary['incomplete'],
                 'duplicates' => $this->importSummary['duplicates'],
                 'failed' => $this->importSummary['errors'],
+                'to_update' => $this->importSummary['to_update'] ?? 0,
+                'to_insert' => $this->importSummary['to_insert'] ?? 0,
                 'update_existing' => $this->updateExisting,
             ],
         ]);
@@ -885,11 +913,54 @@ class Index extends Component
     protected function writeChunk(array $chunk): void
     {
         if ($this->updateExisting) {
-            EligibleVoter::upsert(
-                $chunk,
-                ['nim'],
-                ['name', 'study_program_id', 'date_of_birth', 'updated_at']
-            );
+            $driver = DB::connection()->getDriverName();
+
+            if ($driver === 'mysql') {
+                $useAlias = (bool) (DB::connection()->getConfig('use_upsert_alias') ?? false);
+                $nameRef = $useAlias ? 'laravel_upsert_alias.name' : 'values(name)';
+                $progRef = $useAlias ? 'laravel_upsert_alias.study_program_id' : 'values(study_program_id)';
+                $dobRef = $useAlias ? 'laravel_upsert_alias.date_of_birth' : 'values(date_of_birth)';
+                $updatedRef = $useAlias ? 'laravel_upsert_alias.updated_at' : 'values(updated_at)';
+
+                EligibleVoter::upsert(
+                    $chunk,
+                    ['nim'],
+                    [
+                        'name' => DB::raw("COALESCE({$nameRef}, eligible_voters.name)"),
+                        'study_program_id' => DB::raw("COALESCE({$progRef}, eligible_voters.study_program_id)"),
+                        'date_of_birth' => DB::raw("COALESCE({$dobRef}, eligible_voters.date_of_birth)"),
+                        'updated_at' => DB::raw($updatedRef),
+                    ]
+                );
+            } elseif ($driver === 'mariadb') {
+                EligibleVoter::upsert(
+                    $chunk,
+                    ['nim'],
+                    [
+                        'name' => DB::raw('COALESCE(values(name), eligible_voters.name)'),
+                        'study_program_id' => DB::raw('COALESCE(values(study_program_id), eligible_voters.study_program_id)'),
+                        'date_of_birth' => DB::raw('COALESCE(values(date_of_birth), eligible_voters.date_of_birth)'),
+                        'updated_at' => DB::raw('values(updated_at)'),
+                    ]
+                );
+            } elseif ($driver === 'sqlite' || $driver === 'pgsql') {
+                EligibleVoter::upsert(
+                    $chunk,
+                    ['nim'],
+                    [
+                        'name' => DB::raw('COALESCE(excluded.name, eligible_voters.name)'),
+                        'study_program_id' => DB::raw('COALESCE(excluded.study_program_id, eligible_voters.study_program_id)'),
+                        'date_of_birth' => DB::raw('COALESCE(excluded.date_of_birth, eligible_voters.date_of_birth)'),
+                        'updated_at' => DB::raw('excluded.updated_at'),
+                    ]
+                );
+            } else {
+                EligibleVoter::upsert(
+                    $chunk,
+                    ['nim'],
+                    ['name', 'study_program_id', 'date_of_birth', 'updated_at']
+                );
+            }
         } else {
             EligibleVoter::insert($chunk);
         }
@@ -958,19 +1029,53 @@ class Index extends Component
         ];
     }
 
-    protected function getStudyProgramMap(): array
+    protected function getStudyProgramMap($programs = null): array
     {
         $map = [];
-        $programs = StudyProgram::all();
+        $programs = $programs ?? StudyProgram::all();
 
         foreach ($programs as $prog) {
             $nameKey = strtolower(trim($prog->name));
             $codeKey = strtolower(trim($prog->code));
             $map[$nameKey] = $prog->id;
             $map[$codeKey] = $prog->id;
+
+            $nameAlpha = preg_replace('/[^a-z0-9]/', '', $nameKey);
+            $codeAlpha = preg_replace('/[^a-z0-9]/', '', $codeKey);
+            $map[$nameAlpha] = $prog->id;
+            $map[$codeAlpha] = $prog->id;
         }
 
         return $map;
+    }
+
+    protected function matchStudyProgram(string $jurusanRaw, array $studyProgramMap, $programs): ?int
+    {
+        $jurusanRaw = trim($jurusanRaw);
+        if ($jurusanRaw === '') {
+            return null;
+        }
+
+        $clean = strtolower($jurusanRaw);
+        if (isset($studyProgramMap[$clean])) {
+            return $studyProgramMap[$clean];
+        }
+
+        $alphanumeric = preg_replace('/[^a-z0-9]/', '', $clean);
+        if (isset($studyProgramMap[$alphanumeric])) {
+            return $studyProgramMap[$alphanumeric];
+        }
+
+        foreach ($programs as $prog) {
+            $nameClean = strtolower(trim($prog->name));
+            $codeClean = strtolower(trim($prog->code));
+
+            if (str_contains($clean, $nameClean) || str_contains($clean, $codeClean)) {
+                return $prog->id;
+            }
+        }
+
+        return null;
     }
 
     protected function parseCsvDate(string $rawDate): ?string
@@ -989,8 +1094,14 @@ class Index extends Component
             'Y.m.d',
             'j-n-Y',
             'j/n/Y',
+            'j-m-Y',
+            'j/m/Y',
+            'd-n-Y',
+            'd/n/Y',
             'm/d/Y',
             'm-d-Y',
+            'Y-n-j',
+            'Y/n/j',
         ];
 
         foreach ($formats as $format) {
@@ -1000,6 +1111,17 @@ class Index extends Component
                 if ($year >= 1950 && $year <= 2030) {
                     return $parsed->format('Y-m-d');
                 }
+            }
+        }
+
+        if (is_numeric($rawDate) && (int) $rawDate >= 20000 && (int) $rawDate <= 60000) {
+            try {
+                $excelDate = (new DateTimeImmutable('1899-12-30'))->modify("+{$rawDate} days");
+                $year = (int) $excelDate->format('Y');
+                if ($year >= 1950 && $year <= 2030) {
+                    return $excelDate->format('Y-m-d');
+                }
+            } catch (Throwable) {
             }
         }
 
@@ -1026,11 +1148,26 @@ class Index extends Component
         return $dir.'/eligible_voters_'.Auth::id().'.ndjson';
     }
 
+    protected function getTempSourceCsvPath(): string
+    {
+        $dir = storage_path('app/temp');
+        if (! is_dir($dir)) {
+            mkdir($dir, 0755, true);
+        }
+
+        return $dir.'/eligible_voters_source_'.Auth::id().'.csv';
+    }
+
     protected function cleanupTempFile(): void
     {
         $path = $this->getTempFilePath();
         if (file_exists($path)) {
             @unlink($path);
+        }
+
+        $sourceCsv = $this->getTempSourceCsvPath();
+        if (file_exists($sourceCsv)) {
+            @unlink($sourceCsv);
         }
     }
 

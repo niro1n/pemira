@@ -154,22 +154,26 @@ class DashboardDataProvider implements DashboardDataProviderInterface
             return $this->calculateParticipationRatios($this->forcedParticipationStats);
         }
 
-        if ($this->hasDatabaseData()) {
-            $eligible = (int) EligibleVoter::where('is_eligible', true)->count();
-            $registered = (int) VoterAccount::count();
-            $voted = (int) DB::table('voting_participations')->count();
+        $eligible = 0;
+        $registered = 0;
+        $voted = 0;
 
-            return $this->calculateParticipationRatios([
-                'eligible' => $eligible,
-                'registered' => $registered,
-                'voted' => $voted,
-            ]);
+        if (Schema::hasTable('eligible_voters')) {
+            $eligible = (int) EligibleVoter::where('is_eligible', true)->count();
+        }
+
+        if (Schema::hasTable('voter_accounts')) {
+            $registered = (int) VoterAccount::count();
+        }
+
+        if (Schema::hasTable('voting_participations')) {
+            $voted = (int) DB::table('voting_participations')->count();
         }
 
         return $this->calculateParticipationRatios([
-            'eligible' => 2450,
-            'registered' => 2210,
-            'voted' => 1987,
+            'eligible' => $eligible,
+            'registered' => $registered,
+            'voted' => $voted,
         ]);
     }
 
@@ -218,17 +222,22 @@ class DashboardDataProvider implements DashboardDataProviderInterface
             return $this->forcedProgramParticipation;
         }
 
-        if ($this->hasDatabaseData() && Schema::hasTable('study_programs')) {
+        if (Schema::hasTable('study_programs')) {
             $programs = StudyProgram::query()->orderBy('name')->get();
 
             if ($programs->isNotEmpty()) {
                 return $programs->map(function (StudyProgram $program) {
-                    $eligible = (int) EligibleVoter::where('study_program_id', $program->id)->where('is_eligible', true)->count();
-                    $voted = (int) DB::table('voting_participations')
-                        ->join('voter_accounts', 'voting_participations.voter_account_id', '=', 'voter_accounts.id')
-                        ->join('eligible_voters', 'voter_accounts.eligible_voter_id', '=', 'eligible_voters.id')
-                        ->where('eligible_voters.study_program_id', $program->id)
-                        ->count();
+                    $eligible = Schema::hasTable('eligible_voters')
+                        ? (int) EligibleVoter::where('study_program_id', $program->id)->where('is_eligible', true)->count()
+                        : 0;
+
+                    $voted = (Schema::hasTable('voting_participations') && Schema::hasTable('voter_accounts') && Schema::hasTable('eligible_voters'))
+                        ? (int) DB::table('voting_participations')
+                            ->join('voter_accounts', 'voting_participations.voter_account_id', '=', 'voter_accounts.id')
+                            ->join('eligible_voters', 'voter_accounts.eligible_voter_id', '=', 'eligible_voters.id')
+                            ->where('eligible_voters.study_program_id', $program->id)
+                            ->count()
+                        : 0;
 
                     $rate = $eligible > 0 ? round(($voted / $eligible) * 100, 2) : 0.0;
 
@@ -245,71 +254,7 @@ class DashboardDataProvider implements DashboardDataProviderInterface
             }
         }
 
-        return [
-            [
-                'code' => 'TI',
-                'name' => 'Jurusan Teknologi Informasi',
-                'short_name' => 'Teknologi Informasi',
-                'eligible' => 420,
-                'voted' => 365,
-                'rate' => 86.9,
-                'rate_formatted' => '86,90%',
-            ],
-            [
-                'code' => 'TE',
-                'name' => 'Jurusan Teknik Elektro',
-                'short_name' => 'Teknik Elektro',
-                'eligible' => 390,
-                'voted' => 320,
-                'rate' => 82.05,
-                'rate_formatted' => '82,05%',
-            ],
-            [
-                'code' => 'TM',
-                'name' => 'Jurusan Teknik Mesin',
-                'short_name' => 'Teknik Mesin',
-                'eligible' => 380,
-                'voted' => 310,
-                'rate' => 81.58,
-                'rate_formatted' => '81,58%',
-            ],
-            [
-                'code' => 'AK',
-                'name' => 'Jurusan Akuntansi',
-                'short_name' => 'Akuntansi',
-                'eligible' => 460,
-                'voted' => 368,
-                'rate' => 80.0,
-                'rate_formatted' => '80,00%',
-            ],
-            [
-                'code' => 'TS',
-                'name' => 'Jurusan Teknik Sipil',
-                'short_name' => 'Teknik Sipil',
-                'eligible' => 370,
-                'voted' => 295,
-                'rate' => 79.73,
-                'rate_formatted' => '79,73%',
-            ],
-            [
-                'code' => 'AB',
-                'name' => 'Jurusan Administrasi Bisnis',
-                'short_name' => 'Administrasi Bisnis',
-                'eligible' => 410,
-                'voted' => 322,
-                'rate' => 78.54,
-                'rate_formatted' => '78,54%',
-            ],
-            [
-                'code' => 'PAR',
-                'name' => 'Jurusan Pariwisata',
-                'short_name' => 'Pariwisata',
-                'eligible' => 390,
-                'voted' => 294,
-                'rate' => 75.38,
-                'rate_formatted' => '75,38%',
-            ],
-        ];
+        return [];
     }
 
     public function getProgramParticipation(): array
@@ -323,7 +268,7 @@ class DashboardDataProvider implements DashboardDataProviderInterface
             return $this->forcedRecentActivities;
         }
 
-        if ($this->hasDatabaseData() && Schema::hasTable('voting_participations') && Schema::hasTable('study_programs')) {
+        if (Schema::hasTable('voting_participations') && Schema::hasTable('study_programs') && Schema::hasTable('voter_accounts') && Schema::hasTable('eligible_voters')) {
             $recentVotes = DB::table('voting_participations')
                 ->join('voter_accounts', 'voting_participations.voter_account_id', '=', 'voter_accounts.id')
                 ->join('eligible_voters', 'voter_accounts.eligible_voter_id', '=', 'eligible_voters.id')
@@ -350,7 +295,7 @@ class DashboardDataProvider implements DashboardDataProviderInterface
             }
         }
 
-        if ($this->hasDatabaseData() && Schema::hasTable('audit_logs')) {
+        if (Schema::hasTable('audit_logs')) {
             $logs = AuditLog::query()
                 ->latest()
                 ->limit(5)
@@ -387,43 +332,7 @@ class DashboardDataProvider implements DashboardDataProviderInterface
             }
         }
 
-        return [
-            [
-                'time' => '12:41',
-                'title' => 'REGISTRASI PEMILIH',
-                'description' => 'Akun pemilih terverifikasi dari Jurusan Teknologi Informasi (TI)',
-                'type' => 'Registrasi',
-                'department' => 'TI',
-            ],
-            [
-                'time' => '12:39',
-                'title' => 'SUARA DITERIMA',
-                'description' => 'Surat suara tercatat secara anonim dari Jurusan Akuntansi (AK)',
-                'type' => 'Suara',
-                'department' => 'AK',
-            ],
-            [
-                'time' => '12:37',
-                'title' => 'SUARA DITERIMA',
-                'description' => 'Surat suara tercatat secara anonim dari Jurusan Teknik Mesin (TM)',
-                'type' => 'Suara',
-                'department' => 'TM',
-            ],
-            [
-                'time' => '12:34',
-                'title' => 'SUARA DITERIMA',
-                'description' => 'Surat suara tercatat secara anonim dari Jurusan Teknik Elektro (TE)',
-                'type' => 'Suara',
-                'department' => 'TE',
-            ],
-            [
-                'time' => '12:30',
-                'title' => 'MASUKAN DITERIMA',
-                'description' => 'Masukan pemilihan baru diterima dari mahasiswa',
-                'type' => 'Masukan',
-                'department' => null,
-            ],
-        ];
+        return [];
     }
 
     public function getSystemInfo(?User $user = null): ?array
@@ -432,20 +341,18 @@ class DashboardDataProvider implements DashboardDataProviderInterface
             return null;
         }
 
-        $scheduleRequestsCount = 2;
-        $adminCount = 3;
-        $auditLogsCount = 148;
+        $scheduleRequestsCount = 0;
+        $adminCount = 0;
+        $auditLogsCount = 0;
 
-        if ($this->hasDatabaseData()) {
-            if (Schema::hasTable('schedule_change_requests')) {
-                $scheduleRequestsCount = DB::table('schedule_change_requests')->where('status', 'pending')->count();
-            }
-            if (Schema::hasTable('users')) {
-                $adminCount = User::whereIn('role', ['admin', 'super_admin'])->count();
-            }
-            if (Schema::hasTable('audit_logs')) {
-                $auditLogsCount = DB::table('audit_logs')->count();
-            }
+        if (Schema::hasTable('schedule_change_requests')) {
+            $scheduleRequestsCount = DB::table('schedule_change_requests')->where('status', 'pending')->count();
+        }
+        if (Schema::hasTable('users')) {
+            $adminCount = User::whereIn('role', ['admin', 'super_admin'])->count();
+        }
+        if (Schema::hasTable('audit_logs')) {
+            $auditLogsCount = DB::table('audit_logs')->count();
         }
 
         return [
@@ -456,14 +363,5 @@ class DashboardDataProvider implements DashboardDataProviderInterface
             'total_audit_logs' => $auditLogsCount,
             'engine_status' => 'TERVERIFIKASI & AMAN',
         ];
-    }
-
-    protected function hasDatabaseData(): bool
-    {
-        try {
-            return Schema::hasTable('elections') && DB::table('elections')->exists();
-        } catch (\Throwable) {
-            return false;
-        }
     }
 }

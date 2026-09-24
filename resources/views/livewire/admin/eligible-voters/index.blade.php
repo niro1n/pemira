@@ -1014,6 +1014,18 @@
                                     2215354002,Kadek Ayu Lestari,,
                                 </div>
                             </div>
+                            <div class="flex items-start gap-2.5 p-3.5 bg-amber-50/70 border-2 border-ink text-xs font-sans shadow-brutal-sm">
+                                <input type="checkbox"
+                                       id="updateExistingUploadCheckbox"
+                                       wire:model="updateExisting"
+                                       class="w-4 h-4 mt-0.5 text-brand border-2 border-ink rounded-none focus:ring-0 cursor-pointer shrink-0" />
+                                <label for="updateExistingUploadCheckbox" class="font-bold text-ink cursor-pointer select-none">
+                                    <span>Perbarui data jika NIM sudah ada di database</span>
+                                    <span class="block font-normal text-ink/75 mt-0.5">
+                                        Centang opsi ini untuk melengkapi/menimpa data mahasiswa yang sudah ada di sistem (misal: mengisi jurusan atau tanggal lahir yang sebelumnya belum lengkap). Jika tidak dicentang, data dengan NIM yang sudah ada akan dilewati.
+                                    </span>
+                                </label>
+                            </div>
                         </div>
 
                         <div class="px-4 py-3 sm:px-5 sm:py-3.5 border-t-2 border-ink flex items-center justify-end gap-2 bg-surface-muted shrink-0">
@@ -1048,6 +1060,9 @@
                                     </div>
                                     <div class="text-[11px] font-sans font-bold text-emerald-800 mt-0.5">
                                         {{ number_format($importSummary['complete'], 0, ',', '.') }} Lengkap &middot; {{ number_format($importSummary['incomplete'], 0, ',', '.') }} Parsial
+                                        @if ($updateExisting && ($importSummary['to_update'] ?? 0) > 0)
+                                            <span class="block text-[10px] text-emerald-900 font-semibold mt-0.5">({{ number_format($importSummary['to_update'], 0, ',', '.') }} akan diperbarui)</span>
+                                        @endif
                                     </div>
                                 </div>
 
@@ -1057,7 +1072,7 @@
                                         {{ number_format($importSummary['duplicates'], 0, ',', '.') }}
                                     </div>
                                     <div class="text-[11px] font-sans text-amber-800 mt-0.5">
-                                        NIM sudah ada
+                                        {{ $updateExisting ? 'NIM ganda di CSV' : 'NIM sudah ada di DB' }}
                                     </div>
                                 </div>
 
@@ -1072,13 +1087,16 @@
                                 </div>
                             </div>
 
-                            <div class="flex items-center gap-2 p-3 bg-surface-muted border-2 border-ink text-xs font-sans">
+                            <div class="flex items-start gap-2.5 p-3.5 bg-surface-muted border-2 border-ink text-xs font-sans shadow-brutal-sm">
                                 <input type="checkbox"
                                        id="updateExistingCheckbox"
-                                       wire:model="updateExisting"
-                                       class="w-4 h-4 text-brand border-2 border-ink rounded-none focus:ring-0 cursor-pointer" />
-                                <label for="updateExistingCheckbox" class="font-bold text-ink cursor-pointer">
-                                    Perbarui data jika NIM sudah ada di database (Opsi default: abaikan/lewati duplikat)
+                                       wire:model.live="updateExisting"
+                                       class="w-4 h-4 mt-0.5 text-brand border-2 border-ink rounded-none focus:ring-0 cursor-pointer shrink-0" />
+                                <label for="updateExistingCheckbox" class="font-bold text-ink cursor-pointer select-none">
+                                    <span>Perbarui data jika NIM sudah ada di database</span>
+                                    <span class="block font-normal text-ink/75 mt-0.5">
+                                        Jika dicentang, data mahasiswa dengan NIM yang sudah ada di database akan diperbarui/dilengkapi (misal mengisi jurusan atau tanggal lahir). Jika tidak dicentang, NIM yang sudah ada akan dilewati.
+                                    </span>
                                 </label>
                             </div>
 
@@ -1107,9 +1125,13 @@
                                                         <td class="p-2">{{ $preview['date_of_birth'] }}</td>
                                                         <td class="p-2">
                                                             @if ($preview['is_complete'])
-                                                                <span class="px-1.5 py-0.5 bg-emerald-100 text-emerald-800 border border-ink text-[10px] font-bold">LENGKAP</span>
+                                                                <span class="px-1.5 py-0.5 bg-emerald-100 text-emerald-800 border border-ink text-[10px] font-bold">
+                                                                    {{ $preview['status'] }}
+                                                                </span>
                                                             @else
-                                                                <span class="px-1.5 py-0.5 bg-amber-100 text-amber-800 border border-ink text-[10px] font-bold">TIDAK LENGKAP</span>
+                                                                <span class="px-1.5 py-0.5 bg-amber-100 text-amber-800 border border-ink text-[10px] font-bold">
+                                                                    {{ $preview['status'] }}
+                                                                </span>
                                                             @endif
                                                         </td>
                                                     </tr>
@@ -1124,7 +1146,7 @@
                                 <div class="space-y-2">
                                     <div class="flex items-center justify-between">
                                         <span class="text-xs font-display font-bold uppercase tracking-wider text-red-600 block">
-                                            CATATAN ERROR &amp; DUPLIKAT ({{ $totalErrorsCount }} Catatan)
+                                            CATATAN VALIDASI &amp; PERINGATAN ({{ $totalErrorsCount }} Catatan)
                                         </span>
                                     </div>
                                     <div class="max-h-40 overflow-y-auto border-2 border-ink bg-red-50 p-2.5 space-y-1 text-xs font-sans text-red-900 shadow-brutal-sm">
@@ -1155,11 +1177,18 @@
                                     @if ($importSummary['valid'] === 0) disabled @endif
                                     wire:loading.attr="disabled"
                                     class="px-4 py-2 bg-brand text-accent hover:bg-brand-dark border-2 border-ink shadow-brutal text-xs font-display font-black uppercase tracking-wider transition-all cursor-pointer min-h-10 disabled:opacity-50">
-                                <span wire:loading.remove wire:target="confirmImport">
-                                    IMPORT {{ number_format($importSummary['valid'], 0, ',', '.') }} DATA
+                                <span wire:loading.remove wire:target="confirmImport,updateExisting">
+                                    @if ($updateExisting && ($importSummary['to_update'] ?? 0) > 0)
+                                        IMPORT &amp; PERBARUI {{ number_format($importSummary['valid'], 0, ',', '.') }} DATA
+                                    @else
+                                        IMPORT {{ number_format($importSummary['valid'], 0, ',', '.') }} DATA
+                                    @endif
                                 </span>
                                 <span wire:loading wire:target="confirmImport">
                                     MENYIMPAN DATA...
+                                </span>
+                                <span wire:loading wire:target="updateExisting">
+                                    MEMPERBARUI PREVIEW...
                                 </span>
                             </button>
                         </div>
