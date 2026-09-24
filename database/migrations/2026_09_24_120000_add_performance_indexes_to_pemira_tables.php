@@ -12,11 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('eligible_voters', function (Blueprint $table) {
-            $table->index(['study_program_id', 'is_eligible'], 'idx_eligible_voters_program_eligible');
+            if (! Schema::hasIndex('eligible_voters', 'idx_eligible_voters_eligible_program')) {
+                $table->index(['is_eligible', 'study_program_id'], 'idx_eligible_voters_eligible_program');
+            }
         });
 
         Schema::table('schedule_change_requests', function (Blueprint $table) {
-            $table->index(['election_id', 'status'], 'idx_schedule_requests_election_status');
+            if (! Schema::hasIndex('schedule_change_requests', 'idx_schedule_requests_status_election')) {
+                $table->index(['status', 'election_id'], 'idx_schedule_requests_status_election');
+            }
         });
     }
 
@@ -26,11 +30,29 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('schedule_change_requests', function (Blueprint $table) {
-            $table->dropIndex('idx_schedule_requests_election_status');
+            if (Schema::hasIndex('schedule_change_requests', 'idx_schedule_requests_status_election')) {
+                $table->dropIndex('idx_schedule_requests_status_election');
+            }
+
+            if (Schema::hasIndex('schedule_change_requests', 'idx_schedule_requests_election_status')) {
+                if (! Schema::hasIndex('schedule_change_requests', 'schedule_change_requests_election_id_foreign')) {
+                    $table->index('election_id', 'schedule_change_requests_election_id_foreign');
+                }
+                $table->dropIndex('idx_schedule_requests_election_status');
+            }
         });
 
         Schema::table('eligible_voters', function (Blueprint $table) {
-            $table->dropIndex('idx_eligible_voters_program_eligible');
+            if (Schema::hasIndex('eligible_voters', 'idx_eligible_voters_eligible_program')) {
+                $table->dropIndex('idx_eligible_voters_eligible_program');
+            }
+
+            if (Schema::hasIndex('eligible_voters', 'idx_eligible_voters_program_eligible')) {
+                if (! Schema::hasIndex('eligible_voters', 'eligible_voters_study_program_id_foreign')) {
+                    $table->index('study_program_id', 'eligible_voters_study_program_id_foreign');
+                }
+                $table->dropIndex('idx_eligible_voters_program_eligible');
+            }
         });
     }
 };
