@@ -98,8 +98,8 @@
             </div>
         </div>
     @else
-        <div class="bg-surface border-2 border-ink p-3 sm:p-4 shadow-brutal min-w-0 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
-            <div class="relative flex-1">
+        <div class="bg-surface border-2 border-ink p-3 sm:p-4 shadow-brutal min-w-0 flex items-center justify-between gap-2.5 sm:gap-3">
+            <div class="relative flex-1 min-w-0">
                 <input type="text"
                        wire:model.live.debounce.300ms="search"
                        placeholder="Cari nomor paslon, nama/NIM Ketua atau Wakil..."
@@ -110,7 +110,7 @@
                 <button wire:click="$set('search', '')"
                         type="button"
                         class="px-3 py-2 bg-surface border-2 border-ink text-xs font-sans font-bold text-ink/70 hover:text-ink shadow-brutal-sm shrink-0 min-h-10">
-                    Reset Pencarian
+                    Reset
                 </button>
             @endif
         </div>
@@ -571,15 +571,15 @@
                         </div>
                     </div>
 
-                    <div class="p-3.5 sm:p-4 border-t-2 border-ink bg-surface-muted flex flex-row items-center justify-end gap-2.5 sm:gap-3 shrink-0">
+                    <div class="p-3.5 sm:p-4 border-t-2 border-ink bg-surface-muted flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2.5 sm:gap-3 shrink-0">
                         <button wire:click="closeCreateModal"
                                 type="button"
-                                class="flex-1 sm:flex-initial px-4 py-2.5 bg-surface border-2 border-ink text-xs font-display font-bold uppercase tracking-wider hover:bg-surface-muted transition-colors text-center min-h-10 cursor-pointer">
+                                class="w-full sm:w-auto px-4 py-2.5 bg-surface border-2 border-ink text-xs font-display font-bold uppercase tracking-wider hover:bg-surface-muted transition-colors text-center min-h-10 cursor-pointer">
                             BATAL
                         </button>
                         <button type="submit"
                                 wire:loading.attr="disabled"
-                                class="flex-1 sm:flex-initial px-5 py-2.5 bg-brand text-accent hover:bg-brand-dark border-2 border-ink shadow-brutal-sm text-xs font-display font-black uppercase tracking-wider transition-all disabled:opacity-50 cursor-pointer text-center min-h-10">
+                                class="w-full sm:w-auto px-5 py-2.5 bg-brand text-accent hover:bg-brand-dark border-2 border-ink shadow-brutal-sm text-xs font-display font-black uppercase tracking-wider transition-all disabled:opacity-50 cursor-pointer text-center min-h-10">
                             <span wire:loading.remove wire:target="createCandidatePair">SIMPAN PASLON</span>
                             <span wire:loading wire:target="createCandidatePair">MENYIMPAN...</span>
                         </button>
@@ -953,15 +953,15 @@
                         </div>
                     </div>
 
-                    <div class="p-3.5 sm:p-4 border-t-2 border-ink bg-surface-muted flex flex-row items-center justify-end gap-2.5 sm:gap-3 shrink-0">
+                    <div class="p-3.5 sm:p-4 border-t-2 border-ink bg-surface-muted flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2.5 sm:gap-3 shrink-0">
                         <button wire:click="closeEditModal"
                                 type="button"
-                                class="flex-1 sm:flex-initial px-4 py-2.5 bg-surface border-2 border-ink text-xs font-display font-bold uppercase tracking-wider hover:bg-surface-muted transition-colors text-center min-h-10 cursor-pointer">
+                                class="w-full sm:w-auto px-4 py-2.5 bg-surface border-2 border-ink text-xs font-display font-bold uppercase tracking-wider hover:bg-surface-muted transition-colors text-center min-h-10 cursor-pointer">
                             BATAL
                         </button>
                         <button type="submit"
                                 wire:loading.attr="disabled"
-                                class="flex-1 sm:flex-initial px-5 py-2.5 bg-brand text-accent hover:bg-brand-dark border-2 border-ink shadow-brutal-sm text-xs font-display font-black uppercase tracking-wider transition-all disabled:opacity-50 cursor-pointer text-center min-h-10">
+                                class="w-full sm:w-auto px-5 py-2.5 bg-brand text-accent hover:bg-brand-dark border-2 border-ink shadow-brutal-sm text-xs font-display font-black uppercase tracking-wider transition-all disabled:opacity-50 cursor-pointer text-center min-h-10">
                             <span wire:loading.remove wire:target="updateCandidatePair">SIMPAN PERUBAHAN</span>
                             <span wire:loading wire:target="updateCandidatePair">MENYIMPAN...</span>
                         </button>
@@ -1087,21 +1087,21 @@
                     </div>
                 </div>
 
-                <div class="p-3.5 sm:p-4 border-t-2 border-ink bg-surface-muted flex flex-row items-center justify-between gap-2.5 shrink-0">
+                <div class="p-3.5 sm:p-4 border-t-2 border-ink bg-surface-muted flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-2.5 shrink-0">
                     <button wire:click="closeDetailModal"
                             type="button"
-                            class="px-4 py-2.5 bg-surface border-2 border-ink text-xs font-display font-bold uppercase tracking-wider hover:bg-surface-muted transition-colors min-h-10 cursor-pointer">
+                            class="w-full sm:w-auto px-4 py-2.5 bg-surface border-2 border-ink text-xs font-display font-bold uppercase tracking-wider hover:bg-surface-muted transition-colors text-center min-h-10 cursor-pointer">
                         TUTUP
                     </button>
-                    <div class="flex items-center gap-2">
+                    <div class="flex items-center gap-2 w-full sm:w-auto">
                         <button wire:click="openEditModal({{ $selectedCandidatePair->id }}); closeDetailModal()"
                                 type="button"
-                                class="px-3.5 py-2.5 bg-brand text-surface hover:bg-brand-dark border-2 border-ink shadow-brutal-sm text-xs font-display font-bold uppercase min-h-10 cursor-pointer">
+                                class="flex-1 sm:flex-initial px-3.5 py-2.5 bg-brand text-surface hover:bg-brand-dark border-2 border-ink shadow-brutal-sm text-xs font-display font-bold uppercase text-center min-h-10 cursor-pointer">
                             EDIT
                         </button>
                         <button wire:click="openDeleteModal({{ $selectedCandidatePair->id }}); closeDetailModal()"
                                 type="button"
-                                class="px-3.5 py-2.5 bg-surface hover:bg-red-600 hover:text-white border-2 border-ink shadow-brutal-sm text-xs font-display font-bold uppercase min-h-10 cursor-pointer">
+                                class="flex-1 sm:flex-initial px-3.5 py-2.5 bg-surface hover:bg-red-600 hover:text-white border-2 border-ink shadow-brutal-sm text-xs font-display font-bold uppercase text-center min-h-10 cursor-pointer">
                             HAPUS
                         </button>
                     </div>
@@ -1129,15 +1129,15 @@
                     </p>
                 </div>
 
-                <div class="p-3.5 sm:p-4 border-t-2 border-ink bg-surface-muted flex flex-row items-center justify-end gap-2.5 sm:gap-3 shrink-0">
+                <div class="p-3.5 sm:p-4 border-t-2 border-ink bg-surface-muted flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2.5 sm:gap-3 shrink-0">
                     <button wire:click="closeDeleteModal"
                             type="button"
-                            class="flex-1 sm:flex-initial px-4 py-2.5 bg-surface border-2 border-ink text-xs font-display font-bold uppercase tracking-wider hover:bg-surface-muted transition-colors text-center min-h-10 cursor-pointer">
+                            class="w-full sm:w-auto px-4 py-2.5 bg-surface border-2 border-ink text-xs font-display font-bold uppercase tracking-wider hover:bg-surface-muted transition-colors text-center min-h-10 cursor-pointer">
                         BATAL
                     </button>
                     <button wire:click="deleteCandidatePair"
                             type="button"
-                            class="flex-1 sm:flex-initial px-5 py-2.5 bg-red-600 text-white hover:bg-red-700 border-2 border-ink shadow-brutal-sm text-xs font-display font-black uppercase tracking-wider transition-all cursor-pointer text-center min-h-10">
+                            class="w-full sm:w-auto px-5 py-2.5 bg-red-600 text-white hover:bg-red-700 border-2 border-ink shadow-brutal-sm text-xs font-display font-black uppercase tracking-wider transition-all cursor-pointer text-center min-h-10">
                         HAPUS
                     </button>
                 </div>
@@ -1264,17 +1264,17 @@
                 </div>
             </div>
 
-            <div class="p-3.5 sm:p-4 border-t-2 border-ink bg-surface-muted flex items-center justify-end gap-2.5 sm:gap-3 shrink-0">
+            <div class="p-3.5 sm:p-4 border-t-2 border-ink bg-surface-muted flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2.5 sm:gap-3 shrink-0">
                 <button type="button"
                         @click="cancelCrop()"
                         :disabled="isUploading"
-                        class="px-4 py-2.5 bg-surface border-2 border-ink text-xs font-display font-bold uppercase tracking-wider hover:bg-surface-muted transition-colors text-center min-h-10 cursor-pointer disabled:opacity-50">
+                        class="w-full sm:w-auto px-4 py-2.5 bg-surface border-2 border-ink text-xs font-display font-bold uppercase tracking-wider hover:bg-surface-muted transition-colors text-center min-h-10 cursor-pointer disabled:opacity-50">
                     BATAL
                 </button>
                 <button type="button"
                         @click="applyCrop()"
                         :disabled="isUploading"
-                        class="px-5 py-2.5 bg-brand text-accent hover:bg-brand-dark border-2 border-ink shadow-brutal-sm text-xs font-display font-black uppercase tracking-wider transition-all disabled:opacity-50 cursor-pointer text-center min-h-10 flex items-center gap-2">
+                        class="w-full sm:w-auto px-5 py-2.5 bg-brand text-accent hover:bg-brand-dark border-2 border-ink shadow-brutal-sm text-xs font-display font-black uppercase tracking-wider transition-all disabled:opacity-50 cursor-pointer text-center min-h-10 flex items-center justify-center gap-2">
                     <span x-show="!isUploading">GUNAKAN FOTO</span>
                     <span x-show="isUploading" x-cloak class="flex items-center gap-1.5">
                         <svg class="animate-spin h-3.5 w-3.5 text-accent" viewBox="0 0 24 24" fill="none">

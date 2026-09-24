@@ -22,10 +22,10 @@
             </p>
         </div>
 
-        <div class="flex items-center gap-3">
+        <div class="flex items-center gap-3 w-full sm:w-auto">
             @if ($isSuperAdmin)
                 <a href="{{ route('admin.elections.index') }}"
-                   class="inline-flex items-center gap-2 px-4 py-2 bg-surface text-ink border-2 border-ink shadow-brutal hover:bg-surface-muted font-display font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer">
+                   class="inline-flex items-center justify-center gap-2 px-4 py-2 bg-surface text-ink border-2 border-ink shadow-brutal hover:bg-surface-muted font-display font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer w-full sm:w-auto">
                     <svg class="w-4 h-4 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                     </svg>
@@ -34,7 +34,7 @@
             @else
                 <button type="button"
                         wire:click="openCreateModal"
-                        class="inline-flex items-center gap-2 px-4 py-2 bg-brand text-surface border-2 border-ink shadow-brutal hover:bg-accent hover:text-brand font-display font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer">
+                        class="inline-flex items-center justify-center gap-2 px-4 py-2 bg-brand text-surface border-2 border-ink shadow-brutal hover:bg-accent hover:text-brand font-display font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer w-full sm:w-auto">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/>
                     </svg>
@@ -153,7 +153,7 @@
         </div>
     @endif
 
-    <div class="bg-surface border-2 border-ink p-3 sm:p-4 shadow-brutal flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+    <div class="bg-surface border-2 border-ink p-3 sm:p-4 shadow-brutal flex flex-col md:flex-row items-stretch md:items-center justify-between gap-2.5 sm:gap-3 min-w-0">
         <div class="relative flex-1 min-w-0">
             <label for="search-input" class="sr-only">Cari pengajuan jadwal</label>
             <input id="search-input"
@@ -171,25 +171,25 @@
             @endif
         </div>
 
-        <div class="flex flex-wrap items-center gap-2.5">
-            <div class="min-w-36">
+        <div class="flex items-center gap-2 sm:gap-2.5 shrink-0 overflow-x-auto">
+            <div class="flex-1 sm:flex-initial min-w-28 sm:min-w-36">
                 <label for="status-filter" class="sr-only">Filter Status</label>
                 <select id="status-filter"
                         wire:model.live="statusFilter"
-                        class="w-full bg-surface-muted border-2 border-ink px-3 py-2 text-xs font-display font-bold uppercase tracking-wider shadow-2xs focus:outline-none cursor-pointer min-h-10">
+                        class="w-full bg-surface-muted border-2 border-ink px-2 sm:px-3 py-2 text-xs font-display font-bold uppercase tracking-wider shadow-2xs focus:outline-none cursor-pointer min-h-10">
                     <option value="">Semua Status</option>
-                    <option value="pending">Menunggu Persetujuan</option>
+                    <option value="pending">Menunggu</option>
                     <option value="approved">Disetujui</option>
                     <option value="rejected">Ditolak</option>
                 </select>
             </div>
 
             @if ($elections->count() > 1)
-                <div class="min-w-40">
+                <div class="flex-1 sm:flex-initial min-w-32 sm:min-w-40">
                     <label for="election-filter" class="sr-only">Filter Pemilihan</label>
                     <select id="election-filter"
                             wire:model.live="electionFilter"
-                            class="w-full bg-surface-muted border-2 border-ink px-3 py-2 text-xs font-display font-bold uppercase tracking-wider shadow-2xs focus:outline-none cursor-pointer min-h-10">
+                            class="w-full bg-surface-muted border-2 border-ink px-2 sm:px-3 py-2 text-xs font-display font-bold uppercase tracking-wider shadow-2xs focus:outline-none cursor-pointer min-h-10 truncate">
                         <option value="">Semua Pemilihan</option>
                         @foreach ($elections as $elec)
                             <option value="{{ $elec->id }}">{{ $elec->name }} ({{ $elec->year }})</option>
@@ -198,11 +198,11 @@
                 </div>
             @endif
 
-            <div>
+            <div class="shrink-0">
                 <label for="per-page-select" class="sr-only">Jumlah per halaman</label>
                 <select id="per-page-select"
                         wire:model.live="perPage"
-                        class="bg-surface-muted border-2 border-ink px-2.5 py-2 text-xs font-mono font-bold shadow-2xs focus:outline-none cursor-pointer min-h-10">
+                        class="bg-surface-muted border-2 border-ink px-2 sm:px-2.5 py-2 text-xs font-mono font-bold shadow-2xs focus:outline-none cursor-pointer min-h-10">
                     <option value="10">10</option>
                     <option value="25">25</option>
                     <option value="50">50</option>
@@ -211,9 +211,9 @@
         </div>
     </div>
 
-    <div class="bg-surface border-2 border-ink shadow-brutal overflow-hidden">
-        <div class="hidden lg:block overflow-x-auto">
-            <table class="w-full text-left border-collapse">
+    <div class="bg-surface border-2 border-ink shadow-brutal overflow-hidden min-w-0">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse min-w-220">
                 <thead>
                     <tr class="border-b-2 border-ink bg-surface-muted text-xs font-display font-black text-brand uppercase tracking-wider">
                         <th class="p-3.5 text-center w-12">NO</th>
@@ -409,139 +409,6 @@
             </table>
         </div>
 
-        <div class="lg:hidden divide-y-2 divide-ink/10">
-            @forelse ($items as $item)
-                <div class="p-4 space-y-3 {{ $item->isPending() ? 'bg-amber-50/40' : '' }}">
-                    <div class="flex items-start justify-between gap-2">
-                        <div>
-                            <div class="font-display font-black text-ink uppercase text-sm">
-                                {{ $item->election?->name ?? 'PEMIRA' }}
-                            </div>
-                            <div class="text-xs text-ink/70">
-                                @if ($isSuperAdmin)
-                                    Pengaju: <span class="font-bold text-brand">{{ $item->requester?->email }}</span> &middot;
-                                @endif
-                                {{ $item->created_at->timezone('Asia/Makassar')->format('d M Y, H:i') }} WITA
-                            </div>
-                        </div>
-
-                        <div>
-                            @if ($item->isPending())
-                                <span class="px-2 py-0.5 bg-amber-100 text-amber-900 border border-ink text-[10px] font-display font-black uppercase">
-                                    Menunggu
-                                </span>
-                            @elseif ($item->isApproved())
-                                <span class="px-2 py-0.5 bg-emerald-100 text-emerald-900 border border-ink text-[10px] font-display font-black uppercase">
-                                    Disetujui
-                                </span>
-                            @else
-                                <span class="px-2 py-0.5 bg-red-100 text-red-900 border border-ink text-[10px] font-display font-black uppercase">
-                                    Ditolak
-                                </span>
-                            @endif
-                        </div>
-                    </div>
-
-                    <div class="space-y-2 text-xs font-mono bg-surface-muted/40 p-2.5 border border-ink/20">
-                        @if ($item->hasRegistrationChange() || $item->new_registration_start_at)
-                            <div class="pb-1.5 border-b border-ink/10">
-                                <div class="flex items-center justify-between mb-1">
-                                    <span class="text-[10px] font-display font-bold uppercase text-brand">Pendaftaran</span>
-                                    @if ($item->hasRegistrationChange())
-                                        <span class="px-1 py-0.2 bg-brand text-accent text-[8px] font-mono font-black">DIUBAH</span>
-                                    @endif
-                                </div>
-                                <div class="text-ink/70 text-[11px]">
-                                    Semula: {{ $item->old_registration_start_at?->timezone('Asia/Makassar')->format('d M, H:i') ?? '-' }} s/d {{ $item->old_registration_end_at?->timezone('Asia/Makassar')->format('d M, H:i') ?? '-' }}
-                                </div>
-                                <div class="font-bold text-ink text-[11px]">
-                                    Diajukan: {{ $item->new_registration_start_at?->timezone('Asia/Makassar')->format('d M, H:i') ?? '-' }} s/d {{ $item->new_registration_end_at?->timezone('Asia/Makassar')->format('d M, H:i') ?? '-' }}
-                                </div>
-                            </div>
-                        @endif
-                        <div>
-                            <div class="flex items-center justify-between mb-1">
-                                <span class="text-[10px] font-display font-bold uppercase text-brand">Voting</span>
-                                @if ($item->hasVotingChange())
-                                    <span class="px-1 py-0.2 bg-brand text-accent text-[8px] font-mono font-black">DIUBAH</span>
-                                @endif
-                            </div>
-                            <div class="text-ink/70 text-[11px]">
-                                Semula: {{ $item->old_voting_start_at?->timezone('Asia/Makassar')->format('d M, H:i') ?? '-' }} s/d {{ $item->old_voting_end_at?->timezone('Asia/Makassar')->format('d M, H:i') ?? '-' }}
-                            </div>
-                            <div class="font-bold text-ink text-[11px]">
-                                Diajukan: {{ $item->new_voting_start_at?->timezone('Asia/Makassar')->format('d M, H:i') ?? '-' }} s/d {{ $item->new_voting_end_at?->timezone('Asia/Makassar')->format('d M, H:i') }}
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="text-xs font-sans text-ink/80 italic">
-                        &ldquo;{{ $item->reason }}&rdquo;
-                    </div>
-
-                    <div class="flex items-center justify-end gap-1.5 pt-2 border-t border-ink/10">
-                        <button type="button"
-                                wire:click="openDetailModal({{ $item->id }})"
-                                class="w-8 h-8 bg-surface-muted border border-ink hover:bg-accent flex items-center justify-center transition-colors cursor-pointer shadow-2xs"
-                                title="Lihat Detail Pengajuan"
-                                aria-label="Lihat Detail Pengajuan">
-                            <svg class="w-4 h-4 text-ink" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                            </svg>
-                        </button>
-
-                        @if ($item->isPending() && ! $isSuperAdmin && $item->requested_by === auth()->id())
-                            <button type="button"
-                                    wire:click="openEditModal({{ $item->id }})"
-                                    class="w-8 h-8 bg-surface-muted border border-ink hover:bg-accent flex items-center justify-center transition-colors cursor-pointer shadow-2xs"
-                                    title="Edit Pengajuan"
-                                    aria-label="Edit Pengajuan">
-                                <svg class="w-4 h-4 text-ink" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                                </svg>
-                            </button>
-
-                            <button type="button"
-                                    wire:click="openDeleteModal({{ $item->id }})"
-                                    class="w-8 h-8 bg-surface-muted border border-ink hover:bg-red-500 hover:text-surface flex items-center justify-center transition-colors cursor-pointer shadow-2xs text-red-700"
-                                    title="Batalkan Pengajuan"
-                                    aria-label="Batalkan Pengajuan">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                                </svg>
-                            </button>
-                        @endif
-
-                        @if ($item->isPending() && $isSuperAdmin)
-                            <button type="button"
-                                    wire:click="openApproveModal({{ $item->id }})"
-                                    class="w-8 h-8 bg-emerald-600 text-surface border border-ink hover:bg-emerald-700 flex items-center justify-center transition-colors cursor-pointer shadow-2xs"
-                                    title="Setujui Perubahan Jadwal"
-                                    aria-label="Setujui Perubahan Jadwal">
-                                <svg class="w-4 h-4 text-surface" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
-                                </svg>
-                            </button>
-
-                            <button type="button"
-                                    wire:click="openRejectModal({{ $item->id }})"
-                                    class="w-8 h-8 bg-red-600 text-surface border border-ink hover:bg-red-700 flex items-center justify-center transition-colors cursor-pointer shadow-2xs"
-                                    title="Tolak Pengajuan"
-                                    aria-label="Tolak Pengajuan">
-                                <svg class="w-4 h-4 text-surface" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/>
-                                </svg>
-                            </button>
-                        @endif
-                    </div>
-                </div>
-            @empty
-                <div class="p-6 text-center text-ink/60 text-xs font-sans">
-                    {{ $isSuperAdmin ? 'Tidak ada antrean peninjauan perubahan jadwal.' : 'Belum ada pengajuan perubahan jadwal dari Anda.' }}
-                </div>
-            @endforelse
-        </div>
 
         @if ($items->hasPages())
             <div class="p-3 border-t-2 border-ink bg-surface-muted">
@@ -551,8 +418,8 @@
     </div>
 
     @if ($showCreateModal)
-        <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-ink/70 backdrop-blur-xs">
-            <div class="bg-surface border-2 border-ink shadow-brutal w-full max-w-xl max-h-[90vh] flex flex-col">
+        <div class="fixed inset-0 z-50 overflow-y-auto flex items-end sm:items-center justify-center p-2.5 sm:p-4 bg-ink/70 backdrop-blur-xs">
+            <div class="bg-surface border-2 border-ink shadow-brutal w-full max-w-xl max-h-[92dvh] sm:max-h-[90vh] flex flex-col min-w-0">
                 <div class="p-4 border-b-2 border-ink bg-brand text-surface flex items-center justify-between">
                     <div>
                         <h3 class="font-display font-black text-sm sm:text-base uppercase tracking-tight">
@@ -645,14 +512,14 @@
                         @enderror
                     </div>
 
-                    <div class="pt-3 border-t-2 border-ink flex items-center justify-end gap-2.5">
+                    <div class="pt-4 border-t-2 border-ink flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2.5 sm:gap-3 shrink-0">
                         <button type="button"
                                 wire:click="closeCreateModal"
-                                class="px-3.5 py-2 border-2 border-ink bg-surface-muted font-display font-bold text-xs uppercase tracking-wider cursor-pointer">
+                                class="w-full sm:w-auto px-4 py-2.5 sm:py-2 border-2 border-ink bg-surface-muted font-display font-bold text-xs uppercase tracking-wider text-center cursor-pointer">
                             Batal
                         </button>
                         <button type="submit"
-                                class="px-4 py-2 border-2 border-ink bg-brand text-surface hover:bg-accent hover:text-brand font-display font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer">
+                                class="w-full sm:w-auto px-5 py-2.5 sm:py-2 border-2 border-ink bg-brand text-surface hover:bg-accent hover:text-brand font-display font-bold text-xs uppercase tracking-wider text-center transition-colors cursor-pointer">
                             Kirim Pengajuan
                         </button>
                     </div>
@@ -662,8 +529,8 @@
     @endif
 
     @if ($showEditModal)
-        <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-ink/70 backdrop-blur-xs">
-            <div class="bg-surface border-2 border-ink shadow-brutal w-full max-w-xl max-h-[90vh] flex flex-col">
+        <div class="fixed inset-0 z-50 overflow-y-auto flex items-end sm:items-center justify-center p-2.5 sm:p-4 bg-ink/70 backdrop-blur-xs">
+            <div class="bg-surface border-2 border-ink shadow-brutal w-full max-w-xl max-h-[92dvh] sm:max-h-[90vh] flex flex-col min-w-0">
                 <div class="p-4 border-b-2 border-ink bg-brand text-surface flex items-center justify-between">
                     <div>
                         <h3 class="font-display font-black text-sm sm:text-base uppercase tracking-tight">
@@ -738,14 +605,14 @@
                         @enderror
                     </div>
 
-                    <div class="pt-3 border-t-2 border-ink flex items-center justify-end gap-2.5">
+                    <div class="pt-4 border-t-2 border-ink flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2.5 sm:gap-3 shrink-0">
                         <button type="button"
                                 wire:click="closeEditModal"
-                                class="px-3.5 py-2 border-2 border-ink bg-surface-muted font-display font-bold text-xs uppercase tracking-wider cursor-pointer">
+                                class="w-full sm:w-auto px-4 py-2.5 sm:py-2 border-2 border-ink bg-surface-muted font-display font-bold text-xs uppercase tracking-wider text-center cursor-pointer">
                             Batal
                         </button>
                         <button type="submit"
-                                class="px-4 py-2 border-2 border-ink bg-brand text-surface hover:bg-accent hover:text-brand font-display font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer">
+                                class="w-full sm:w-auto px-5 py-2.5 sm:py-2 border-2 border-ink bg-brand text-surface hover:bg-accent hover:text-brand font-display font-bold text-xs uppercase tracking-wider text-center transition-colors cursor-pointer">
                             Simpan Perubahan
                         </button>
                     </div>
@@ -755,8 +622,8 @@
     @endif
 
     @if ($showDetailModal && $selectedRequest)
-        <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-ink/70 backdrop-blur-xs">
-            <div class="bg-surface border-2 border-ink shadow-brutal w-full max-w-xl max-h-[90vh] flex flex-col">
+        <div class="fixed inset-0 z-50 overflow-y-auto flex items-end sm:items-center justify-center p-2.5 sm:p-4 bg-ink/70 backdrop-blur-xs">
+            <div class="bg-surface border-2 border-ink shadow-brutal w-full max-w-xl max-h-[92dvh] sm:max-h-[90vh] flex flex-col min-w-0">
                 <div class="p-4 border-b-2 border-ink bg-brand text-surface flex items-center justify-between">
                     <div>
                         <h3 class="font-display font-black text-sm sm:text-base uppercase tracking-tight">
@@ -887,10 +754,10 @@
                     @endif
                 </div>
 
-                <div class="p-4 border-t-2 border-ink bg-surface-muted flex items-center justify-end">
+                <div class="p-3.5 sm:p-4 border-t-2 border-ink bg-surface-muted flex items-center justify-end shrink-0">
                     <button type="button"
                             wire:click="closeDetailModal"
-                            class="px-4 py-2 border-2 border-ink bg-surface font-display font-bold text-xs uppercase tracking-wider cursor-pointer">
+                            class="w-full sm:w-auto px-5 py-2.5 sm:py-2 border-2 border-ink bg-surface font-display font-bold text-xs uppercase tracking-wider text-center cursor-pointer">
                         Tutup
                     </button>
                 </div>
@@ -899,35 +766,37 @@
     @endif
 
     @if ($showApproveModal)
-        <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-ink/70 backdrop-blur-xs">
-            <div class="bg-surface border-2 border-ink shadow-brutal w-full max-w-md p-5 space-y-4">
-                <div class="flex items-center gap-3 border-b-2 border-ink pb-3 text-emerald-950">
+        <div class="fixed inset-0 z-50 overflow-y-auto flex items-end sm:items-center justify-center p-2.5 sm:p-4 bg-ink/70 backdrop-blur-xs">
+            <div class="bg-surface border-2 border-ink shadow-brutal w-full max-w-md max-h-[92dvh] sm:max-h-[90vh] flex flex-col min-w-0 p-4 sm:p-5 space-y-4">
+                <div class="flex items-center gap-3 border-b-2 border-ink pb-3 text-emerald-950 shrink-0">
                     <div class="w-10 h-10 bg-emerald-100 border-2 border-ink flex items-center justify-center shrink-0">
                         <svg class="w-5 h-5 text-emerald-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
                         </svg>
                     </div>
-                    <div>
-                        <h3 class="font-display font-black text-base uppercase text-brand">
+                    <div class="min-w-0 flex-1">
+                        <h3 class="font-display font-black text-sm sm:text-base uppercase text-brand truncate">
                             SETUJUI PERUBAHAN JADWAL?
                         </h3>
-                        <span class="text-xs font-sans text-ink/70">Tindakan Otorisasi Resmi Super Admin</span>
+                        <span class="text-xs font-sans text-ink/70 block truncate">Tindakan Otorisasi Resmi Super Admin</span>
                     </div>
                 </div>
 
-                <p class="text-xs font-sans text-ink/80 leading-relaxed">
-                    Dengan menyetujui pengajuan ini, jadwal pemungutan suara resmi pada tabel pemilihan akan langsung diperbarui ke waktu baru yang diajukan. Tindakan ini bersifat atomik dan mengikat.
-                </p>
+                <div class="overflow-y-auto flex-1">
+                    <p class="text-xs font-sans text-ink/80 leading-relaxed">
+                        Dengan menyetujui pengajuan ini, jadwal pemungutan suara resmi pada tabel pemilihan akan langsung diperbarui ke waktu baru yang diajukan. Tindakan ini bersifat atomik dan mengikat.
+                    </p>
+                </div>
 
-                <div class="pt-2 flex items-center justify-end gap-2.5">
+                <div class="pt-3 border-t-2 border-ink flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2.5 sm:gap-3 shrink-0">
                     <button type="button"
                             wire:click="closeApproveModal"
-                            class="px-3.5 py-2 border-2 border-ink bg-surface-muted font-display font-bold text-xs uppercase cursor-pointer">
+                            class="w-full sm:w-auto px-4 py-2.5 sm:py-2 border-2 border-ink bg-surface-muted font-display font-bold text-xs uppercase text-center cursor-pointer">
                         Batal
                     </button>
                     <button type="button"
                             wire:click="approveRequest"
-                            class="px-4 py-2 border-2 border-ink bg-emerald-600 text-surface hover:bg-emerald-700 font-display font-bold text-xs uppercase tracking-wider cursor-pointer">
+                            class="w-full sm:w-auto px-5 py-2.5 sm:py-2 border-2 border-ink bg-emerald-600 text-surface hover:bg-emerald-700 font-display font-bold text-xs uppercase tracking-wider text-center transition-colors cursor-pointer">
                         Ya, Setujui
                     </button>
                 </div>
@@ -936,23 +805,23 @@
     @endif
 
     @if ($showRejectModal)
-        <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-ink/70 backdrop-blur-xs">
-            <div class="bg-surface border-2 border-ink shadow-brutal w-full max-w-md p-5 space-y-4">
-                <div class="flex items-center gap-3 border-b-2 border-ink pb-3 text-red-950">
+        <div class="fixed inset-0 z-50 overflow-y-auto flex items-end sm:items-center justify-center p-2.5 sm:p-4 bg-ink/70 backdrop-blur-xs">
+            <div class="bg-surface border-2 border-ink shadow-brutal w-full max-w-md max-h-[92dvh] sm:max-h-[90vh] flex flex-col min-w-0 p-4 sm:p-5 space-y-4">
+                <div class="flex items-center gap-3 border-b-2 border-ink pb-3 text-red-950 shrink-0">
                     <div class="w-10 h-10 bg-red-100 border-2 border-ink flex items-center justify-center shrink-0">
                         <svg class="w-5 h-5 text-red-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/>
                         </svg>
                     </div>
-                    <div>
-                        <h3 class="font-display font-black text-base uppercase text-brand">
+                    <div class="min-w-0 flex-1">
+                        <h3 class="font-display font-black text-sm sm:text-base uppercase text-brand truncate">
                             TOLAK PENGAJUAN JADWAL
                         </h3>
-                        <span class="text-xs font-sans text-ink/70">Wajib memberikan catatan penolakan</span>
+                        <span class="text-xs font-sans text-ink/70 block truncate">Wajib memberikan catatan penolakan</span>
                     </div>
                 </div>
 
-                <div class="space-y-2">
+                <div class="space-y-2 overflow-y-auto flex-1">
                     <label for="reject-note" class="block text-xs font-display font-bold uppercase text-ink">
                         Alasan Penolakan <span class="text-red-600">*</span>
                     </label>
@@ -966,15 +835,15 @@
                     @enderror
                 </div>
 
-                <div class="pt-2 flex items-center justify-end gap-2.5">
+                <div class="pt-3 border-t-2 border-ink flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2.5 sm:gap-3 shrink-0">
                     <button type="button"
                             wire:click="closeRejectModal"
-                            class="px-3.5 py-2 border-2 border-ink bg-surface-muted font-display font-bold text-xs uppercase cursor-pointer">
+                            class="w-full sm:w-auto px-4 py-2.5 sm:py-2 border-2 border-ink bg-surface-muted font-display font-bold text-xs uppercase text-center cursor-pointer">
                         Batal
                     </button>
                     <button type="button"
                             wire:click="rejectRequest"
-                            class="px-4 py-2 border-2 border-ink bg-red-600 text-surface hover:bg-red-700 font-display font-bold text-xs uppercase tracking-wider cursor-pointer">
+                            class="w-full sm:w-auto px-5 py-2.5 sm:py-2 border-2 border-ink bg-red-600 text-surface hover:bg-red-700 font-display font-bold text-xs uppercase tracking-wider text-center transition-colors cursor-pointer">
                         Tolak Pengajuan
                     </button>
                 </div>
@@ -983,35 +852,37 @@
     @endif
 
     @if ($showDeleteModal)
-        <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-ink/70 backdrop-blur-xs">
-            <div class="bg-surface border-2 border-ink shadow-brutal w-full max-w-md p-5 space-y-4">
-                <div class="flex items-center gap-3 border-b-2 border-ink pb-3 text-red-950">
+        <div class="fixed inset-0 z-50 overflow-y-auto flex items-end sm:items-center justify-center p-2.5 sm:p-4 bg-ink/70 backdrop-blur-xs">
+            <div class="bg-surface border-2 border-ink shadow-brutal w-full max-w-md max-h-[92dvh] sm:max-h-[90vh] flex flex-col min-w-0 p-4 sm:p-5 space-y-4">
+                <div class="flex items-center gap-3 border-b-2 border-ink pb-3 text-red-950 shrink-0">
                     <div class="w-10 h-10 bg-red-100 border-2 border-ink flex items-center justify-center shrink-0">
                         <svg class="w-5 h-5 text-red-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                         </svg>
                     </div>
-                    <div>
-                        <h3 class="font-display font-black text-base uppercase text-brand">
+                    <div class="min-w-0 flex-1">
+                        <h3 class="font-display font-black text-sm sm:text-base uppercase text-brand truncate">
                             BATALKAN PENGAJUAN?
                         </h3>
-                        <span class="text-xs font-sans text-ink/70">Tindakan pembatalan permohonan</span>
+                        <span class="text-xs font-sans text-ink/70 block truncate">Tindakan pembatalan permohonan</span>
                     </div>
                 </div>
 
-                <p class="text-xs font-sans text-ink/80 leading-relaxed">
-                    Apakah Anda yakin ingin membatalkan pengajuan perubahan jadwal ini? Pengajuan yang dibatalkan akan dihapus dari antrean review.
-                </p>
+                <div class="overflow-y-auto flex-1">
+                    <p class="text-xs font-sans text-ink/80 leading-relaxed">
+                        Apakah Anda yakin ingin membatalkan pengajuan perubahan jadwal ini? Pengajuan yang dibatalkan akan dihapus dari antrean review.
+                    </p>
+                </div>
 
-                <div class="pt-2 flex items-center justify-end gap-2.5">
+                <div class="pt-3 border-t-2 border-ink flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2.5 sm:gap-3 shrink-0">
                     <button type="button"
                             wire:click="closeDeleteModal"
-                            class="px-3.5 py-2 border-2 border-ink bg-surface-muted font-display font-bold text-xs uppercase cursor-pointer">
+                            class="w-full sm:w-auto px-4 py-2.5 sm:py-2 border-2 border-ink bg-surface-muted font-display font-bold text-xs uppercase text-center cursor-pointer">
                         Kembali
                     </button>
                     <button type="button"
                             wire:click="deleteRequest"
-                            class="px-4 py-2 border-2 border-ink bg-red-600 text-surface hover:bg-red-700 font-display font-bold text-xs uppercase tracking-wider cursor-pointer">
+                            class="w-full sm:w-auto px-5 py-2.5 sm:py-2 border-2 border-ink bg-red-600 text-surface hover:bg-red-700 font-display font-bold text-xs uppercase tracking-wider text-center transition-colors cursor-pointer">
                         Ya, Batalkan
                     </button>
                 </div>

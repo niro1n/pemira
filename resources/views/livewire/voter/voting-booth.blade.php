@@ -1,5 +1,5 @@
-<div class="space-y-6 pb-28">
-    <div class="bg-surface border-2 border-ink p-5 sm:p-6 shadow-brutal flex flex-col md:flex-row md:items-center justify-between gap-4">
+<div class="space-y-6 pb-36 sm:pb-28">
+    <div class="bg-surface border-2 border-ink p-4 sm:p-6 shadow-brutal flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
             <div class="flex items-center gap-2">
                 <a
@@ -192,13 +192,13 @@
 
     @if ($showDetailModal && $detailCandidate)
         <div
-            class="fixed inset-0 z-50 overflow-y-auto bg-ink/75 flex items-center justify-center p-4"
+            class="fixed inset-0 z-50 overflow-y-auto bg-ink/75 flex items-end sm:items-center justify-center p-2.5 sm:p-4 backdrop-blur-xs"
             role="dialog"
             aria-modal="true"
             aria-labelledby="detail-modal-title"
         >
             <div
-                class="bg-surface border-4 border-ink shadow-brutal-lg max-w-2xl w-full p-6 sm:p-8 space-y-6 max-h-[90vh] overflow-y-auto"
+                class="bg-surface border-2 sm:border-4 border-ink shadow-brutal-lg max-w-2xl w-full p-4 sm:p-8 space-y-5 sm:space-y-6 max-h-[92dvh] sm:max-h-[90vh] overflow-y-auto flex flex-col min-w-0"
                 @click.outside="$wire.closeDetailModal()"
             >
                 <div class="flex items-start justify-between pb-4 border-b-2 border-ink">
@@ -257,18 +257,18 @@
                     @endif
                 </div>
 
-                <div class="pt-4 border-t-2 border-ink flex flex-col sm:flex-row items-center justify-end gap-3">
+                <div class="pt-4 border-t-2 border-ink flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2.5 sm:gap-3 shrink-0">
                     <button
                         type="button"
                         wire:click="closeDetailModal"
-                        class="w-full sm:w-auto px-5 py-2.5 text-xs font-display font-bold uppercase tracking-wider text-ink bg-surface border-2 border-ink hover:bg-surface-muted"
+                        class="w-full sm:w-auto px-5 py-2.5 text-xs font-display font-bold uppercase tracking-wider text-ink bg-surface border-2 border-ink hover:bg-surface-muted text-center cursor-pointer"
                     >
                         Tutup
                     </button>
                     <button
                         type="button"
                         wire:click="selectCandidate({{ $detailCandidate->id }}); closeDetailModal();"
-                        class="w-full sm:w-auto px-6 py-2.5 text-xs font-display font-black uppercase tracking-wider text-surface bg-brand border-2 border-ink shadow-brutal-sm hover:bg-brand-dark"
+                        class="w-full sm:w-auto px-6 py-2.5 text-xs font-display font-black uppercase tracking-wider text-surface bg-brand border-2 border-ink shadow-brutal-sm hover:bg-brand-dark text-center cursor-pointer"
                     >
                         Pilih Paslon {{ $detailCandidate->formattedNumber() }}
                     </button>
@@ -279,13 +279,13 @@
 
     @if ($showConfirmModal && $selectedCandidate)
         <div
-            class="fixed inset-0 z-50 overflow-y-auto bg-ink/80 flex items-center justify-center p-4"
+            class="fixed inset-0 z-50 overflow-y-auto bg-ink/80 flex items-end sm:items-center justify-center p-2.5 sm:p-4 backdrop-blur-xs"
             role="dialog"
             aria-modal="true"
             aria-labelledby="confirm-modal-title"
         >
             <div
-                class="bg-surface border-4 border-ink shadow-brutal-lg max-w-lg w-full p-6 sm:p-8 space-y-6"
+                class="bg-surface border-2 sm:border-4 border-ink shadow-brutal-lg max-w-lg w-full p-4 sm:p-8 space-y-4 sm:space-y-6 max-h-[92dvh] sm:max-h-[90vh] overflow-y-auto flex flex-col min-w-0"
                 @click.outside="$wire.closeConfirmModal()"
             >
                 <div class="text-center pb-4 border-b-2 border-ink">

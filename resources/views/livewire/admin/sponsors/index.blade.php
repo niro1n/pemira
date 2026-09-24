@@ -21,7 +21,7 @@
 
         <button wire:click="openCreateModal"
                 type="button"
-                class="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-brand text-accent hover:bg-brand-dark border-2 border-ink shadow-brutal font-display font-black text-xs uppercase tracking-wider transition-all cursor-pointer shrink-0">
+                class="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-brand text-accent hover:bg-brand-dark border-2 border-ink shadow-brutal font-display font-black text-xs uppercase tracking-wider transition-all cursor-pointer shrink-0 w-full sm:w-auto">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/>
             </svg>
@@ -49,8 +49,8 @@
         </div>
     @endif
 
-    <div class="bg-surface border-2 border-ink p-3 sm:p-4 shadow-brutal flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
-        <div class="relative flex-1">
+    <div class="bg-surface border-2 border-ink p-3 sm:p-4 shadow-brutal flex items-center justify-between gap-2.5 sm:gap-3 min-w-0">
+        <div class="relative flex-1 min-w-0">
             <input type="text"
                    wire:model.live.debounce.300ms="search"
                    placeholder="Cari nama sponsor..."
@@ -61,7 +61,7 @@
             <button wire:click="$set('search', '')"
                     type="button"
                     class="px-3 py-2 bg-surface border-2 border-ink text-xs font-sans font-bold text-ink/70 hover:text-ink shadow-brutal-sm shrink-0 min-h-10 cursor-pointer">
-                Reset Pencarian
+                Reset
             </button>
         @endif
     </div>
@@ -99,9 +99,9 @@
             @endif
         </div>
     @else
-        <div class="bg-surface border-2 border-ink shadow-brutal overflow-hidden">
+        <div class="bg-surface border-2 border-ink shadow-brutal overflow-hidden min-w-0">
             <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse font-sans text-xs sm:text-sm">
+                <table class="w-full text-left border-collapse font-sans text-xs sm:text-sm min-w-160">
                     <thead>
                         <tr class="bg-brand text-surface border-b-2 border-ink font-display font-black text-xs uppercase tracking-wider">
                             <th class="py-3 px-3 sm:px-4 w-16 text-center">Urutan</th>
@@ -184,9 +184,9 @@
     @endif
 
     @if ($showCreateModal)
-        <div class="fixed inset-0 z-50 overflow-y-auto bg-ink/70 flex items-center justify-center p-3 sm:p-4 backdrop-blur-xs">
-            <div class="bg-surface border-2 border-ink shadow-brutal w-full max-w-lg overflow-hidden animate-in fade-in duration-100">
-                <div class="bg-brand text-surface px-4 py-3 border-b-2 border-ink flex items-center justify-between">
+        <div class="fixed inset-0 z-50 overflow-y-auto bg-ink/70 flex items-end sm:items-center justify-center p-2.5 sm:p-4 backdrop-blur-xs">
+            <div class="bg-surface border-2 border-ink shadow-brutal w-full max-w-lg max-h-[92dvh] sm:max-h-[90vh] flex flex-col min-w-0 animate-in fade-in duration-100">
+                <div class="bg-brand text-surface px-4 py-3 sm:px-5 sm:py-3.5 border-b-2 border-ink flex items-center justify-between shrink-0">
                     <div class="flex items-center gap-2">
                         <span class="w-2.5 h-2.5 bg-accent inline-block border border-ink"></span>
                         <h3 class="font-display font-black text-sm sm:text-base uppercase tracking-wider">
@@ -198,7 +198,7 @@
                     </button>
                 </div>
 
-                <form wire:submit.prevent="createSponsor" class="p-4 sm:p-6 space-y-4">
+                <form wire:submit.prevent="createSponsor" class="p-4 sm:p-6 space-y-4 overflow-y-auto flex-1 min-w-0">
                     <div>
                         <label class="block text-xs font-display font-bold uppercase tracking-wider text-ink mb-1">
                             Nama Sponsor <span class="text-red-600">*</span>
@@ -335,15 +335,15 @@
                         </div>
                     </div>
 
-                    <div class="pt-4 border-t-2 border-ink flex items-center justify-end gap-2.5">
+                    <div class="pt-4 border-t-2 border-ink flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2.5">
                         <button type="button"
                                 wire:click="closeCreateModal"
-                                class="px-4 py-2 bg-surface border-2 border-ink shadow-brutal-sm font-display font-bold text-xs uppercase hover:bg-surface-muted transition-colors cursor-pointer">
+                                class="w-full sm:w-auto text-center px-4 py-2.5 bg-surface border-2 border-ink shadow-brutal-sm font-display font-bold text-xs uppercase hover:bg-surface-muted transition-colors cursor-pointer">
                             Batal
                         </button>
                         <button type="submit"
                                 wire:loading.attr="disabled"
-                                class="px-5 py-2 bg-brand text-accent hover:bg-brand-dark border-2 border-ink shadow-brutal-sm font-display font-black text-xs uppercase tracking-wider transition-all cursor-pointer">
+                                class="w-full sm:w-auto text-center px-5 py-2.5 bg-brand text-accent hover:bg-brand-dark border-2 border-ink shadow-brutal-sm font-display font-black text-xs uppercase tracking-wider transition-all cursor-pointer">
                             <span wire:loading.remove wire:target="createSponsor">SIMPAN SPONSOR</span>
                             <span wire:loading wire:target="createSponsor">MENYIMPAN...</span>
                         </button>
@@ -354,9 +354,9 @@
     @endif
 
     @if ($showEditModal)
-        <div class="fixed inset-0 z-50 overflow-y-auto bg-ink/70 flex items-center justify-center p-3 sm:p-4 backdrop-blur-xs">
-            <div class="bg-surface border-2 border-ink shadow-brutal w-full max-w-lg overflow-hidden animate-in fade-in duration-100">
-                <div class="bg-brand text-surface px-4 py-3 border-b-2 border-ink flex items-center justify-between">
+        <div class="fixed inset-0 z-50 overflow-y-auto bg-ink/70 flex items-end sm:items-center justify-center p-2.5 sm:p-4 backdrop-blur-xs">
+            <div class="bg-surface border-2 border-ink shadow-brutal w-full max-w-lg max-h-[92dvh] sm:max-h-[90vh] flex flex-col min-w-0 animate-in fade-in duration-100">
+                <div class="bg-brand text-surface px-4 py-3 sm:px-5 sm:py-3.5 border-b-2 border-ink flex items-center justify-between shrink-0">
                     <div class="flex items-center gap-2">
                         <span class="w-2.5 h-2.5 bg-accent inline-block border border-ink"></span>
                         <h3 class="font-display font-black text-sm sm:text-base uppercase tracking-wider">
@@ -368,7 +368,7 @@
                     </button>
                 </div>
 
-                <form wire:submit.prevent="updateSponsor" class="p-4 sm:p-6 space-y-4">
+                <form wire:submit.prevent="updateSponsor" class="p-4 sm:p-6 space-y-4 overflow-y-auto flex-1 min-w-0">
                     <div>
                         <label class="block text-xs font-display font-bold uppercase tracking-wider text-ink mb-1">
                             Nama Sponsor <span class="text-red-600">*</span>
@@ -517,15 +517,15 @@
                         </div>
                     </div>
 
-                    <div class="pt-4 border-t-2 border-ink flex items-center justify-end gap-2.5">
+                    <div class="pt-4 border-t-2 border-ink flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2.5">
                         <button type="button"
                                 wire:click="closeEditModal"
-                                class="px-4 py-2 bg-surface border-2 border-ink shadow-brutal-sm font-display font-bold text-xs uppercase hover:bg-surface-muted transition-colors cursor-pointer">
+                                class="w-full sm:w-auto text-center px-4 py-2.5 bg-surface border-2 border-ink shadow-brutal-sm font-display font-bold text-xs uppercase hover:bg-surface-muted transition-colors cursor-pointer">
                             Batal
                         </button>
                         <button type="submit"
                                 wire:loading.attr="disabled"
-                                class="px-5 py-2 bg-brand text-accent hover:bg-brand-dark border-2 border-ink shadow-brutal-sm font-display font-black text-xs uppercase tracking-wider transition-all cursor-pointer">
+                                class="w-full sm:w-auto text-center px-5 py-2.5 bg-brand text-accent hover:bg-brand-dark border-2 border-ink shadow-brutal-sm font-display font-black text-xs uppercase tracking-wider transition-all cursor-pointer">
                             <span wire:loading.remove wire:target="updateSponsor">PERBARUI SPONSOR</span>
                             <span wire:loading wire:target="updateSponsor">MENYIMPAN...</span>
                         </button>
@@ -536,9 +536,9 @@
     @endif
 
     @if ($showDeleteModal)
-        <div class="fixed inset-0 z-50 overflow-y-auto bg-ink/70 flex items-center justify-center p-3 sm:p-4 backdrop-blur-xs">
-            <div class="bg-surface border-2 border-ink shadow-brutal w-full max-w-md overflow-hidden animate-in fade-in duration-100">
-                <div class="bg-red-600 text-white px-4 py-3 border-b-2 border-ink flex items-center justify-between">
+        <div class="fixed inset-0 z-50 overflow-y-auto bg-ink/70 flex items-end sm:items-center justify-center p-2.5 sm:p-4 backdrop-blur-xs">
+            <div class="bg-surface border-2 border-ink shadow-brutal w-full max-w-md max-h-[92dvh] sm:max-h-[90vh] flex flex-col min-w-0 animate-in fade-in duration-100">
+                <div class="bg-red-600 text-white px-4 py-3 sm:px-5 sm:py-3.5 border-b-2 border-ink flex items-center justify-between shrink-0">
                     <div class="flex items-center gap-2">
                         <span class="w-2.5 h-2.5 bg-accent inline-block border border-ink"></span>
                         <h3 class="font-display font-black text-sm sm:text-base uppercase tracking-wider">
@@ -550,7 +550,7 @@
                     </button>
                 </div>
 
-                <div class="p-4 sm:p-6 space-y-4">
+                <div class="p-4 sm:p-6 space-y-4 overflow-y-auto flex-1 min-w-0">
                     <div class="w-14 h-14 bg-red-100 border-2 border-ink mx-auto flex items-center justify-center shadow-brutal-sm text-red-600">
                         <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
@@ -571,16 +571,16 @@
                         </p>
                     </div>
 
-                    <div class="pt-4 border-t-2 border-ink flex items-center justify-end gap-2.5">
+                    <div class="pt-4 border-t-2 border-ink flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2.5">
                         <button type="button"
                                 wire:click="closeDeleteModal"
-                                class="px-4 py-2 bg-surface border-2 border-ink shadow-brutal-sm font-display font-bold text-xs uppercase hover:bg-surface-muted transition-colors cursor-pointer">
+                                class="w-full sm:w-auto text-center px-4 py-2.5 bg-surface border-2 border-ink shadow-brutal-sm font-display font-bold text-xs uppercase hover:bg-surface-muted transition-colors cursor-pointer">
                             Batal
                         </button>
                         <button type="button"
                                 wire:click="deleteSponsor"
                                 wire:loading.attr="disabled"
-                                class="px-5 py-2 bg-red-600 text-white hover:bg-red-700 border-2 border-ink shadow-brutal-sm font-display font-black text-xs uppercase tracking-wider transition-all cursor-pointer">
+                                class="w-full sm:w-auto text-center px-5 py-2.5 bg-red-600 text-white hover:bg-red-700 border-2 border-ink shadow-brutal-sm font-display font-black text-xs uppercase tracking-wider transition-all cursor-pointer">
                             <span wire:loading.remove wire:target="deleteSponsor">YA, HAPUS</span>
                             <span wire:loading wire:target="deleteSponsor">MENGHAPUS...</span>
                         </button>
@@ -591,9 +591,9 @@
     @endif
 
     @if ($showDetailModal && $selectedSponsor)
-        <div class="fixed inset-0 z-50 overflow-y-auto bg-ink/70 flex items-center justify-center p-3 sm:p-4 backdrop-blur-xs">
-            <div class="bg-surface border-2 border-ink shadow-brutal w-full max-w-lg overflow-hidden animate-in fade-in duration-100">
-                <div class="bg-brand text-surface px-4 py-3 border-b-2 border-ink flex items-center justify-between">
+        <div class="fixed inset-0 z-50 overflow-y-auto bg-ink/70 flex items-end sm:items-center justify-center p-2.5 sm:p-4 backdrop-blur-xs">
+            <div class="bg-surface border-2 border-ink shadow-brutal w-full max-w-lg max-h-[92dvh] sm:max-h-[90vh] flex flex-col min-w-0 animate-in fade-in duration-100">
+                <div class="bg-brand text-surface px-4 py-3 sm:px-5 sm:py-3.5 border-b-2 border-ink flex items-center justify-between shrink-0">
                     <div class="flex items-center gap-2">
                         <span class="w-2.5 h-2.5 bg-accent inline-block border border-ink"></span>
                         <h3 class="font-display font-black text-sm sm:text-base uppercase tracking-wider">
@@ -605,7 +605,7 @@
                     </button>
                 </div>
 
-                <div class="p-4 sm:p-6 space-y-4">
+                <div class="p-4 sm:p-6 space-y-4 overflow-y-auto flex-1 min-w-0">
                     <div class="flex flex-col sm:flex-row items-center sm:items-start gap-4 p-4 bg-surface-muted border-2 border-ink shadow-brutal-sm">
                         <div class="w-28 h-28 aspect-square bg-surface border-2 border-ink shadow-brutal-sm p-2 flex items-center justify-center overflow-hidden shrink-0">
                             @if ($selectedSponsor->logo && \Illuminate\Support\Facades\Storage::disk('public')->exists($selectedSponsor->logo))
@@ -644,7 +644,7 @@
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-2 gap-3">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div class="p-3 bg-surface border-2 border-ink shadow-brutal-sm">
                             <span class="text-[11px] font-sans font-bold uppercase tracking-wider text-ink/60 block">Status Penayangan</span>
                             <span class="inline-flex items-center gap-1.5 px-2 py-0.5 mt-1 border border-ink text-xs font-display font-bold uppercase {{ $selectedSponsor->is_active ? 'bg-accent text-ink' : 'bg-surface-muted text-ink/60' }}">
@@ -661,15 +661,15 @@
                         </div>
                     </div>
 
-                    <div class="pt-4 border-t-2 border-ink flex items-center justify-end gap-2.5">
+                    <div class="pt-4 border-t-2 border-ink flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2.5">
                         <button type="button"
                                 wire:click="closeDetailModal"
-                                class="px-4 py-2 bg-surface border-2 border-ink shadow-brutal-sm font-display font-bold text-xs uppercase hover:bg-surface-muted transition-colors cursor-pointer">
+                                class="w-full sm:w-auto text-center px-4 py-2.5 bg-surface border-2 border-ink shadow-brutal-sm font-display font-bold text-xs uppercase hover:bg-surface-muted transition-colors cursor-pointer">
                             Tutup
                         </button>
                         <button type="button"
                                 wire:click="openEditModal({{ $selectedSponsor->id }}); closeDetailModal();"
-                                class="px-5 py-2 bg-brand text-accent hover:bg-brand-dark border-2 border-ink shadow-brutal-sm font-display font-black text-xs uppercase tracking-wider transition-all cursor-pointer">
+                                class="w-full sm:w-auto text-center px-5 py-2.5 bg-brand text-accent hover:bg-brand-dark border-2 border-ink shadow-brutal-sm font-display font-black text-xs uppercase tracking-wider transition-all cursor-pointer">
                             Edit Sponsor
                         </button>
                     </div>
@@ -680,12 +680,12 @@
 
     <div x-show="showCropModal"
          x-cloak
-         class="fixed inset-0 z-60 overflow-y-auto flex items-center justify-center p-3 sm:p-4 bg-ink/80 backdrop-blur-xs"
+         class="fixed inset-0 z-60 overflow-y-auto flex items-end sm:items-center justify-center p-2.5 sm:p-4 bg-ink/80 backdrop-blur-xs"
          role="dialog"
          aria-modal="true"
          aria-labelledby="cropper-modal-title">
 
-        <div class="w-full max-w-lg bg-surface border-2 border-ink shadow-brutal flex flex-col min-w-0"
+        <div class="w-full max-w-lg bg-surface border-2 border-ink shadow-brutal max-h-[92dvh] sm:max-h-[90vh] flex flex-col min-w-0"
              @click.outside="if (!isUploading) cancelCrop()">
 
             <div class="px-4 py-3 sm:px-5 sm:py-3.5 border-b-2 border-ink bg-brand text-surface flex items-center justify-between shrink-0">
@@ -706,7 +706,7 @@
                 </button>
             </div>
 
-            <div class="p-4 sm:p-5 space-y-4">
+            <div class="p-4 sm:p-5 space-y-4 overflow-y-auto flex-1 min-w-0">
                 <div class="p-2.5 bg-surface-muted border-2 border-ink text-xs font-sans text-ink/80 flex items-start gap-2">
                     <span class="text-brand font-display font-bold text-sm leading-none shrink-0 mt-0.5">ℹ</span>
                     <span>Geser logo untuk mengatur posisi di dalam bingkai square (1:1), gunakan kontrol zoom di bawah untuk menyesuaikan ukuran.</span>
@@ -797,17 +797,17 @@
                 </div>
             </div>
 
-            <div class="p-3.5 sm:p-4 border-t-2 border-ink bg-surface-muted flex items-center justify-end gap-2.5 sm:gap-3 shrink-0">
+            <div class="p-3.5 sm:p-4 border-t-2 border-ink bg-surface-muted flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2.5 sm:gap-3 shrink-0">
                 <button type="button"
                         @click="cancelCrop()"
                         :disabled="isUploading"
-                        class="px-4 py-2.5 bg-surface border-2 border-ink text-xs font-display font-bold uppercase tracking-wider hover:bg-surface-muted transition-colors text-center min-h-10 cursor-pointer disabled:opacity-50">
+                        class="w-full sm:w-auto px-4 py-2.5 bg-surface border-2 border-ink text-xs font-display font-bold uppercase tracking-wider hover:bg-surface-muted transition-colors text-center min-h-10 cursor-pointer disabled:opacity-50">
                     BATAL
                 </button>
                 <button type="button"
                         @click="applyCrop()"
                         :disabled="isUploading"
-                        class="px-5 py-2.5 bg-brand text-accent hover:bg-brand-dark border-2 border-ink shadow-brutal-sm text-xs font-display font-black uppercase tracking-wider transition-all disabled:opacity-50 cursor-pointer text-center min-h-10 flex items-center gap-2">
+                        class="w-full sm:w-auto px-5 py-2.5 bg-brand text-accent hover:bg-brand-dark border-2 border-ink shadow-brutal-sm text-xs font-display font-black uppercase tracking-wider transition-all disabled:opacity-50 cursor-pointer text-center min-h-10 flex items-center justify-center gap-2">
                     <span x-show="!isUploading">GUNAKAN LOGO</span>
                     <span x-show="isUploading" x-cloak class="flex items-center gap-1.5">
                         <svg class="animate-spin h-3.5 w-3.5 text-accent" viewBox="0 0 24 24" fill="none">

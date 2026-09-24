@@ -70,18 +70,18 @@
                         }
                      }">
                     <div class="bg-surface-muted border-2 border-ink p-3.5 sm:p-4 shadow-brutal-sm">
-                        <div class="flex items-center gap-2 font-display font-black text-xl sm:text-2xl text-brand tracking-tight">
+                        <div class="flex flex-wrap items-center gap-1.5 sm:gap-2 font-display font-black text-lg sm:text-2xl text-brand tracking-tight">
                             <template x-if="days !== '00'">
                                 <span class="flex items-center gap-1">
                                     <span x-text="days">00</span>
                                     <span class="text-xs font-sans font-bold text-ink/60 mr-1.5">HARI</span>
                                 </span>
                             </template>
-                            <span class="bg-surface border-2 border-ink px-2.5 py-1" x-text="hours">00</span>
+                            <span class="bg-surface border-2 border-ink px-2 sm:px-2.5 py-0.5 sm:py-1" x-text="hours">00</span>
                             <span class="text-ink/60">:</span>
-                            <span class="bg-surface border-2 border-ink px-2.5 py-1" x-text="minutes">00</span>
+                            <span class="bg-surface border-2 border-ink px-2 sm:px-2.5 py-0.5 sm:py-1" x-text="minutes">00</span>
                             <span class="text-ink/60">:</span>
-                            <span class="bg-surface border-2 border-ink px-2.5 py-1 text-accent" x-text="seconds">00</span>
+                            <span class="bg-surface border-2 border-ink px-2 sm:px-2.5 py-0.5 sm:py-1 text-accent" x-text="seconds">00</span>
                         </div>
                     </div>
                 </div>
@@ -187,7 +187,7 @@
     </section>
 
     <section id="department-participation" class="bg-surface border-2 border-ink p-5 sm:p-6 shadow-brutal space-y-4">
-        <div class="flex items-center justify-between gap-3 pb-3 border-b-2 border-ink">
+        <div class="flex flex-wrap items-center justify-between gap-2 sm:gap-3 pb-3 border-b-2 border-ink">
             <div>
                 <h3 class="font-display font-extrabold text-base sm:text-lg text-brand uppercase">
                     PARTISIPASI JURUSAN
@@ -202,12 +202,12 @@
         <div class="space-y-3.5">
             @forelse ($programs as $prog)
                 <div class="space-y-1.5">
-                    <div class="flex items-center justify-between text-xs font-sans">
-                        <div class="font-display font-bold text-ink truncate pr-2">
-                            <span class="px-1.5 py-0.5 bg-surface-muted border border-ink text-xs font-display font-black text-brand mr-1.5">{{ $prog['code'] }}</span>
-                            <span>{{ $prog['name'] }}</span>
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-2 text-xs font-sans">
+                        <div class="font-display font-bold text-ink truncate pr-2 min-w-0">
+                            <span class="px-1.5 py-0.5 bg-surface-muted border border-ink text-xs font-display font-black text-brand mr-1.5 shrink-0">{{ $prog['code'] }}</span>
+                            <span class="truncate">{{ $prog['name'] }}</span>
                         </div>
-                        <div class="shrink-0 flex items-center gap-2">
+                        <div class="shrink-0 flex items-center gap-2 self-start sm:self-auto">
                             <span class="text-ink/70 font-semibold">{{ number_format($prog['voted'], 0, ',', '.') }} / {{ number_format($prog['eligible'], 0, ',', '.') }} Suara</span>
                             <span class="px-1.5 py-0.5 bg-brand text-surface text-xs font-display font-black border border-ink">{{ $prog['rate_formatted'] }}</span>
                         </div>
@@ -240,22 +240,22 @@
 
             <div class="divide-y-2 divide-ink/10">
                 @forelse ($activities as $act)
-                    <div class="py-2.5 flex items-center justify-between gap-3 first:pt-0 last:pb-0">
-                        <div class="flex items-center gap-2.5">
+                    <div class="py-2.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-3 first:pt-0 last:pb-0">
+                        <div class="flex items-center gap-2.5 min-w-0 flex-1">
                             <span class="font-display font-bold text-xs text-brand shrink-0">
                                 {{ $act['time'] }}
                             </span>
-                            <div>
-                                <div class="font-display font-bold text-xs text-ink uppercase">
+                            <div class="min-w-0 flex-1">
+                                <div class="font-display font-bold text-xs text-ink uppercase truncate">
                                     {{ $act['title'] }}
                                 </div>
-                                <p class="text-xs font-sans text-ink/70">
+                                <p class="text-xs font-sans text-ink/70 truncate">
                                     {{ $act['description'] }}
                                 </p>
                             </div>
                         </div>
 
-                        <div class="flex items-center gap-1.5 shrink-0">
+                        <div class="flex items-center gap-1.5 shrink-0 self-start sm:self-auto">
                             @if (!empty($act['department']))
                                 <span class="text-xs font-display font-black uppercase px-1.5 py-0.5 bg-brand text-surface border border-ink">
                                     {{ $act['department'] }}

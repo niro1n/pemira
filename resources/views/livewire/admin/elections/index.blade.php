@@ -50,17 +50,17 @@
     @endif
 
     <div class="bg-surface border-2 border-ink p-3 sm:p-4 shadow-brutal min-w-0">
-        <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 sm:gap-3">
-            <div class="w-full sm:max-w-md relative flex-1">
+        <div class="flex items-center justify-between gap-2 sm:gap-3 min-w-0">
+            <div class="relative flex-1 min-w-0">
                 <input type="text"
                        wire:model.live.debounce.300ms="search"
                        placeholder="Cari nama, slug, atau tahun PEMIRA..."
                        class="w-full bg-surface-muted border-2 border-ink px-3 py-2 text-xs sm:text-sm font-sans font-medium text-ink placeholder:text-ink/40 shadow-brutal-sm focus:outline-none focus:bg-surface min-h-10" />
             </div>
 
-            <div class="flex items-center gap-2 w-full sm:w-auto">
+            <div class="flex items-center gap-2 shrink-0">
                 <select wire:model.live="yearFilter"
-                        class="w-full sm:w-auto flex-1 sm:flex-initial bg-surface-muted border-2 border-ink px-3 py-2 text-xs sm:text-sm font-sans font-bold text-ink shadow-brutal-sm focus:outline-none cursor-pointer min-h-10">
+                        class="bg-surface-muted border-2 border-ink px-2.5 sm:px-3 py-2 text-xs sm:text-sm font-sans font-bold text-ink shadow-brutal-sm focus:outline-none cursor-pointer min-h-10">
                     <option value="">Semua Tahun</option>
                     @foreach ($availableYears as $yr)
                         <option value="{{ $yr }}">{{ $yr }}</option>
@@ -70,7 +70,7 @@
                 @if ($search !== '' || $yearFilter !== '')
                     <button wire:click="$set('search', ''); $set('yearFilter', '')"
                             type="button"
-                            class="px-3 py-2 bg-surface border-2 border-ink text-xs font-sans font-bold text-ink/70 hover:text-ink shadow-brutal-sm shrink-0 min-h-10">
+                            class="px-2.5 sm:px-3 py-2 bg-surface border-2 border-ink text-xs font-sans font-bold text-ink/70 hover:text-ink shadow-brutal-sm shrink-0 min-h-10 cursor-pointer">
                         Reset
                     </button>
                 @endif
@@ -79,8 +79,8 @@
     </div>
 
     <div class="bg-surface border-2 border-ink shadow-brutal overflow-hidden min-w-0">
-        <div class="hidden md:block overflow-x-auto">
-            <table class="w-full text-left border-collapse">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse min-w-160">
                 <thead>
                     <tr class="border-b-2 border-ink bg-surface-muted text-xs font-display font-black uppercase tracking-wider text-ink/80">
                         <th class="p-3.5 sm:p-4">Nama & Identitas</th>
@@ -121,9 +121,9 @@
                                     <div class="mt-2 p-1.5 bg-amber-100 border border-ink text-[11px] font-sans font-bold text-amber-950 shadow-2xs">
                                         <div class="font-display font-black text-amber-800 uppercase text-[10px] flex items-center gap-1">
                                             <span class="w-1.5 h-1.5 bg-amber-600 rounded-full inline-block"></span>
-                                            <span>Menunggu Review:</span>
+                                            <span>Menunggu Review Super Admin:</span>
                                         </div>
-                                        <div class="font-mono text-[10px] mt-0.5">{{ $pendingReq->new_registration_start_at?->format('d/m H:i') }} — {{ $pendingReq->new_registration_end_at?->format('d/m H:i') }} WITA</div>
+                                        <div class="font-mono text-[10px] mt-0.5">{{ $pendingReq->new_registration_start_at?->format('d/m/Y H:i') }} — {{ $pendingReq->new_registration_end_at?->format('d/m/Y H:i') }} WITA</div>
                                     </div>
                                 @endif
                             </td>
@@ -134,9 +134,9 @@
                                     <div class="mt-2 p-1.5 bg-amber-100 border border-ink text-[11px] font-sans font-bold text-amber-950 shadow-2xs">
                                         <div class="font-display font-black text-amber-800 uppercase text-[10px] flex items-center gap-1">
                                             <span class="w-1.5 h-1.5 bg-amber-600 rounded-full inline-block"></span>
-                                            <span>Menunggu Review:</span>
+                                            <span>Menunggu Review Super Admin:</span>
                                         </div>
-                                        <div class="font-mono text-[10px] mt-0.5">{{ $pendingReq->new_voting_start_at->format('d/m H:i') }} — {{ $pendingReq->new_voting_end_at->format('d/m H:i') }} WITA</div>
+                                        <div class="font-mono text-[10px] mt-0.5">{{ $pendingReq->new_voting_start_at->format('d/m/Y H:i') }} — {{ $pendingReq->new_voting_end_at->format('d/m/Y H:i') }} WITA</div>
                                     </div>
                                 @endif
                             </td>
@@ -162,72 +162,6 @@
                     @endforelse
                 </tbody>
             </table>
-        </div>
-
-        <div class="block md:hidden divide-y-2 divide-ink/10">
-            @forelse ($elections as $elec)
-                @php
-                    $phase = $elec->currentPhase();
-                @endphp
-                <div class="p-3.5 sm:p-4 space-y-3 min-w-0">
-                    <div class="flex items-start justify-between gap-2 min-w-0">
-                        <div class="min-w-0 flex-1">
-                            <div class="font-display font-black text-sm text-brand uppercase wrap-break-word leading-tight">
-                                {{ $elec->name }}
-                            </div>
-                            <div class="text-xs font-mono text-ink/60 mt-0.5 break-all">
-                                {{ $elec->slug }} · Tahun {{ $elec->year }}
-                            </div>
-                        </div>
-                        <span class="shrink-0 inline-block px-2 py-0.5 text-xs font-display font-black uppercase border border-ink {{ $phase === \App\Enums\ElectionPhase::VOTING ? 'bg-accent text-ink' : ($phase === \App\Enums\ElectionPhase::FINISHED ? 'bg-ink text-surface' : 'bg-surface-muted text-brand') }}">
-                            {{ $phase->badgeText() }}
-                        </span>
-                    </div>
-
-                    <div class="grid grid-cols-1 gap-2 text-xs font-sans bg-surface-muted p-2.5 border border-ink/20">
-                        <div>
-                            <span class="text-xs font-bold text-ink/60 uppercase block">Jadwal Pendaftaran</span>
-                            <span class="text-ink/90 font-medium">
-                                {{ $elec->registration_start_at->format('d/m/Y H:i') }} — {{ $elec->registration_end_at->format('d/m/Y H:i') }} WITA
-                            </span>
-                            @php $pendingReq = $elec->scheduleChangeRequests->first(); @endphp
-                            @if ($pendingReq && $pendingReq->hasRegistrationChange())
-                                <div class="mt-1.5 p-1.5 bg-amber-100 border border-ink text-xs font-sans text-amber-950">
-                                    <div class="font-display font-black text-amber-800 uppercase text-[10px]">Menunggu Review Super Admin:</div>
-                                    <div class="font-mono text-[11px]">{{ $pendingReq->new_registration_start_at?->format('d/m/Y H:i') }} — {{ $pendingReq->new_registration_end_at?->format('d/m/Y H:i') }} WITA</div>
-                                </div>
-                            @endif
-                        </div>
-                        <div>
-                            <span class="text-xs font-bold text-ink/60 uppercase block">Jadwal Voting</span>
-                            <span class="text-brand font-bold">
-                                {{ $elec->voting_start_at->format('d/m/Y H:i') }} — {{ $elec->voting_end_at->format('d/m/Y H:i') }} WITA
-                            </span>
-                            @if ($pendingReq && ($pendingReq->hasVotingChange() || ! $pendingReq->hasRegistrationChange()))
-                                <div class="mt-1.5 p-1.5 bg-amber-100 border border-ink text-xs font-sans text-amber-950">
-                                    <div class="font-display font-black text-amber-800 uppercase text-[10px]">Menunggu Review Super Admin:</div>
-                                    <div class="font-mono text-[11px]">{{ $pendingReq->new_voting_start_at->format('d/m/Y H:i') }} — {{ $pendingReq->new_voting_end_at->format('d/m/Y H:i') }} WITA</div>
-                                </div>
-                            @endif
-                        </div>
-                    </div>
-
-                    <div class="pt-2 border-t border-ink/10 flex items-center justify-end gap-2">
-                        <x-action-button variant="detail" label="Lihat detail" wire:click="openDetailModal({{ $elec->id }})" />
-                        <x-action-button variant="edit" label="Edit pemilihan" wire:click="openEditModal({{ $elec->id }})" />
-                        <x-action-button variant="delete" label="Hapus pemilihan" wire:click="openDeleteModal({{ $elec->id }})" />
-                    </div>
-                </div>
-            @empty
-                <div class="p-6 text-center min-w-0">
-                    <div class="font-display font-bold text-sm sm:text-base text-ink/70 uppercase">
-                        Belum ada data PEMIRA yang terdaftar.
-                    </div>
-                    <p class="text-xs font-sans text-ink/50 mt-1">
-                        Klik tombol "BUAT PEMIRA" di atas untuk menambahkan pemilihan baru.
-                    </p>
-                </div>
-            @endforelse
         </div>
 
         @if ($elections->hasPages())
@@ -349,15 +283,15 @@
                         </div>
                     </div>
 
-                    <div class="p-3.5 sm:p-4 border-t-2 border-ink bg-surface-muted flex flex-row items-center justify-end gap-2.5 sm:gap-3 shrink-0">
+                    <div class="p-3.5 sm:p-4 border-t-2 border-ink bg-surface-muted flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2.5 sm:gap-3 shrink-0">
                         <button wire:click="closeCreateModal"
                                 type="button"
-                                class="flex-1 sm:flex-initial px-4 py-2.5 bg-surface border-2 border-ink text-xs font-display font-bold uppercase tracking-wider hover:bg-surface-muted transition-colors text-center min-h-10">
+                                class="w-full sm:w-auto px-4 py-2.5 bg-surface border-2 border-ink text-xs font-display font-bold uppercase tracking-wider hover:bg-surface-muted transition-colors text-center min-h-10">
                             BATAL
                         </button>
                         <button type="submit"
                                 wire:loading.attr="disabled"
-                                class="flex-1 sm:flex-initial px-5 py-2.5 bg-brand text-accent hover:bg-brand-dark border-2 border-ink shadow-brutal-sm text-xs font-display font-black uppercase tracking-wider transition-all disabled:opacity-50 cursor-pointer text-center min-h-10">
+                                class="w-full sm:w-auto px-5 py-2.5 bg-brand text-accent hover:bg-brand-dark border-2 border-ink shadow-brutal-sm text-xs font-display font-black uppercase tracking-wider transition-all disabled:opacity-50 cursor-pointer text-center min-h-10">
                             <span wire:loading.remove wire:target="createElection">BUAT PEMIRA</span>
                             <span wire:loading wire:target="createElection">MENYIMPAN...</span>
                         </button>
@@ -548,15 +482,15 @@
                         </div>
                     </div>
 
-                    <div class="p-3.5 sm:p-4 border-t-2 border-ink bg-surface-muted flex flex-row items-center justify-end gap-2.5 sm:gap-3 shrink-0">
+                    <div class="p-3.5 sm:p-4 border-t-2 border-ink bg-surface-muted flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2.5 sm:gap-3 shrink-0">
                         <button wire:click="closeEditModal"
                                 type="button"
-                                class="flex-1 sm:flex-initial px-4 py-2.5 bg-surface border-2 border-ink text-xs font-display font-bold uppercase tracking-wider hover:bg-surface-muted transition-colors text-center min-h-10">
+                                class="w-full sm:w-auto px-4 py-2.5 bg-surface border-2 border-ink text-xs font-display font-bold uppercase tracking-wider hover:bg-surface-muted transition-colors text-center min-h-10">
                             BATAL
                         </button>
                         <button type="submit"
                                 wire:loading.attr="disabled"
-                                class="flex-1 sm:flex-initial px-5 py-2.5 bg-brand text-accent hover:bg-brand-dark border-2 border-ink shadow-brutal-sm text-xs font-display font-black uppercase tracking-wider transition-all disabled:opacity-50 cursor-pointer text-center min-h-10">
+                                class="w-full sm:w-auto px-5 py-2.5 bg-brand text-accent hover:bg-brand-dark border-2 border-ink shadow-brutal-sm text-xs font-display font-black uppercase tracking-wider transition-all disabled:opacity-50 cursor-pointer text-center min-h-10">
                             <span wire:loading.remove wire:target="updateElection">
                                 {{ (! auth()->user()?->isSuperAdmin() && $hasScheduleChange) ? 'AJUKAN PERUBAHAN JADWAL' : 'SIMPAN PEMIRA' }}
                             </span>
@@ -673,21 +607,21 @@
                     </div>
                 </div>
 
-                <div class="p-3.5 sm:p-4 border-t-2 border-ink bg-surface-muted flex flex-row items-center justify-between gap-2.5 shrink-0">
+                <div class="p-3.5 sm:p-4 border-t-2 border-ink bg-surface-muted flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-2.5 shrink-0">
                     <button wire:click="closeDetailModal"
                             type="button"
-                            class="px-4 py-2.5 bg-surface border-2 border-ink text-xs font-display font-bold uppercase tracking-wider hover:bg-surface-muted transition-colors min-h-10">
+                            class="w-full sm:w-auto px-4 py-2.5 bg-surface border-2 border-ink text-xs font-display font-bold uppercase tracking-wider hover:bg-surface-muted transition-colors text-center min-h-10">
                         TUTUP
                     </button>
-                    <div class="flex items-center gap-2">
+                    <div class="flex items-center gap-2 w-full sm:w-auto">
                         <button wire:click="openEditModal({{ $selectedElection->id }}); closeDetailModal()"
                                 type="button"
-                                class="px-3.5 py-2.5 bg-brand text-surface hover:bg-brand-dark border-2 border-ink shadow-brutal-sm text-xs font-display font-bold uppercase min-h-10">
+                                class="flex-1 sm:flex-initial px-3.5 py-2.5 bg-brand text-surface hover:bg-brand-dark border-2 border-ink shadow-brutal-sm text-xs font-display font-bold uppercase text-center min-h-10">
                             EDIT
                         </button>
                         <button wire:click="openDeleteModal({{ $selectedElection->id }}); closeDetailModal()"
                                 type="button"
-                                class="px-3.5 py-2.5 bg-surface hover:bg-red-600 hover:text-white border-2 border-ink shadow-brutal-sm text-xs font-display font-bold uppercase min-h-10">
+                                class="flex-1 sm:flex-initial px-3.5 py-2.5 bg-surface hover:bg-red-600 hover:text-white border-2 border-ink shadow-brutal-sm text-xs font-display font-bold uppercase text-center min-h-10">
                             HAPUS
                         </button>
                     </div>
@@ -711,15 +645,15 @@
                     </p>
                 </div>
 
-                <div class="p-3.5 sm:p-4 border-t-2 border-ink bg-surface-muted flex flex-row items-center justify-end gap-2.5 sm:gap-3 shrink-0">
+                <div class="p-3.5 sm:p-4 border-t-2 border-ink bg-surface-muted flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2.5 sm:gap-3 shrink-0">
                     <button wire:click="closeDeleteModal"
                             type="button"
-                            class="flex-1 sm:flex-initial px-4 py-2.5 bg-surface border-2 border-ink text-xs font-display font-bold uppercase tracking-wider hover:bg-surface-muted transition-colors text-center min-h-10">
+                            class="w-full sm:w-auto px-4 py-2.5 bg-surface border-2 border-ink text-xs font-display font-bold uppercase tracking-wider hover:bg-surface-muted transition-colors text-center min-h-10">
                         BATAL
                     </button>
                     <button wire:click="deleteElection"
                             type="button"
-                            class="flex-1 sm:flex-initial px-5 py-2.5 bg-red-600 text-white hover:bg-red-700 border-2 border-ink shadow-brutal-sm text-xs font-display font-black uppercase tracking-wider transition-all cursor-pointer text-center min-h-10">
+                            class="w-full sm:w-auto px-5 py-2.5 bg-red-600 text-white hover:bg-red-700 border-2 border-ink shadow-brutal-sm text-xs font-display font-black uppercase tracking-wider transition-all cursor-pointer text-center min-h-10">
                         HAPUS
                     </button>
                 </div>

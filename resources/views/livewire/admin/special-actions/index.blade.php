@@ -105,7 +105,7 @@
                             </div>
                         </div>
 
-                        <div class="shrink-0 flex items-center gap-3">
+                        <div class="shrink-0 flex flex-wrap sm:flex-nowrap items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
                             <button wire:click="requestToggle({{ $isMaintenanceMode ? 'false' : 'true' }})"
                                     wire:loading.attr="disabled"
                                     type="button"
@@ -249,7 +249,7 @@
              role="dialog"
              aria-modal="true"
              aria-labelledby="confirm-modal-title">
-            <div class="w-full sm:max-w-md bg-surface border-2 border-ink shadow-brutal flex flex-col min-w-0">
+            <div class="w-full sm:max-w-md bg-surface border-2 border-ink shadow-brutal max-h-[92dvh] sm:max-h-[90vh] flex flex-col min-w-0">
                 <div class="px-4 py-3 sm:px-5 sm:py-4 border-b-2 border-ink flex items-center justify-between bg-surface-muted shrink-0">
                     <div>
                         <span class="text-xs font-display font-bold uppercase tracking-wider text-ink/60 block">KONFIRMASI SISTEM</span>
@@ -267,7 +267,7 @@
                     </button>
                 </div>
 
-                <div class="p-4 sm:p-5 space-y-3 font-sans">
+                <div class="p-4 sm:p-5 space-y-3 font-sans overflow-y-auto flex-1 min-w-0">
                     @if ($targetState)
                         <p class="text-xs sm:text-sm text-ink leading-relaxed">
                             Website akan masuk ke mode maintenance. VOTER dan ADMIN tidak dapat mengakses website sampai mode maintenance dimatikan.
@@ -289,16 +289,16 @@
                     @endif
                 </div>
 
-                <div class="px-4 py-3 sm:px-5 sm:py-3.5 border-t-2 border-ink flex items-center justify-between bg-surface-muted shrink-0">
+                <div class="px-4 py-3 sm:px-5 sm:py-3.5 border-t-2 border-ink flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-2.5 sm:gap-3 bg-surface-muted shrink-0">
                     <button wire:click="cancelToggle"
                             type="button"
-                            class="px-4 py-2 bg-surface hover:bg-ink/10 border-2 border-ink font-display font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer">
+                            class="w-full sm:w-auto px-4 py-2 bg-surface hover:bg-ink/10 border-2 border-ink font-display font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer text-center">
                         BATAL
                     </button>
 
                     <button wire:click="confirmToggle"
                             type="button"
-                            class="px-5 py-2.5 {{ $targetState ? 'bg-brand hover:bg-brand-dark text-accent' : 'bg-emerald-700 hover:bg-emerald-800 text-surface' }} border-2 border-ink shadow-brutal-sm font-display font-black text-xs uppercase tracking-wider transition-all cursor-pointer">
+                            class="w-full sm:w-auto px-5 py-2.5 {{ $targetState ? 'bg-brand hover:bg-brand-dark text-accent' : 'bg-emerald-700 hover:bg-emerald-800 text-surface' }} border-2 border-ink shadow-brutal-sm font-display font-black text-xs uppercase tracking-wider transition-all cursor-pointer text-center">
                         {{ $targetState ? 'AKTIFKAN MAINTENANCE' : 'NONAKTIFKAN MAINTENANCE' }}
                     </button>
                 </div>

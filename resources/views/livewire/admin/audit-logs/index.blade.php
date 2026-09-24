@@ -25,56 +25,56 @@
         </div>
     </div>
 
-    <div class="overflow-x-auto pb-1 -mx-1 px-1">
-        <div class="grid {{ $isSuperAdmin ? 'grid-cols-5 min-w-155' : 'grid-cols-4 min-w-125' }} lg:min-w-0 gap-2 sm:gap-3">
-            <div class="bg-surface border-2 border-ink p-2.5 sm:p-3 shadow-brutal min-w-0">
-                <span class="text-[10px] sm:text-xs font-display font-bold uppercase tracking-wider text-ink/60 block truncate">TOTAL LOG</span>
-                <div class="font-display font-black text-lg sm:text-2xl text-brand mt-0.5 sm:mt-1 truncate">
-                    {{ number_format($stats['total'], 0, ',', '.') }}
-                </div>
-                <span class="text-[10px] sm:text-xs text-ink/50 mt-0.5 block truncate">
+    <div class="grid {{ $isSuperAdmin ? 'grid-cols-2 lg:grid-cols-5' : 'grid-cols-2 sm:grid-cols-4' }} gap-2.5 sm:gap-3 min-w-0">
+        <div class="{{ $isSuperAdmin ? 'col-span-2 lg:col-span-1' : '' }} bg-surface border-2 border-ink p-3 sm:p-3.5 shadow-brutal min-w-0 {{ $isSuperAdmin ? 'flex items-center justify-between lg:block' : '' }}">
+            <div class="min-w-0">
+                <span class="text-xs font-display font-black uppercase tracking-wider text-ink/70 block">TOTAL LOG</span>
+                <span class="text-[10px] sm:text-xs text-ink/50 mt-0.5 block">
                     {{ $isSuperAdmin ? 'Semua Aktivitas' : 'Aktivitas Terkait' }}
                 </span>
             </div>
-
-            <div class="bg-surface border-2 border-ink p-2.5 sm:p-3 shadow-brutal min-w-0">
-                <span class="text-[10px] sm:text-xs font-display font-bold uppercase tracking-wider text-emerald-800 block truncate">HARI INI</span>
-                <div class="font-display font-black text-lg sm:text-2xl text-emerald-700 mt-0.5 sm:mt-1 truncate">
-                    {{ number_format($stats['today'], 0, ',', '.') }}
-                </div>
-                <span class="text-[10px] sm:text-xs text-ink/50 mt-0.5 block truncate">Aktivitas Baru</span>
+            <div class="font-display font-black text-2xl sm:text-3xl text-brand {{ $isSuperAdmin ? 'lg:mt-1' : 'mt-0.5 sm:mt-1' }} shrink-0">
+                {{ number_format($stats['total'], 0, ',', '.') }}
             </div>
+        </div>
 
-            @if ($isSuperAdmin)
-                <div class="bg-surface border-2 border-ink p-2.5 sm:p-3 shadow-brutal min-w-0">
-                    <span class="text-[10px] sm:text-xs font-display font-bold uppercase tracking-wider text-brand block truncate">AUTENTIKASI</span>
-                    <div class="font-display font-black text-lg sm:text-2xl text-brand mt-0.5 sm:mt-1 truncate">
-                        {{ number_format($stats['auth'], 0, ',', '.') }}
-                    </div>
-                    <span class="text-[10px] sm:text-xs text-ink/50 mt-0.5 block truncate">Login & Keluar</span>
-                </div>
-            @endif
-
-            <div class="bg-surface border-2 border-ink p-2.5 sm:p-3 shadow-brutal min-w-0">
-                <span class="text-[10px] sm:text-xs font-display font-bold uppercase tracking-wider text-amber-800 block truncate">DATA PEMILIH</span>
-                <div class="font-display font-black text-lg sm:text-2xl text-amber-700 mt-0.5 sm:mt-1 truncate">
-                    {{ number_format($stats['voters'], 0, ',', '.') }}
-                </div>
-                <span class="text-[10px] sm:text-xs text-ink/50 mt-0.5 block truncate">Master & Akun</span>
+        <div class="bg-surface border-2 border-ink p-2.5 sm:p-3.5 shadow-brutal min-w-0 flex flex-col justify-between">
+            <span class="text-[10px] sm:text-xs font-display font-bold uppercase tracking-tight sm:tracking-wider text-emerald-800 block leading-tight">HARI INI</span>
+            <div class="font-display font-black text-lg sm:text-2xl text-emerald-700 mt-1">
+                {{ number_format($stats['today'], 0, ',', '.') }}
             </div>
+            <span class="text-[10px] sm:text-xs text-ink/50 mt-0.5 block">Aktivitas Baru</span>
+        </div>
 
-            <div class="bg-surface border-2 border-ink p-2.5 sm:p-3 shadow-brutal min-w-0">
-                <span class="text-[10px] sm:text-xs font-display font-bold uppercase tracking-wider text-ink/70 block truncate">PASLON & PEMIRA</span>
-                <div class="font-display font-black text-lg sm:text-2xl text-ink/80 mt-0.5 sm:mt-1 truncate">
-                    {{ number_format($stats['elections'], 0, ',', '.') }}
+        @if ($isSuperAdmin)
+            <div class="bg-surface border-2 border-ink p-2.5 sm:p-3.5 shadow-brutal min-w-0 flex flex-col justify-between">
+                <span class="text-[10px] sm:text-xs font-display font-bold uppercase tracking-tight sm:tracking-wider text-brand block leading-tight">AUTENTIKASI</span>
+                <div class="font-display font-black text-lg sm:text-2xl text-brand mt-1">
+                    {{ number_format($stats['auth'], 0, ',', '.') }}
                 </div>
-                <span class="text-[10px] sm:text-xs text-ink/50 mt-0.5 block truncate">Kandidat & Event</span>
+                <span class="text-[10px] sm:text-xs text-ink/50 mt-0.5 block">Login & Keluar</span>
             </div>
+        @endif
+
+        <div class="bg-surface border-2 border-ink p-2.5 sm:p-3.5 shadow-brutal min-w-0 flex flex-col justify-between">
+            <span class="text-[10px] sm:text-xs font-display font-bold uppercase tracking-tight sm:tracking-wider text-amber-800 block leading-tight">DATA PEMILIH</span>
+            <div class="font-display font-black text-lg sm:text-2xl text-amber-700 mt-1">
+                {{ number_format($stats['voters'], 0, ',', '.') }}
+            </div>
+            <span class="text-[10px] sm:text-xs text-ink/50 mt-0.5 block">Master & Akun</span>
+        </div>
+
+        <div class="bg-surface border-2 border-ink p-2.5 sm:p-3.5 shadow-brutal min-w-0 flex flex-col justify-between">
+            <span class="text-[10px] sm:text-xs font-display font-bold uppercase tracking-tight sm:tracking-wider text-ink/70 block leading-tight">PASLON & PEMIRA</span>
+            <div class="font-display font-black text-lg sm:text-2xl text-ink/80 mt-1">
+                {{ number_format($stats['elections'], 0, ',', '.') }}
+            </div>
+            <span class="text-[10px] sm:text-xs text-ink/50 mt-0.5 block">Kandidat & Event</span>
         </div>
     </div>
 
-    <div class="bg-surface border-2 border-ink p-3.5 sm:p-4 shadow-brutal space-y-3">
-        <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+    <div class="bg-surface border-2 border-ink p-3 sm:p-4 shadow-brutal space-y-3">
+        <div class="flex items-center justify-between gap-2 sm:gap-3 min-w-0">
             <div class="relative flex-1 min-w-0">
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-ink/40">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -88,11 +88,11 @@
                        class="w-full bg-surface-muted border-2 border-ink pl-9 pr-3 py-2 text-xs sm:text-sm font-sans font-medium text-ink placeholder:text-ink/40 shadow-brutal-sm focus:outline-none focus:bg-surface min-h-10" />
             </div>
 
-            <div class="flex items-center gap-2.5 shrink-0">
+            <div class="flex items-center gap-2 shrink-0">
                 <button wire:click="openFilterModal"
                         type="button"
                         aria-label="Buka filter audit log"
-                        class="inline-flex items-center justify-center gap-2 px-3.5 py-2 border-2 border-ink shadow-brutal-sm font-display font-bold text-xs uppercase tracking-wider transition-all cursor-pointer min-h-10 {{ $activeFilters > 0 ? 'bg-accent text-ink' : 'bg-surface-muted hover:bg-accent text-ink' }}">
+                        class="inline-flex items-center justify-center gap-1.5 px-3 py-2 border-2 border-ink shadow-brutal-sm font-display font-bold text-xs uppercase tracking-wider transition-all cursor-pointer min-h-10 {{ $activeFilters > 0 ? 'bg-accent text-ink' : 'bg-surface-muted hover:bg-accent text-ink' }}">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
                     </svg>
@@ -223,9 +223,9 @@
             </div>
         </div>
     @else
-        <div class="hidden md:block bg-surface border-2 border-ink shadow-brutal overflow-hidden">
-            <div class="overflow-auto max-h-[calc(100vh-280px)] min-h-105">
-                <table class="w-full text-left border-separate border-spacing-0">
+        <div class="bg-surface border-2 border-ink shadow-brutal overflow-hidden">
+            <div class="overflow-x-auto max-h-[calc(100vh-280px)] min-h-105">
+                <table class="w-full text-left border-separate border-spacing-0 min-w-220">
                     <thead class="sticky top-0 z-20">
                         <tr class="bg-surface-muted">
                             <th class="sticky top-0 z-20 bg-surface-muted border-b-2 border-ink px-3 py-3 text-xs font-display font-black text-brand uppercase tracking-wider text-center w-12 sm:w-16">NO</th>
@@ -315,55 +315,6 @@
                     </tbody>
                 </table>
             </div>
-        </div>
-
-        <div class="block md:hidden space-y-3">
-            @foreach ($logs as $log)
-                @php
-                    $actionName = strtolower($log->action);
-                    $actionBadgeClass = match (true) {
-                        str_contains($actionName, 'create') || str_contains($actionName, 'import') || str_contains($actionName, 'store') => 'bg-emerald-200 text-emerald-950 border border-ink',
-                        str_contains($actionName, 'update') || str_contains($actionName, 'edit') || str_contains($actionName, 'toggle') => 'bg-amber-200 text-amber-950 border border-ink',
-                        str_contains($actionName, 'delete') || str_contains($actionName, 'destroy') => 'bg-red-100 text-red-900 border border-ink',
-                        str_contains($actionName, 'login') || str_contains($actionName, 'logout') => 'bg-brand text-accent border border-ink',
-                        default => 'bg-surface-muted text-ink border border-ink',
-                    };
-                @endphp
-                <div class="bg-surface border-2 border-ink p-4 shadow-brutal space-y-3">
-                    <div class="flex items-center justify-between gap-2">
-                        <div class="flex items-center gap-2">
-                            <span class="px-1.5 py-0.5 bg-surface-muted border border-ink text-[11px] font-mono font-black text-ink/80">
-                                #{{ ($logs->currentPage() - 1) * $logs->perPage() + $loop->iteration }}
-                            </span>
-                            <span class="text-[11px] font-mono text-ink/70">
-                                {{ $log->created_at->timezone('Asia/Makassar')->format('d/m/Y H:i') }} WITA
-                            </span>
-                        </div>
-                        <span class="px-2 py-0.5 text-[10px] font-display font-bold uppercase {{ $actionBadgeClass }}">
-                            {{ strtoupper(str_replace('_', ' ', $log->action)) }}
-                        </span>
-                    </div>
-
-                    <div>
-                        <h4 class="font-display font-black text-sm text-ink leading-snug">
-                            {{ $log->description ?: 'Tidak ada deskripsi' }}
-                        </h4>
-                        <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs font-sans text-ink/70 mt-1">
-                            <span>Aktor: <strong>{{ $log->user?->email ?? 'Sistem' }}</strong></span>
-                            @if ($log->entity_type)
-                                <span>Modul: <strong>{{ class_basename($log->entity_type) }}</strong></span>
-                            @endif
-                        </div>
-                    </div>
-
-                    <div class="pt-2 border-t border-ink/10 flex items-center justify-between gap-2">
-                        <span class="text-[11px] font-mono text-ink/60">
-                            IP: {{ $log->ip_address ?: '—' }}
-                        </span>
-                        <x-action-button variant="detail" label="Lihat detail log" wire:click="openDetailModal({{ $log->id }})" />
-                    </div>
-                </div>
-            @endforeach
         </div>
 
         <div class="mt-4">
@@ -477,16 +428,16 @@
                     </div>
                 </div>
 
-                <div class="px-4 py-3 sm:px-5 sm:py-3.5 border-t-2 border-ink flex items-center justify-between bg-surface-muted shrink-0">
+                <div class="px-4 py-3 sm:px-5 sm:py-3.5 border-t-2 border-ink flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-2.5 sm:gap-3 bg-surface-muted shrink-0">
                     <button wire:click="resetFilters"
                             type="button"
-                            class="px-4 py-2 bg-surface hover:bg-red-50 text-red-700 border-2 border-ink font-display font-black text-xs uppercase tracking-wider transition-colors cursor-pointer">
+                            class="w-full sm:w-auto px-4 py-2.5 sm:py-2 bg-surface hover:bg-red-50 text-red-700 border-2 border-ink font-display font-black text-xs uppercase tracking-wider text-center transition-colors cursor-pointer">
                         RESET
                     </button>
 
                     <button wire:click="closeFilterModal"
                             type="button"
-                            class="px-5 py-2.5 bg-brand text-surface hover:bg-brand-dark border-2 border-ink shadow-brutal-sm font-display font-black text-xs uppercase tracking-wider transition-all cursor-pointer">
+                            class="w-full sm:w-auto px-5 py-2.5 bg-brand text-surface hover:bg-brand-dark border-2 border-ink shadow-brutal-sm font-display font-black text-xs uppercase tracking-wider text-center transition-all cursor-pointer">
                         TERAPKAN FILTER
                     </button>
                 </div>
@@ -656,7 +607,7 @@
                 <div class="px-4 py-3 sm:px-5 sm:py-3.5 border-t-2 border-ink flex items-center justify-end bg-surface-muted shrink-0">
                     <button wire:click="closeDetailModal"
                             type="button"
-                            class="px-4 py-2 bg-surface hover:bg-accent border-2 border-ink font-display font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer min-h-10">
+                            class="w-full sm:w-auto px-5 py-2.5 sm:py-2 bg-surface hover:bg-accent border-2 border-ink font-display font-bold text-xs uppercase tracking-wider text-center transition-colors cursor-pointer min-h-10">
                         TUTUP
                     </button>
                 </div>

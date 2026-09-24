@@ -13,10 +13,10 @@
             </p>
         </div>
 
-        <div class="flex flex-wrap items-center gap-3 shrink-0">
+        <div class="flex flex-row items-center gap-2 sm:gap-3 shrink-0 w-full sm:w-auto">
             <button wire:click="openImportModal"
                     type="button"
-                    class="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-surface-muted hover:bg-accent text-ink border-2 border-ink shadow-brutal font-display font-black text-xs uppercase tracking-wider transition-all cursor-pointer min-h-10.5">
+                    class="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 sm:py-2.5 bg-surface-muted hover:bg-accent text-ink border-2 border-ink shadow-brutal font-display font-black text-xs uppercase tracking-wider transition-all cursor-pointer min-h-10">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
                 </svg>
@@ -25,7 +25,7 @@
 
             <button wire:click="openCreateModal"
                     type="button"
-                    class="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-brand text-accent hover:bg-brand-dark border-2 border-ink shadow-brutal font-display font-black text-xs uppercase tracking-wider transition-all cursor-pointer min-h-10.5">
+                    class="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 sm:py-2.5 bg-brand text-accent hover:bg-brand-dark border-2 border-ink shadow-brutal font-display font-black text-xs uppercase tracking-wider transition-all cursor-pointer min-h-10">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/>
                 </svg>
@@ -62,72 +62,70 @@
         </div>
     @endif
 
-    <div class="overflow-x-auto pb-1 -mx-1 px-1">
-        <div class="grid grid-cols-6 min-w-170 lg:min-w-0 gap-2 sm:gap-3">
-            <div class="bg-surface border-2 border-ink p-2.5 sm:p-3 shadow-brutal min-w-0">
-                <span class="text-[10px] sm:text-xs font-display font-bold uppercase tracking-wider text-ink/60 block truncate">TOTAL ELIGIBLE</span>
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-3">
+        <div class="bg-surface border-2 border-ink p-2.5 sm:p-3 shadow-brutal min-w-0">
+            <span class="text-[10px] sm:text-xs font-display font-bold uppercase tracking-tight sm:tracking-wider text-ink/60 block leading-tight">TOTAL ELIGIBLE</span>
+            <div class="font-display font-black text-lg sm:text-2xl text-brand mt-0.5 sm:mt-1 truncate">
+                {{ number_format($this->statistics['total'], 0, ',', '.') }}
+            </div>
+            <span class="text-[10px] sm:text-xs text-ink/50 mt-0.5 block truncate">Mahasiswa</span>
+        </div>
+
+        <div class="bg-surface border-2 border-ink p-2.5 sm:p-3 shadow-brutal min-w-0">
+            <span class="text-[10px] sm:text-xs font-display font-bold uppercase tracking-tight sm:tracking-wider text-emerald-800 block leading-tight">DATA LENGKAP</span>
+            <div class="font-display font-black text-lg sm:text-2xl text-emerald-700 mt-0.5 sm:mt-1 truncate">
+                {{ number_format($this->statistics['complete'], 0, ',', '.') }}
+            </div>
+            <span class="text-[10px] sm:text-xs text-ink/50 mt-0.5 block truncate">Siap voting</span>
+        </div>
+
+        <div class="bg-surface border-2 border-ink p-2.5 sm:p-3 shadow-brutal min-w-0">
+            <span class="text-[10px] sm:text-xs font-display font-bold uppercase tracking-tight sm:tracking-wider text-amber-800 block leading-tight">TIDAK LENGKAP</span>
+            <div class="font-display font-black text-lg sm:text-2xl text-amber-700 mt-0.5 sm:mt-1 truncate">
+                {{ number_format($this->statistics['incomplete'], 0, ',', '.') }}
+            </div>
+            <span class="text-[10px] sm:text-xs text-ink/50 mt-0.5 block truncate">Perlu dilengkapi</span>
+        </div>
+
+        <div class="bg-surface border-2 border-ink p-2.5 sm:p-3 shadow-brutal min-w-0">
+            <span class="text-[10px] sm:text-xs font-display font-bold uppercase tracking-tight sm:tracking-wider text-brand block leading-tight">SUDAH TERDAFTAR</span>
+            <div class="font-display font-black text-lg sm:text-2xl text-brand mt-0.5 sm:mt-1 truncate">
+                {{ number_format($this->statistics['registered'], 0, ',', '.') }}
+            </div>
+            <span class="text-[10px] sm:text-xs text-ink/50 mt-0.5 block truncate">Memiliki akun</span>
+        </div>
+
+        <div class="bg-surface border-2 border-ink p-2.5 sm:p-3 shadow-brutal min-w-0">
+            <span class="text-[10px] sm:text-xs font-display font-bold uppercase tracking-tight sm:tracking-wider text-brand block leading-tight">SUDAH VOTING</span>
+            @if ($this->statistics['has_current_election'])
                 <div class="font-display font-black text-lg sm:text-2xl text-brand mt-0.5 sm:mt-1 truncate">
-                    {{ number_format($this->statistics['total'], 0, ',', '.') }}
+                    {{ number_format($this->statistics['voted'], 0, ',', '.') }}
                 </div>
-                <span class="text-[10px] sm:text-xs text-ink/50 mt-0.5 block truncate">Mahasiswa</span>
-            </div>
-
-            <div class="bg-surface border-2 border-ink p-2.5 sm:p-3 shadow-brutal min-w-0">
-                <span class="text-[10px] sm:text-xs font-display font-bold uppercase tracking-wider text-emerald-800 block truncate">DATA LENGKAP</span>
-                <div class="font-display font-black text-lg sm:text-2xl text-emerald-700 mt-0.5 sm:mt-1 truncate">
-                    {{ number_format($this->statistics['complete'], 0, ',', '.') }}
+                <span class="text-[10px] sm:text-xs text-ink/50 mt-0.5 block truncate" title="{{ $this->statistics['election_name'] }}">{{ $this->statistics['election_name'] }}</span>
+            @else
+                <div class="font-display font-bold text-[11px] sm:text-xs text-ink/50 mt-1 sm:mt-2 italic truncate">
+                    Tidak ada PEMIRA
                 </div>
-                <span class="text-[10px] sm:text-xs text-ink/50 mt-0.5 block truncate">Siap voting</span>
-            </div>
+            @endif
+        </div>
 
-            <div class="bg-surface border-2 border-ink p-2.5 sm:p-3 shadow-brutal min-w-0">
-                <span class="text-[10px] sm:text-xs font-display font-bold uppercase tracking-wider text-amber-800 block truncate">TIDAK LENGKAP</span>
-                <div class="font-display font-black text-lg sm:text-2xl text-amber-700 mt-0.5 sm:mt-1 truncate">
-                    {{ number_format($this->statistics['incomplete'], 0, ',', '.') }}
+        <div class="bg-surface border-2 border-ink p-2.5 sm:p-3 shadow-brutal min-w-0">
+            <span class="text-[10px] sm:text-xs font-display font-bold uppercase tracking-tight sm:tracking-wider text-ink/70 block leading-tight">BELUM VOTING</span>
+            @if ($this->statistics['has_current_election'])
+                <div class="font-display font-black text-lg sm:text-2xl text-ink/80 mt-0.5 sm:mt-1 truncate">
+                    {{ number_format($this->statistics['unvoted'], 0, ',', '.') }}
                 </div>
-                <span class="text-[10px] sm:text-xs text-ink/50 mt-0.5 block truncate">Perlu dilengkapi</span>
-            </div>
-
-            <div class="bg-surface border-2 border-ink p-2.5 sm:p-3 shadow-brutal min-w-0">
-                <span class="text-[10px] sm:text-xs font-display font-bold uppercase tracking-wider text-brand block truncate">SUDAH TERDAFTAR</span>
-                <div class="font-display font-black text-lg sm:text-2xl text-brand mt-0.5 sm:mt-1 truncate">
-                    {{ number_format($this->statistics['registered'], 0, ',', '.') }}
+                <span class="text-[10px] sm:text-xs text-ink/50 mt-0.5 block truncate" title="{{ $this->statistics['election_name'] }}">{{ $this->statistics['election_name'] }}</span>
+            @else
+                <div class="font-display font-bold text-[11px] sm:text-xs text-ink/50 mt-1 sm:mt-2 italic truncate">
+                    Tidak ada PEMIRA
                 </div>
-                <span class="text-[10px] sm:text-xs text-ink/50 mt-0.5 block truncate">Memiliki akun</span>
-            </div>
-
-            <div class="bg-surface border-2 border-ink p-2.5 sm:p-3 shadow-brutal min-w-0">
-                <span class="text-[10px] sm:text-xs font-display font-bold uppercase tracking-wider text-brand block truncate">SUDAH VOTING</span>
-                @if ($this->statistics['has_current_election'])
-                    <div class="font-display font-black text-lg sm:text-2xl text-brand mt-0.5 sm:mt-1 truncate">
-                        {{ number_format($this->statistics['voted'], 0, ',', '.') }}
-                    </div>
-                    <span class="text-[10px] sm:text-xs text-ink/50 mt-0.5 block truncate" title="{{ $this->statistics['election_name'] }}">{{ $this->statistics['election_name'] }}</span>
-                @else
-                    <div class="font-display font-bold text-[11px] sm:text-xs text-ink/50 mt-1 sm:mt-2 italic truncate">
-                        Tidak ada PEMIRA
-                    </div>
-                @endif
-            </div>
-
-            <div class="bg-surface border-2 border-ink p-2.5 sm:p-3 shadow-brutal min-w-0">
-                <span class="text-[10px] sm:text-xs font-display font-bold uppercase tracking-wider text-ink/70 block truncate">BELUM VOTING</span>
-                @if ($this->statistics['has_current_election'])
-                    <div class="font-display font-black text-lg sm:text-2xl text-ink/80 mt-0.5 sm:mt-1 truncate">
-                        {{ number_format($this->statistics['unvoted'], 0, ',', '.') }}
-                    </div>
-                    <span class="text-[10px] sm:text-xs text-ink/50 mt-0.5 block truncate" title="{{ $this->statistics['election_name'] }}">{{ $this->statistics['election_name'] }}</span>
-                @else
-                    <div class="font-display font-bold text-[11px] sm:text-xs text-ink/50 mt-1 sm:mt-2 italic truncate">
-                        Tidak ada PEMIRA
-                    </div>
-                @endif
-            </div>
+            @endif
         </div>
     </div>
 
-    <div class="bg-surface border-2 border-ink p-3.5 sm:p-4 shadow-brutal space-y-3">
-        <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+    <div class="bg-surface border-2 border-ink p-3 sm:p-4 shadow-brutal space-y-3">
+        <div class="flex items-center justify-between gap-2 sm:gap-3 min-w-0">
             <div class="relative flex-1 min-w-0">
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-ink/40">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -141,11 +139,11 @@
                        class="w-full bg-surface-muted border-2 border-ink pl-9 pr-3 py-2 text-xs sm:text-sm font-sans font-medium text-ink placeholder:text-ink/40 shadow-brutal-sm focus:outline-none focus:bg-surface min-h-10" />
             </div>
 
-            <div class="flex items-center gap-2.5 shrink-0">
+            <div class="flex items-center gap-2 shrink-0">
                 <button wire:click="openFilterModal"
                         type="button"
                         aria-label="Buka filter pemilih"
-                        class="inline-flex items-center justify-center gap-2 px-3.5 py-2 border-2 border-ink shadow-brutal-sm font-display font-bold text-xs uppercase tracking-wider transition-all cursor-pointer min-h-10 {{ $this->activeFilterCount > 0 ? 'bg-accent text-ink' : 'bg-surface-muted hover:bg-accent text-ink' }}">
+                        class="inline-flex items-center justify-center gap-1.5 px-3 py-2 border-2 border-ink shadow-brutal-sm font-display font-bold text-xs uppercase tracking-wider transition-all cursor-pointer min-h-10 {{ $this->activeFilterCount > 0 ? 'bg-accent text-ink' : 'bg-surface-muted hover:bg-accent text-ink' }}">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
                     </svg>
@@ -261,9 +259,9 @@
             </div>
         </div>
     @else
-        <div class="hidden md:block bg-surface border-2 border-ink shadow-brutal overflow-hidden">
-            <div class="overflow-auto max-h-[calc(100vh-280px)] min-h-105">
-                <table class="w-full text-left border-separate border-spacing-0">
+        <div class="bg-surface border-2 border-ink shadow-brutal overflow-hidden">
+            <div class="overflow-x-auto max-h-[calc(100vh-280px)] min-h-105">
+                <table class="w-full text-left border-separate border-spacing-0 min-w-220">
                     <thead class="sticky top-0 z-20">
                         <tr class="bg-surface-muted">
                             <th class="sticky top-0 z-20 bg-surface-muted border-b-2 border-ink px-3 py-3 text-xs font-display font-black text-brand uppercase tracking-wider text-center w-12 sm:w-16">NO</th>
@@ -281,7 +279,7 @@
                         @foreach ($this->eligibleVoters as $voter)
                             <tr class="hover:bg-surface-muted/50 transition-colors {{ ! $voter->isComplete() ? 'bg-amber-50/40' : '' }}">
                                 <td class="px-3 py-3 text-xs sm:text-sm font-mono font-bold text-ink/70 text-center whitespace-nowrap border-b border-ink/10">
-                                    {{ ($this->eligibleVoters->currentPage() - 1) * $this->eligibleVoters->perPage() + $loop->iteration }}
+                                    #{{ ($this->eligibleVoters->currentPage() - 1) * $this->eligibleVoters->perPage() + $loop->iteration }}
                                 </td>
                                 <td class="px-4 py-3 text-xs sm:text-sm font-mono font-bold text-brand whitespace-nowrap border-b border-ink/10">
                                     {{ $voter->nim }}
@@ -348,57 +346,6 @@
                     </tbody>
                 </table>
             </div>
-        </div>
-
-        <div class="block md:hidden space-y-3">
-            @foreach ($this->eligibleVoters as $voter)
-                <div class="bg-surface border-2 border-ink p-4 shadow-brutal space-y-3 {{ ! $voter->isComplete() ? 'bg-amber-50/30' : '' }}">
-                    <div class="flex items-center justify-between gap-2">
-                        <div class="flex items-center gap-2">
-                            <span class="px-1.5 py-0.5 bg-surface-muted border border-ink text-[11px] font-mono font-black text-ink/80">
-                                #{{ ($this->eligibleVoters->currentPage() - 1) * $this->eligibleVoters->perPage() + $loop->iteration }}
-                            </span>
-                            <span class="text-xs font-mono font-bold text-brand">{{ $voter->nim }}</span>
-                        </div>
-                        <div class="flex flex-wrap items-center gap-1.5">
-                            @if ($voter->isComplete())
-                                <span class="px-1.5 py-0.5 bg-emerald-200 text-emerald-950 border border-ink text-[10px] font-display font-bold uppercase">
-                                    LENGKAP
-                                </span>
-                            @else
-                                <span class="px-1.5 py-0.5 bg-amber-200 text-amber-950 border border-ink text-[10px] font-display font-bold uppercase">
-                                    TIDAK LENGKAP
-                                </span>
-                            @endif
-
-                            @if ($voter->voter_account_exists)
-                                <span class="px-1.5 py-0.5 bg-emerald-200 text-emerald-950 border border-ink text-[10px] font-display font-bold uppercase">
-                                    TERDAFTAR
-                                </span>
-                            @else
-                                <span class="px-1.5 py-0.5 bg-red-100 text-red-900 border border-ink text-[10px] font-display font-bold uppercase">
-                                    BELUM TERDAFTAR
-                                </span>
-                            @endif
-                        </div>
-                    </div>
-
-                    <div>
-                        <h4 class="font-display font-black text-sm text-ink uppercase leading-snug">
-                            {{ $voter->name ?: '(Nama belum diisi)' }}
-                        </h4>
-                        <p class="text-xs font-sans text-ink/70 mt-0.5">
-                            {{ $voter->studyProgram?->name ?? 'Jurusan belum diisi' }} &middot; {{ $voter->date_of_birth?->format('d M Y') ?? 'Tgl lahir belum diisi' }}
-                        </p>
-                    </div>
-
-                    <div class="pt-2 border-t border-ink/10 flex items-center justify-end gap-2">
-                        <x-action-button variant="detail" label="Lihat detail" wire:click="openDetailModal({{ $voter->id }})" />
-                        <x-action-button variant="edit" label="Edit data pemilih" wire:click="openEditModal({{ $voter->id }})" />
-                        <x-action-button variant="delete" label="Hapus data pemilih" wire:click="openDeleteModal({{ $voter->id }})" />
-                    </div>
-                </div>
-            @endforeach
         </div>
 
         <div class="mt-4">
@@ -514,16 +461,16 @@
                     </div>
                 </div>
 
-                <div class="px-4 py-3 sm:px-5 sm:py-3.5 border-t-2 border-ink flex items-center justify-between bg-surface-muted shrink-0">
+                <div class="px-4 py-3 sm:px-5 sm:py-3.5 border-t-2 border-ink flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-2.5 sm:gap-3 bg-surface-muted shrink-0">
                     <button wire:click="resetFilters"
                             type="button"
-                            class="px-4 py-2 bg-surface hover:bg-red-50 text-red-700 border-2 border-ink font-display font-black text-xs uppercase tracking-wider transition-colors cursor-pointer">
+                            class="w-full sm:w-auto px-4 py-2.5 sm:py-2 bg-surface hover:bg-red-50 text-red-700 border-2 border-ink font-display font-black text-xs uppercase tracking-wider text-center transition-colors cursor-pointer">
                         RESET
                     </button>
 
                     <button wire:click="closeFilterModal"
                             type="button"
-                            class="px-5 py-2.5 bg-brand text-surface hover:bg-brand-dark border-2 border-ink shadow-brutal-sm font-display font-black text-xs uppercase tracking-wider transition-all cursor-pointer">
+                            class="w-full sm:w-auto px-5 py-2.5 bg-brand text-surface hover:bg-brand-dark border-2 border-ink shadow-brutal-sm font-display font-black text-xs uppercase tracking-wider text-center transition-all cursor-pointer">
                         TERAPKAN FILTER
                     </button>
                 </div>
@@ -608,14 +555,14 @@
                         </div>
                     </div>
 
-                    <div class="px-4 py-3 sm:px-5 sm:py-3.5 border-t-2 border-ink flex items-center justify-end gap-2 bg-surface-muted shrink-0">
+                    <div class="px-4 py-3 sm:px-5 sm:py-3.5 border-t-2 border-ink flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2.5 sm:gap-3 bg-surface-muted shrink-0">
                         <button wire:click="closeCreateModal"
                                 type="button"
-                                class="px-4 py-2 bg-surface hover:bg-ink/10 border-2 border-ink text-xs font-display font-bold uppercase tracking-wider transition-colors cursor-pointer min-h-10">
+                                class="w-full sm:w-auto px-4 py-2.5 sm:py-2 bg-surface hover:bg-ink/10 border-2 border-ink text-xs font-display font-bold uppercase tracking-wider text-center transition-colors cursor-pointer min-h-10">
                             BATAL
                         </button>
                         <button type="submit"
-                                class="px-4 py-2 bg-brand text-accent hover:bg-brand-dark border-2 border-ink shadow-brutal text-xs font-display font-black uppercase tracking-wider transition-all cursor-pointer min-h-10">
+                                class="w-full sm:w-auto px-5 py-2.5 sm:py-2 bg-brand text-accent hover:bg-brand-dark border-2 border-ink shadow-brutal text-xs font-display font-black uppercase tracking-wider text-center transition-all cursor-pointer min-h-10">
                             SIMPAN MAHASISWA
                         </button>
                     </div>
@@ -710,14 +657,14 @@
                         </div>
                     </div>
 
-                    <div class="px-4 py-3 sm:px-5 sm:py-3.5 border-t-2 border-ink flex items-center justify-end gap-2 bg-surface-muted shrink-0">
+                    <div class="px-4 py-3 sm:px-5 sm:py-3.5 border-t-2 border-ink flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2.5 sm:gap-3 bg-surface-muted shrink-0">
                         <button wire:click="closeEditModal"
                                 type="button"
-                                class="px-4 py-2 bg-surface hover:bg-ink/10 border-2 border-ink text-xs font-display font-bold uppercase tracking-wider transition-colors cursor-pointer min-h-10">
+                                class="w-full sm:w-auto px-4 py-2.5 sm:py-2 bg-surface hover:bg-ink/10 border-2 border-ink text-xs font-display font-bold uppercase tracking-wider text-center transition-colors cursor-pointer min-h-10">
                             BATAL
                         </button>
                         <button type="submit"
-                                class="px-4 py-2 bg-brand text-accent hover:bg-brand-dark border-2 border-ink shadow-brutal text-xs font-display font-black uppercase tracking-wider transition-all cursor-pointer min-h-10">
+                                class="w-full sm:w-auto px-5 py-2.5 sm:py-2 bg-brand text-accent hover:bg-brand-dark border-2 border-ink shadow-brutal text-xs font-display font-black uppercase tracking-wider text-center transition-all cursor-pointer min-h-10">
                             SIMPAN PERUBAHAN
                         </button>
                     </div>
@@ -848,16 +795,16 @@
                     </div>
                 </div>
 
-                <div class="px-4 py-3 sm:px-5 sm:py-3.5 border-t-2 border-ink flex items-center justify-between bg-surface-muted shrink-0">
-                    <button wire:click="openEditModal({{ $selectedEligibleVoter->id }})"
-                            type="button"
-                            class="px-4 py-2 bg-brand text-surface hover:bg-brand-dark border-2 border-ink shadow-brutal font-display font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer min-h-10">
-                        LENGKAPI / EDIT
-                    </button>
+                <div class="px-4 py-3 sm:px-5 sm:py-3.5 border-t-2 border-ink flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-2.5 sm:gap-3 bg-surface-muted shrink-0">
                     <button wire:click="closeDetailModal"
                             type="button"
-                            class="px-4 py-2 bg-surface hover:bg-accent border-2 border-ink font-display font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer min-h-10">
+                            class="w-full sm:w-auto px-4 py-2.5 sm:py-2 bg-surface hover:bg-accent border-2 border-ink font-display font-bold text-xs uppercase tracking-wider text-center transition-colors cursor-pointer min-h-10">
                         TUTUP
+                    </button>
+                    <button wire:click="openEditModal({{ $selectedEligibleVoter->id }})"
+                            type="button"
+                            class="w-full sm:w-auto px-4 py-2.5 sm:py-2 bg-brand text-surface hover:bg-brand-dark border-2 border-ink shadow-brutal font-display font-bold text-xs uppercase tracking-wider text-center transition-colors cursor-pointer min-h-10">
+                        LENGKAPI / EDIT
                     </button>
                 </div>
             </div>
@@ -914,16 +861,16 @@
                     @endif
                 </div>
 
-                <div class="px-4 py-3 sm:px-5 sm:py-3.5 border-t-2 border-ink flex items-center justify-end gap-2 bg-surface-muted shrink-0">
+                <div class="px-4 py-3 sm:px-5 sm:py-3.5 border-t-2 border-ink flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2.5 sm:gap-3 bg-surface-muted shrink-0">
                     <button wire:click="closeDeleteModal"
                             type="button"
-                            class="px-4 py-2 bg-surface hover:bg-ink/10 border-2 border-ink text-xs font-display font-bold uppercase tracking-wider transition-colors cursor-pointer min-h-10">
+                            class="w-full sm:w-auto px-4 py-2.5 sm:py-2 bg-surface hover:bg-ink/10 border-2 border-ink text-xs font-display font-bold uppercase tracking-wider text-center transition-colors cursor-pointer min-h-10">
                         {{ $deleteError ? 'TUTUP' : 'BATAL' }}
                     </button>
                     @if (! $deleteError)
                         <button wire:click="deleteEligibleVoter"
                                 type="button"
-                                class="px-4 py-2 bg-red-600 text-surface hover:bg-red-700 border-2 border-ink shadow-brutal text-xs font-display font-black uppercase tracking-wider transition-all cursor-pointer min-h-10">
+                                class="w-full sm:w-auto px-4 py-2.5 sm:py-2 bg-red-600 text-surface hover:bg-red-700 border-2 border-ink shadow-brutal text-xs font-display font-black uppercase tracking-wider text-center transition-all cursor-pointer min-h-10">
                             HAPUS MAHASISWA
                         </button>
                     @endif
@@ -1028,15 +975,15 @@
                             </div>
                         </div>
 
-                        <div class="px-4 py-3 sm:px-5 sm:py-3.5 border-t-2 border-ink flex items-center justify-end gap-2 bg-surface-muted shrink-0">
+                        <div class="px-4 py-3 sm:px-5 sm:py-3.5 border-t-2 border-ink flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2.5 sm:gap-3 bg-surface-muted shrink-0">
                             <button wire:click="closeImportModal"
                                     type="button"
-                                    class="px-4 py-2 bg-surface hover:bg-ink/10 border-2 border-ink text-xs font-display font-bold uppercase tracking-wider transition-colors cursor-pointer min-h-10">
+                                    class="w-full sm:w-auto px-4 py-2.5 sm:py-2 bg-surface hover:bg-ink/10 border-2 border-ink text-xs font-display font-bold uppercase tracking-wider text-center transition-colors cursor-pointer min-h-10">
                                 BATAL
                             </button>
                             <button type="submit"
                                     wire:loading.attr="disabled"
-                                    class="px-4 py-2 bg-brand text-accent hover:bg-brand-dark border-2 border-ink shadow-brutal text-xs font-display font-black uppercase tracking-wider transition-all cursor-pointer min-h-10 disabled:opacity-50">
+                                    class="w-full sm:w-auto px-4 py-2.5 sm:py-2 bg-brand text-accent hover:bg-brand-dark border-2 border-ink shadow-brutal text-xs font-display font-black uppercase tracking-wider text-center transition-all cursor-pointer min-h-10 disabled:opacity-50">
                                 <span wire:loading.remove wire:target="processUpload">LANJUTKAN PREVIEW</span>
                                 <span wire:loading wire:target="processUpload">MEMPROSES FILE...</span>
                             </button>
@@ -1166,17 +1113,17 @@
                             @endif
                         </div>
 
-                        <div class="px-4 py-3 sm:px-5 sm:py-3.5 border-t-2 border-ink flex items-center justify-between gap-2 bg-surface-muted shrink-0">
+                        <div class="px-4 py-3 sm:px-5 sm:py-3.5 border-t-2 border-ink flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-2.5 sm:gap-3 bg-surface-muted shrink-0">
                             <button wire:click="resetImportState"
                                     type="button"
-                                    class="px-4 py-2 bg-surface hover:bg-ink/10 border-2 border-ink text-xs font-display font-bold uppercase tracking-wider transition-colors cursor-pointer min-h-10">
+                                    class="w-full sm:w-auto px-4 py-2.5 sm:py-2 bg-surface hover:bg-ink/10 border-2 border-ink text-xs font-display font-bold uppercase tracking-wider text-center transition-colors cursor-pointer min-h-10">
                                 KEMBALI / UPLOAD ULANG
                             </button>
                             <button wire:click="confirmImport"
                                     type="button"
                                     @if ($importSummary['valid'] === 0) disabled @endif
                                     wire:loading.attr="disabled"
-                                    class="px-4 py-2 bg-brand text-accent hover:bg-brand-dark border-2 border-ink shadow-brutal text-xs font-display font-black uppercase tracking-wider transition-all cursor-pointer min-h-10 disabled:opacity-50">
+                                    class="w-full sm:w-auto px-5 py-2.5 sm:py-2 bg-brand text-accent hover:bg-brand-dark border-2 border-ink shadow-brutal text-xs font-display font-black uppercase tracking-wider text-center transition-all cursor-pointer min-h-10 disabled:opacity-50">
                                 <span wire:loading.remove wire:target="confirmImport,updateExisting">
                                     @if ($updateExisting && ($importSummary['to_update'] ?? 0) > 0)
                                         IMPORT &amp; PERBARUI {{ number_format($importSummary['valid'], 0, ',', '.') }} DATA
@@ -1242,10 +1189,10 @@
                             </div>
                         </div>
 
-                        <div class="px-4 py-3 sm:px-5 sm:py-3.5 border-t-2 border-ink flex items-center justify-end bg-surface-muted shrink-0">
+                        <div class="px-4 py-3 sm:px-5 sm:py-3.5 border-t-2 border-ink flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-2.5 sm:gap-3 bg-surface-muted shrink-0">
                             <button wire:click="closeImportModal"
                                     type="button"
-                                    class="px-4 py-2 bg-brand text-accent hover:bg-brand-dark border-2 border-ink shadow-brutal text-xs font-display font-black uppercase tracking-wider transition-all cursor-pointer min-h-10">
+                                    class="w-full sm:w-auto px-5 py-2.5 sm:py-2 bg-brand text-accent hover:bg-brand-dark border-2 border-ink shadow-brutal text-xs font-display font-black uppercase tracking-wider text-center transition-all cursor-pointer min-h-10">
                                 SELESAI &amp; TUTUP
                             </button>
                         </div>
