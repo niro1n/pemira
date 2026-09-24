@@ -217,6 +217,8 @@ class AdminInvitationTest extends TestCase
         // First attempt succeeds
         $component->call('resendInvitation', $invitation->id);
         Mail::assertQueued(AdminInvitationMail::class, 1);
+        $component->assertDispatched('invitation-cooldown-started', id: $invitation->id, seconds: 60);
+        $this->assertGreaterThan(0, $component->instance()->getInvitationCooldownSeconds($invitation->id));
 
         // Immediate second attempt gets rate limited
         $component->call('resendInvitation', $invitation->id);

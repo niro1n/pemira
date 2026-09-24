@@ -1046,16 +1046,41 @@
                                     <td class="p-3 sm:p-3.5 text-right whitespace-nowrap">
                                         <div class="flex items-center justify-end gap-1.5">
                                             @if ($invitation->isPending())
-                                                <button wire:click="resendInvitation({{ $invitation->id }})"
-                                                        type="button"
-                                                        wire:loading.attr="disabled"
-                                                        class="inline-flex items-center gap-1 px-2.5 py-1 bg-surface hover:bg-accent border border-ink text-[11px] font-display font-bold uppercase transition-colors shadow-brutal-sm cursor-pointer"
-                                                        title="Kirim ulang email undangan dengan token baru">
-                                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
-                                                    </svg>
-                                                    <span>KIRIM ULANG</span>
-                                                </button>
+                                                <div x-data="{
+                                                    seconds: {{ $this->getInvitationCooldownSeconds($invitation->id) }},
+                                                    timer: null,
+                                                    init() {
+                                                        if (this.seconds > 0) {
+                                                            this.startTimer();
+                                                        }
+                                                    },
+                                                    startTimer() {
+                                                        if (this.timer) clearInterval(this.timer);
+                                                        this.timer = setInterval(() => {
+                                                            if (this.seconds > 0) {
+                                                                this.seconds--;
+                                                            } else {
+                                                                clearInterval(this.timer);
+                                                                this.timer = null;
+                                                            }
+                                                        }, 1000);
+                                                    }
+                                                }"
+                                                @invitation-cooldown-started.window="if ($event.detail.id === {{ $invitation->id }}) { seconds = $event.detail.seconds; startTimer(); }">
+                                                    <button wire:click="resendInvitation({{ $invitation->id }})"
+                                                            type="button"
+                                                            :disabled="seconds > 0"
+                                                            wire:loading.attr="disabled"
+                                                            :class="seconds > 0 ? 'opacity-50 cursor-not-allowed bg-surface-muted hover:bg-surface-muted shadow-none' : 'bg-surface hover:bg-accent shadow-brutal-sm cursor-pointer'"
+                                                            class="inline-flex items-center gap-1 px-2.5 py-1 border border-ink text-[11px] font-display font-bold uppercase transition-colors"
+                                                            :title="seconds > 0 ? 'Harap tunggu ' + seconds + ' detik sebelum mengirim ulang' : 'Kirim ulang email undangan dengan token baru'">
+                                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                                                        </svg>
+                                                        <span x-show="seconds === 0">KIRIM ULANG</span>
+                                                        <span x-show="seconds > 0" x-text="'TUNGGU (' + seconds + 's)'" x-cloak></span>
+                                                    </button>
+                                                </div>
 
                                                 <button wire:click="openRevokeModal({{ $invitation->id }})"
                                                         type="button"
@@ -1067,16 +1092,41 @@
                                                     <span>BATALKAN</span>
                                                 </button>
                                             @elseif ($invitation->isExpired())
-                                                <button wire:click="resendInvitation({{ $invitation->id }})"
-                                                        type="button"
-                                                        wire:loading.attr="disabled"
-                                                        class="inline-flex items-center gap-1 px-2.5 py-1 bg-surface hover:bg-accent border border-ink text-[11px] font-display font-bold uppercase transition-colors shadow-brutal-sm cursor-pointer"
-                                                        title="Kirim undangan baru">
-                                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
-                                                    </svg>
-                                                    <span>KIRIM ULANG</span>
-                                                </button>
+                                                <div x-data="{
+                                                    seconds: {{ $this->getInvitationCooldownSeconds($invitation->id) }},
+                                                    timer: null,
+                                                    init() {
+                                                        if (this.seconds > 0) {
+                                                            this.startTimer();
+                                                        }
+                                                    },
+                                                    startTimer() {
+                                                        if (this.timer) clearInterval(this.timer);
+                                                        this.timer = setInterval(() => {
+                                                            if (this.seconds > 0) {
+                                                                this.seconds--;
+                                                            } else {
+                                                                clearInterval(this.timer);
+                                                                this.timer = null;
+                                                            }
+                                                        }, 1000);
+                                                    }
+                                                }"
+                                                @invitation-cooldown-started.window="if ($event.detail.id === {{ $invitation->id }}) { seconds = $event.detail.seconds; startTimer(); }">
+                                                    <button wire:click="resendInvitation({{ $invitation->id }})"
+                                                            type="button"
+                                                            :disabled="seconds > 0"
+                                                            wire:loading.attr="disabled"
+                                                            :class="seconds > 0 ? 'opacity-50 cursor-not-allowed bg-surface-muted hover:bg-surface-muted shadow-none' : 'bg-surface hover:bg-accent shadow-brutal-sm cursor-pointer'"
+                                                            class="inline-flex items-center gap-1 px-2.5 py-1 border border-ink text-[11px] font-display font-bold uppercase transition-colors"
+                                                            :title="seconds > 0 ? 'Harap tunggu ' + seconds + ' detik sebelum mengirim ulang' : 'Kirim undangan baru'">
+                                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                                                        </svg>
+                                                        <span x-show="seconds === 0">KIRIM ULANG</span>
+                                                        <span x-show="seconds > 0" x-text="'TUNGGU (' + seconds + 's)'" x-cloak></span>
+                                                    </button>
+                                                </div>
                                             @elseif ($invitation->isAccepted())
                                                 <span class="text-[11px] font-display font-bold text-emerald-700 uppercase">AKUN AKTIF</span>
                                             @elseif ($invitation->isRevoked())

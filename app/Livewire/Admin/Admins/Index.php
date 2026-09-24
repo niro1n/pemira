@@ -339,7 +339,11 @@ class Index extends Component
             'invited_by' => Auth::id(),
         ]);
 
+        RateLimiter::hit('resend-admin-invitation:'.$invitation->id, 60);
+
         Mail::to($email)->send(new AdminInvitationMail($invitation, $plainToken));
+
+        $this->dispatch('invitation-cooldown-started', id: $invitation->id, seconds: 60);
 
         AuditLog::create([
             'user_id' => Auth::id(),
@@ -391,6 +395,8 @@ class Index extends Component
 
         Mail::to($invitation->email)->send(new AdminInvitationMail($invitation, $plainToken));
 
+        $this->dispatch('invitation-cooldown-started', id: $invitation->id, seconds: 60);
+
         AuditLog::create([
             'user_id' => Auth::id(),
             'action' => 'admin_invitation_resent',
@@ -406,6 +412,16 @@ class Index extends Component
         ]);
 
         session()->flash('success', "Undangan ke {$invitation->email} berhasil dikirim ulang.");
+    }
+
+    public function getInvitationCooldownSeconds(int $invitationId): int
+    {
+        $rateLimitKey = 'resend-admin-invitation:'.$invitationId;
+        if (RateLimiter::tooManyAttempts($rateLimitKey, 1)) {
+            return RateLimiter::availableIn($rateLimitKey);
+        }
+
+        return 0;
     }
 
     public function openRevokeModal(int $id): void
