@@ -95,8 +95,14 @@ class AcceptInvitation extends Component
         ], [
             'name.required' => 'Nama lengkap wajib diisi.',
             'name.max' => 'Nama lengkap maksimal 255 karakter.',
-            'password.required' => 'Kata sandi wajib diisi.',
-            'password.confirmed' => 'Konfirmasi kata sandi tidak cocok.',
+            'password.required' => 'Kata sandi baru wajib diisi.',
+            'password.confirmed' => 'Konfirmasi kata sandi baru tidak cocok.',
+            'password.min' => 'Kata sandi minimal harus :min karakter.',
+            'password.mixed' => 'Kata sandi harus mengandung kombinasi huruf besar dan huruf kecil.',
+            'password.letters' => 'Kata sandi harus mengandung setidaknya satu huruf.',
+            'password.numbers' => 'Kata sandi harus mengandung setidaknya satu angka.',
+            'password.symbols' => 'Kata sandi harus mengandung setidaknya satu simbol atau karakter khusus.',
+            'password.uncompromised' => 'Kata sandi yang dimasukkan terlalu umum atau pernah mengalami kebocoran data.',
         ]);
 
         if (User::where('email', $invitation->email)->exists()) {

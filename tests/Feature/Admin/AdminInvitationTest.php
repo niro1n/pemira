@@ -400,4 +400,27 @@ class AdminInvitationTest extends TestCase
             ->assertSet('invitationStatus', 'already_accepted')
             ->assertSee('Undangan Sudah Pernah Digunakan');
     }
+
+    public function test_validation_errors_use_proper_indonesian_language(): void
+    {
+        $plainToken = AdminInvitation::generatePlainToken();
+        AdminInvitation::create([
+            'email' => 'calon.validasi@pemira.test',
+            'token' => AdminInvitation::hashToken($plainToken),
+            'expires_at' => now()->addHours(24),
+            'invited_by' => $this->superAdmin->id,
+        ]);
+
+        Livewire::test(AcceptInvitation::class, ['token' => $plainToken])
+            ->set('name', '')
+            ->set('password', 'pendek')
+            ->set('password_confirmation', 'tidakcocok')
+            ->call('createAccount')
+            ->assertHasErrors(['name', 'password'])
+            ->assertDontSee('validation.min.string')
+            ->assertDontSee('validation.password.mixed')
+            ->assertDontSee('validation.password.symbols')
+            ->assertSee('Nama lengkap wajib diisi.')
+            ->assertSee('Konfirmasi kata sandi baru tidak cocok.');
+    }
 }
