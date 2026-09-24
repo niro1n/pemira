@@ -262,7 +262,77 @@ class EligibleVoterManagementTest extends TestCase
         $this->assertEquals(2, EligibleVoter::count());
     }
 
-    public function test_invalid_rows_are_rejected(): void
+    public function test_import_with_update_existing_updates_and_completes_existing_records(): void
+    {
+        $existing = EligibleVoter::create([
+            'nim' => '2215354001',
+            'name' => 'Nama Awal',
+            'study_program_id' => null,
+            'date_of_birth' => '2004-01-01',
+            'is_eligible' => true,
+        ]);
+
+        $this->assertFalse($existing->isComplete());
+
+        $csvContent = "NIM,Nama,Jurusan,Tanggal Lahir\n";
+        $csvContent .= "2215354001,I Putu Gede Raditya,Teknologi Informasi,2004-03-15\n";
+
+        $file = UploadedFile::fake()->createWithContent('update_existing.csv', $csvContent);
+
+        Livewire::actingAs($this->admin)
+            ->test(EligibleVoterIndex::class)
+            ->set('updateExisting', true)
+            ->set('importFile', $file)
+            ->call('processUpload')
+            ->assertSet('importSummary.total', 1)
+            ->assertSet('importSummary.valid', 1)
+            ->assertSet('importSummary.to_update', 1)
+            ->assertSet('importSummary.duplicates', 0)
+            ->call('confirmImport')
+            ->assertSet('importResult.inserted', 1);
+
+        $existing->refresh();
+        $this->assertEquals('I Putu Gede Raditya', $existing->name);
+        $this->assertEquals($this->tiProdi->id, $existing->study_program_id);
+        $this->assertEquals('2004-03-15', $existing->date_of_birth->format('Y-m-d'));
+        $this->assertTrue($existing->isComplete());
+    }
+
+    public function test_toggling_update_existing_in_preview_reprocesses_data(): void
+    {
+        EligibleVoter::create([
+            'nim' => '2215354001',
+            'name' => 'Nama Awal',
+            'study_program_id' => null,
+            'date_of_birth' => '2004-01-01',
+            'is_eligible' => true,
+        ]);
+
+        $csvContent = "NIM,Nama,Jurusan,Tanggal Lahir\n";
+        $csvContent .= "2215354001,I Putu Gede Raditya,Teknologi Informasi,2004-03-15\n";
+
+        $file = UploadedFile::fake()->createWithContent('toggle_preview.csv', $csvContent);
+
+        $component = Livewire::actingAs($this->admin)
+            ->test(EligibleVoterIndex::class)
+            ->set('importFile', $file)
+            ->call('processUpload')
+            ->assertSet('importStep', 'preview')
+            ->assertSet('importSummary.valid', 0)
+            ->assertSet('importSummary.duplicates', 1)
+            ->set('updateExisting', true)
+            ->assertSet('importSummary.valid', 1)
+            ->assertSet('importSummary.duplicates', 0)
+            ->assertSet('importSummary.to_update', 1)
+            ->call('confirmImport')
+            ->assertSet('importResult.inserted', 1);
+
+        $voter = EligibleVoter::where('nim', '2215354001')->first();
+        $this->assertEquals($this->tiProdi->id, $voter->study_program_id);
+        $this->assertTrue($voter->isComplete());
+    }
+
+    public function test_invalid_rows_with_empty_nim_are_rejected_while_corrupt_dob_is_imported_as_incomplete(): void
     {
         $csvContent = "NIM,Nama,Jurusan,Tanggal Lahir\n";
         $csvContent .= ",Nama Tanpa NIM,Teknologi Informasi,2004-03-15\n";
@@ -275,11 +345,47 @@ class EligibleVoterManagementTest extends TestCase
             ->set('importFile', $file)
             ->call('processUpload')
             ->assertSet('importSummary.total', 2)
-            ->assertSet('importSummary.valid', 0)
-            ->assertSet('importSummary.errors', 2);
+            ->assertSet('importSummary.valid', 1)
+            ->assertSet('importSummary.incomplete', 1)
+            ->assertSet('importSummary.errors', 1)
+            ->call('confirmImport')
+            ->assertSet('importResult.inserted', 1);
 
-        $this->assertCount(2, $component->get('importErrors'));
-        $this->assertEquals(0, EligibleVoter::count());
+        $this->assertEquals(1, EligibleVoter::count());
+        $voter = EligibleVoter::where('nim', '2215354004')->first();
+        $this->assertNotNull($voter);
+        $this->assertNull($voter->date_of_birth);
+        $this->assertFalse($voter->isComplete());
+    }
+
+    public function test_corrupt_dates_such_as_zeros_are_imported_as_incomplete(): void
+    {
+        $csvContent = "NIM,Nama,Jurusan,Tanggal Lahir\n";
+        $csvContent .= "2615664040,Budi Santoso,Teknologi Informasi,00-00-0000\n";
+        $csvContent .= "2615664058,Dewi Lestari,Akuntansi,06-06-1888\n";
+
+        $file = UploadedFile::fake()->createWithContent('corrupt_dates.csv', $csvContent);
+
+        Livewire::actingAs($this->admin)
+            ->test(EligibleVoterIndex::class)
+            ->set('importFile', $file)
+            ->call('processUpload')
+            ->assertSet('importSummary.total', 2)
+            ->assertSet('importSummary.valid', 2)
+            ->assertSet('importSummary.incomplete', 2)
+            ->assertSet('importSummary.errors', 0)
+            ->call('confirmImport')
+            ->assertSet('importResult.inserted', 2);
+
+        $voter1 = EligibleVoter::where('nim', '2615664040')->first();
+        $this->assertNotNull($voter1);
+        $this->assertNull($voter1->date_of_birth);
+        $this->assertFalse($voter1->isComplete());
+
+        $voter2 = EligibleVoter::where('nim', '2615664058')->first();
+        $this->assertNotNull($voter2);
+        $this->assertNull($voter2->date_of_birth);
+        $this->assertFalse($voter2->isComplete());
     }
 
     public function test_import_summary_and_result_are_accurate(): void

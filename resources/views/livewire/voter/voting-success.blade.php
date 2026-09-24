@@ -105,6 +105,16 @@
             </div>
         @else
             <form wire:submit="submitFeedback" class="space-y-4">
+                <div class="p-3 bg-surface-muted border-2 border-ink text-xs text-ink/80 flex items-start gap-2.5">
+                    <svg class="w-4 h-4 text-brand shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <div class="leading-relaxed">
+                        <span class="font-bold text-ink uppercase tracking-wide text-[11px] block">Transparansi Identitas Masukan:</span>
+                        <span>Berbeda dengan pilihan pada bilik suara yang bersifat 100% anonim, formulir ulasan ini terhubung dengan akun Anda untuk keperluan evaluasi dan peningkatan kualitas sistem oleh panitia.</span>
+                    </div>
+                </div>
+
                 <div>
                     <label class="block text-xs font-mono font-bold uppercase text-ink mb-2">
                         Tingkat Kepuasan Sistem (1 - 5 Bintang)

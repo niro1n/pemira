@@ -2,9 +2,7 @@
 
 namespace Tests\Feature\Voter;
 
-use App\Enums\ElectionPhase;
 use App\Livewire\Voter\Dashboard;
-use App\Livewire\Voter\Profile;
 use App\Livewire\Voter\VotingBooth;
 use App\Livewire\Voter\VotingSuccess;
 use App\Models\AuditLog;
@@ -21,6 +19,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Str;
 use Livewire\Livewire;
 use Tests\TestCase;
 
@@ -271,7 +270,6 @@ class VoterPortalTest extends TestCase
         $this->assertEquals($this->election->id, $ballot->election_id);
         $this->assertEquals($this->candidate1->id, $ballot->candidate_pair_id);
 
-        // 3. ANONYMITY VERIFICATION: ballots table must NEVER have user_id or voter_account_id
         $this->assertFalse(Schema::hasColumn('ballots', 'user_id'));
         $this->assertFalse(Schema::hasColumn('ballots', 'voter_account_id'));
         $this->assertFalse(Schema::hasColumn('ballots', 'eligible_voter_id'));
@@ -279,7 +277,6 @@ class VoterPortalTest extends TestCase
         $auditLog = AuditLog::where('action', 'voting')->first();
         $this->assertNotNull($auditLog);
         $this->assertEquals($this->voterUser->id, $auditLog->user_id);
-        // Verify audit log metadata or description does NOT leak candidate choice
         $this->assertStringNotContainsString((string) $this->candidate1->id, $auditLog->description);
     }
 
@@ -291,7 +288,7 @@ class VoterPortalTest extends TestCase
             'voted_at' => now(),
         ]);
         DB::table('ballots')->insert([
-            'id' => (string) \Illuminate\Support\Str::uuid(),
+            'id' => (string) Str::uuid(),
             'election_id' => $this->election->id,
             'candidate_pair_id' => $this->candidate1->id,
         ]);
@@ -339,7 +336,6 @@ class VoterPortalTest extends TestCase
         $response->assertSee('Tanda Bukti Partisipasi Pemilih');
         $response->assertSee('I Made Mahardika');
 
-        // CRITICAL: candidate choice must NEVER be shown on success page
         $response->assertDontSee('Ketua Satu');
         $response->assertDontSee('Paslon 01 Terpilih');
         $response->assertDontSee('Anda memilih Paslon');

@@ -11,6 +11,7 @@ use App\Livewire\Admin\Results\Index as ResultIndex;
 use App\Livewire\Admin\ScheduleRequests\Index as ScheduleRequestIndex;
 use App\Livewire\Admin\SpecialActions\Index as SpecialActionIndex;
 use App\Livewire\Admin\Sponsors\Index as SponsorIndex;
+use App\Livewire\Auth\AcceptInvitation;
 use App\Livewire\Auth\ForgotPassword;
 use App\Livewire\Auth\Login;
 use App\Livewire\Auth\Register;
@@ -54,7 +55,7 @@ Route::get('/', function () {
     ]);
 })->name('home');
 
-Route::get('/paslon/{candidatePair}', function (CandidatePair $candidatePair) {
+Route::get('/candidates/{candidatePair}', function (CandidatePair $candidatePair) {
     $election = Election::current();
 
     if (! $election || ! $candidatePair->is_active || $candidatePair->election_id !== $election->id) {
@@ -73,10 +74,15 @@ Route::get('/paslon/{candidatePair}', function (CandidatePair $candidatePair) {
     ]);
 })->name('public.candidates.show');
 
+Route::get('/paslon/{candidatePair}', function (CandidatePair $candidatePair) {
+    return redirect()->route('public.candidates.show', $candidatePair, 301);
+});
+
 Route::get('/login', Login::class)->middleware('guest')->name('login');
 Route::get('/register', Register::class)->middleware('guest')->name('register');
 Route::get('/forgot-password', ForgotPassword::class)->middleware('guest')->name('password.request');
 Route::get('/reset-password/{token}', ResetPassword::class)->middleware('guest')->name('password.reset');
+Route::get('/admin/invitations/accept/{token}', AcceptInvitation::class)->middleware('guest')->name('admin.invitations.accept');
 
 Route::get('/profile', function () {
     $user = Auth::user();
@@ -115,20 +121,30 @@ Route::get('/maintenance', function () {
     return response()->view('pages.maintenance', [], 503);
 })->name('maintenance');
 
-Route::get('/tindakan-khusus', function () {
+Route::get('/special-actions', function () {
     return redirect()->route('admin.special-actions.index');
+});
+
+Route::get('/tindakan-khusus', function () {
+    return redirect()->route('admin.special-actions.index', [], 301);
 });
 
 Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::get('/', Dashboard::class)->name('admin.dashboard');
     Route::get('/elections', ElectionIndex::class)->name('admin.elections.index');
-    Route::get('/paslon', CandidatePairIndex::class)->name('admin.candidate-pairs.index');
+    Route::get('/candidate-pairs', CandidatePairIndex::class)->name('admin.candidate-pairs.index');
     Route::get('/eligible-voters', EligibleVoterIndex::class)->name('admin.eligible-voters.index');
-    Route::get('/hasil-perhitungan', ResultIndex::class)->name('admin.results.index');
-    Route::get('/pengajuan-jadwal', ScheduleRequestIndex::class)->name('admin.schedule-requests.index');
-    Route::get('/masukan-pemilih', FeedbackIndex::class)->name('admin.feedbacks.index');
+    Route::get('/results', ResultIndex::class)->name('admin.results.index');
+    Route::get('/schedule-requests', ScheduleRequestIndex::class)->name('admin.schedule-requests.index');
+    Route::get('/feedbacks', FeedbackIndex::class)->name('admin.feedbacks.index');
     Route::get('/sponsors', SponsorIndex::class)->name('admin.sponsors.index');
     Route::get('/audit-logs', AuditLogIndex::class)->name('admin.audit-logs.index');
     Route::get('/admins', AdminIndex::class)->middleware('role:super_admin')->name('admin.admins.index');
-    Route::get('/tindakan-khusus', SpecialActionIndex::class)->middleware('role:super_admin')->name('admin.special-actions.index');
+    Route::get('/special-actions', SpecialActionIndex::class)->middleware('role:super_admin')->name('admin.special-actions.index');
+
+    Route::get('/paslon', fn () => redirect()->route('admin.candidate-pairs.index', [], 301));
+    Route::get('/hasil-perhitungan', fn () => redirect()->route('admin.results.index', [], 301));
+    Route::get('/pengajuan-jadwal', fn () => redirect()->route('admin.schedule-requests.index', [], 301));
+    Route::get('/masukan-pemilih', fn () => redirect()->route('admin.feedbacks.index', [], 301));
+    Route::get('/tindakan-khusus', fn () => redirect()->route('admin.special-actions.index', [], 301));
 });

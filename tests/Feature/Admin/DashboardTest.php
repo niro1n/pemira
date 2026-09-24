@@ -3,12 +3,14 @@
 namespace Tests\Feature\Admin;
 
 use App\Enums\ElectionPhase;
+use App\Models\AuditLog;
 use App\Models\Election;
 use App\Models\StudyProgram;
 use App\Models\User;
 use App\Services\Dashboard\DashboardDataProvider;
 use App\Services\Dashboard\DashboardDataProviderInterface;
 use Carbon\Carbon;
+use Database\Seeders\EligibleVoterSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
@@ -194,9 +196,19 @@ class DashboardTest extends TestCase
 
     public function test_anonymous_ballot_guarantee(): void
     {
+        AuditLog::create([
+            'user_id' => null,
+            'action' => 'vote',
+            'description' => 'Surat suara tercatat secara anonim',
+            'ip_address' => '127.0.0.1',
+            'user_agent' => 'PHPUnit',
+        ]);
+
         $provider = app(DashboardDataProvider::class);
 
         $activities = $provider->getRecentActivities();
+
+        $this->assertNotEmpty($activities);
 
         foreach ($activities as $act) {
             if ($act['type'] === 'Suara') {
@@ -363,19 +375,47 @@ class DashboardTest extends TestCase
     {
         $provider = app(DashboardDataProviderInterface::class);
 
+        $provider->setForcedParticipationStats([
+            'eligible' => 2450,
+            'registered' => 2210,
+            'voted' => 1987,
+        ]);
+
         $participation = $provider->getParticipationStats();
-        $this->assertGreaterThan(0, $participation['eligible']);
-        $this->assertGreaterThan(0, $participation['voted']);
+        $this->assertEquals(2450, $participation['eligible']);
+        $this->assertEquals(1987, $participation['voted']);
 
         $visualization = $provider->getParticipationVisualization();
         $this->assertNotEmpty($visualization['ratio_text']);
 
+        $provider->setForcedProgramParticipation([
+            [
+                'code' => 'TI',
+                'name' => 'Jurusan Teknologi Informasi',
+                'short_name' => 'Teknologi Informasi',
+                'eligible' => 420,
+                'voted' => 365,
+                'rate' => 86.9,
+                'rate_formatted' => '86,90%',
+            ],
+        ]);
+
         $programs = $provider->getDepartmentParticipation();
         $this->assertIsArray($programs);
-        $this->assertCount(7, $programs);
+        $this->assertCount(1, $programs);
         $this->assertArrayHasKey('name', $programs[0]);
         $this->assertArrayHasKey('code', $programs[0]);
         $this->assertArrayHasKey('rate', $programs[0]);
+
+        $provider->setForcedRecentActivities([
+            [
+                'time' => '12:39',
+                'title' => 'SUARA DITERIMA',
+                'description' => 'Surat suara tercatat secara anonim dari Jurusan Akuntansi (AK)',
+                'type' => 'Suara',
+                'department' => 'AK',
+            ],
+        ]);
 
         $activities = $provider->getRecentActivities();
         $this->assertIsArray($activities);
@@ -383,8 +423,27 @@ class DashboardTest extends TestCase
         $this->assertNotNull($activities[0]['department'] ?? null);
     }
 
+    public function test_empty_database_returns_zero_counts_and_empty_activities(): void
+    {
+        $provider = app(DashboardDataProvider::class);
+
+        $stats = $provider->getParticipationStats();
+        $this->assertEquals(0, $stats['eligible']);
+        $this->assertEquals(0, $stats['registered']);
+        $this->assertEquals(0, $stats['voted']);
+        $this->assertEquals(0, $stats['not_voted']);
+        $this->assertEquals(0.0, $stats['rate']);
+        $this->assertEquals('0,00%', $stats['rate_formatted']);
+
+        $activities = $provider->getRecentActivities();
+        $this->assertIsArray($activities);
+        $this->assertEmpty($activities);
+    }
+
     public function test_voter_department_detection_from_registered_data(): void
     {
+        (new EligibleVoterSeeder)->run();
+
         $provider = app(DashboardDataProvider::class);
         $departments = $provider->getDepartmentParticipation();
 

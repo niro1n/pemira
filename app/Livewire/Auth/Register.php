@@ -6,11 +6,14 @@ use App\Mail\RegistrationOtpMail;
 use App\Models\AuditLog;
 use App\Models\EligibleVoter;
 use App\Models\RegistrationOtp;
+use App\Models\SystemSetting;
 use App\Models\User;
 use App\Models\VoterAccount;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -41,8 +44,63 @@ class Register extends Component
 
     public array $otp = ['', '', '', '', '', ''];
 
+    public bool $isIncompleteVoter = false;
+
+    public array $incompleteMissingFields = [];
+
+    public ?string $incompleteVoterNim = null;
+
+    public ?string $incompleteVoterName = null;
+
+    public function updatedNim(): void
+    {
+        $this->resetIncompleteState();
+    }
+
+    public function updatedBirthDate(): void
+    {
+        $this->resetIncompleteState();
+    }
+
+    public function resetIncompleteState(): void
+    {
+        $this->isIncompleteVoter = false;
+        $this->incompleteMissingFields = [];
+        $this->incompleteVoterNim = null;
+        $this->incompleteVoterName = null;
+        $this->resetErrorBag();
+    }
+
+    #[Computed]
+    public function humasWhatsappUrl(): string
+    {
+        $phone = SystemSetting::get('humas_whatsapp') ?? env('HUMAS_WHATSAPP');
+        if (! $phone) {
+            $phone = 'REPLACE_WITH_OFFICIAL_NUMBER';
+        }
+
+        $cleanPhone = preg_replace('/[^0-9]/', '', (string) $phone);
+        if (str_starts_with($cleanPhone, '08')) {
+            $cleanPhone = '628'.substr($cleanPhone, 2);
+        }
+
+        $voterName = $this->incompleteVoterName ?? 'Mahasiswa';
+        $voterNim = $this->incompleteVoterNim ?? $this->nim;
+        $missing = ! empty($this->incompleteMissingFields) ? implode(', ', $this->incompleteMissingFields) : 'informasi pemilih';
+
+        $text = "Halo Tim Humas PEMIRA, saya {$voterName} (NIM: {$voterNim}). Data pemilih saya belum lengkap ({$missing}). Mohon bantuannya untuk verifikasi dan melengkapi data agar dapat membuat akun voter.";
+
+        if ($cleanPhone === '' || $phone === 'REPLACE_WITH_OFFICIAL_NUMBER') {
+            return 'https://wa.me/REPLACE_WITH_OFFICIAL_NUMBER?text='.rawurlencode($text);
+        }
+
+        return "https://wa.me/{$cleanPhone}?text=".rawurlencode($text);
+    }
+
     public function validateStudent()
     {
+        $this->resetIncompleteState();
+
         $this->validate([
             'nim' => ['required', 'string'],
             'birth_date' => ['required', 'date'],
@@ -52,9 +110,7 @@ class Register extends Component
             'birth_date.date' => 'Format tanggal lahir tidak valid.',
         ]);
 
-        $voter = EligibleVoter::where('nim', $this->nim)
-            ->whereDate('date_of_birth', $this->birth_date)
-            ->first();
+        $voter = EligibleVoter::with('studyProgram')->where('nim', trim($this->nim))->first();
 
         if (! $voter) {
             $this->addError('nim', 'NIM atau tanggal lahir tidak cocok dengan data pemilih aktif.');
@@ -70,6 +126,25 @@ class Register extends Component
 
         if (VoterAccount::where('eligible_voter_id', $voter->id)->exists()) {
             $this->addError('nim', 'Mahasiswa dengan NIM ini sudah memiliki akun pemilih terdaftar.');
+
+            return;
+        }
+
+        if (! $voter->isComplete()) {
+            $this->isIncompleteVoter = true;
+            $this->incompleteMissingFields = $voter->missingFields();
+            $this->incompleteVoterNim = $voter->nim;
+            $this->incompleteVoterName = $voter->name;
+            $this->addError('nim', 'Data pemilih kamu belum lengkap. Silakan hubungi tim Humas / Panitia untuk melengkapi data.');
+
+            return;
+        }
+
+        $inputDob = Carbon::parse($this->birth_date)->format('Y-m-d');
+        $dbDob = $voter->date_of_birth?->format('Y-m-d');
+
+        if ($inputDob !== $dbDob) {
+            $this->addError('nim', 'NIM atau tanggal lahir tidak cocok dengan data pemilih aktif.');
 
             return;
         }

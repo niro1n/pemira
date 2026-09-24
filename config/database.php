@@ -60,6 +60,7 @@ return [
             'strict' => true,
             'engine' => null,
             'timezone' => env('DB_TIMEZONE', '+08:00'),
+            'use_upsert_alias' => env('DB_USE_UPSERT_ALIAS', false),
             'options' => extension_loaded('pdo_mysql') ? array_filter([
                 Mysql::ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
             ]) : [],

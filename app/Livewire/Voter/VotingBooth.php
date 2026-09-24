@@ -7,6 +7,7 @@ use App\Models\CandidatePair;
 use App\Models\Election;
 use App\Models\User;
 use App\Models\VotingParticipation;
+use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -217,8 +218,7 @@ class VotingBooth extends Component
                     'user_agent' => request()->userAgent(),
                 ]);
             });
-        } catch (\Illuminate\Database\UniqueConstraintViolationException $e) {
-            // Concurrent submission caught by DB unique constraint
+        } catch (UniqueConstraintViolationException $e) {
             session()->flash('warning', 'Suara Anda sudah tercatat sebelumnya.');
             $this->redirectRoute('voter.dashboard');
 

@@ -442,4 +442,50 @@ class RegisterTest extends TestCase
             ->call('verifyOtp')
             ->assertHasErrors(['otp']);
     }
+
+    public function test_incomplete_voter_without_dob_shows_warning_and_humas_cta(): void
+    {
+        EligibleVoter::create([
+            'nim' => '220101099',
+            'name' => 'Siswa Belum Lengkap',
+            'date_of_birth' => null,
+            'study_program_id' => $this->studyProgram->id,
+            'is_eligible' => true,
+        ]);
+
+        $test = Livewire::test(Register::class)
+            ->set('nim', '220101099')
+            ->set('birth_date', '2004-01-01')
+            ->call('validateStudent')
+            ->assertSet('isIncompleteVoter', true)
+            ->assertSet('currentStep', 1)
+            ->assertSee('DATA PEMILIH BELUM LENGKAP')
+            ->assertSee('HUBUNGI TIM HUMAS')
+            ->assertSee('Tanggal Lahir belum terdata');
+
+        $this->assertContains('Tanggal Lahir', $test->get('incompleteMissingFields'));
+
+        $test->call('resetIncompleteState')
+            ->assertSet('isIncompleteVoter', false);
+    }
+
+    public function test_incomplete_voter_without_study_program_shows_warning(): void
+    {
+        EligibleVoter::create([
+            'nim' => '220101098',
+            'name' => 'Siswa Tanpa Prodi',
+            'date_of_birth' => '2004-01-01',
+            'study_program_id' => null,
+            'is_eligible' => true,
+        ]);
+
+        Livewire::test(Register::class)
+            ->set('nim', '220101098')
+            ->set('birth_date', '2004-01-01')
+            ->call('validateStudent')
+            ->assertSet('isIncompleteVoter', true)
+            ->assertSet('currentStep', 1)
+            ->assertSee('Jurusan / Program Studi belum terdata')
+            ->assertSee('HUBUNGI TIM HUMAS');
+    }
 }

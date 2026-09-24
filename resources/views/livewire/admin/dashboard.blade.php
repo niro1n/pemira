@@ -196,11 +196,11 @@
                     Komparasi perolehan suara per jurusan di Politeknik Negeri Bali
                 </div>
             </div>
-            <span class="text-xs font-sans font-bold uppercase tracking-wider text-ink/60">7 Jurusan PNB</span>
+            <span class="text-xs font-sans font-bold uppercase tracking-wider text-ink/60">{{ count($programs) }} Jurusan PNB</span>
         </div>
 
         <div class="space-y-3.5">
-            @foreach ($programs as $prog)
+            @forelse ($programs as $prog)
                 <div class="space-y-1.5">
                     <div class="flex items-center justify-between text-xs font-sans">
                         <div class="font-display font-bold text-ink truncate pr-2">
@@ -219,7 +219,11 @@
                         </div>
                     </div>
                 </div>
-            @endforeach
+            @empty
+                <div class="py-4 text-center text-xs font-sans font-medium text-ink/60">
+                    Belum ada data jurusan yang terdaftar.
+                </div>
+            @endforelse
         </div>
     </section>
 
