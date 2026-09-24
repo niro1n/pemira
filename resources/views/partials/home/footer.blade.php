@@ -31,7 +31,13 @@
         <div class="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-12 items-start">
             <div class="md:col-span-5 lg:col-span-6 flex flex-col items-start">
                 <a href="{{ route('home') }}#beranda" class="flex items-center gap-2.5 sm:gap-3 group focus:outline-none focus:ring-2 focus:ring-accent mb-4">
-                    <div class="p-1.5 bg-surface border-2 border-ink shadow-brutal-sm shrink-0">
+                    <div class="inline-flex items-center gap-2 sm:gap-2.5 p-1.5 sm:p-2 bg-surface border-2 border-ink shadow-brutal-sm shrink-0">
+                        <img
+                            src="{{ asset('img/logos/organization/pnb-logo.png') }}"
+                            alt="Logo Politeknik Negeri Bali"
+                            class="h-8 w-auto sm:h-10 object-contain"
+                        >
+                        <div class="h-6 sm:h-7 w-0.5 bg-ink/20"></div>
                         <img
                             src="{{ asset('img/logos/organization/kpr-logo-no-text.png') }}"
                             alt="Logo KPR"

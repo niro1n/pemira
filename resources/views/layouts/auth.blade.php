@@ -7,6 +7,8 @@
     <meta name="description" content="{{ $description ?? 'Masuk ke Portal Pemilihan Raya Mahasiswa (PEMIRA) Politeknik Negeri Bali' }}">
     <title>{{ $title ?? 'Masuk — PEMIRA 2026' }}</title>
 
+    <link rel="icon" type="image/png" href="{{ asset('img/logos/organization/kpr-logo-no-text.png') }}">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Space+Grotesk:wght@300..700&display=swap">
