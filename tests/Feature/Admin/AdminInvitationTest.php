@@ -55,7 +55,7 @@ class AdminInvitationTest extends TestCase
         ]);
     }
 
-    public function test_super_admin_can_view_admin_invitations_section(): void
+    public function test_super_admin_can_view_admin_invitations_modal(): void
     {
         $invitation = AdminInvitation::create([
             'email' => 'calon.admin@pemira.test',
@@ -66,11 +66,16 @@ class AdminInvitationTest extends TestCase
 
         Livewire::actingAs($this->superAdmin)
             ->test(AdminIndex::class)
-            ->assertSee('ADMIN INVITATIONS')
+            ->assertSee('RIWAYAT UNDANGAN')
             ->assertSee('UNDANG ADMIN')
+            ->assertSet('statistics.pending_invitations_count', 1)
+            ->call('openInvitationsModal')
+            ->assertSet('showInvitationsModal', true)
+            ->assertSee('ADMIN INVITATIONS')
             ->assertSee('calon.admin@pemira.test')
             ->assertSee('MENUNGGU')
-            ->assertSet('statistics.pending_invitations_count', 1);
+            ->call('closeInvitationsModal')
+            ->assertSet('showInvitationsModal', false);
     }
 
     public function test_super_admin_can_send_invitation_with_secure_hashed_token_and_email(): void

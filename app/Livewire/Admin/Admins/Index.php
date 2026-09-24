@@ -57,6 +57,8 @@ class Index extends Component
 
     public bool $showInviteModal = false;
 
+    public bool $showInvitationsModal = false;
+
     public bool $showRevokeModal = false;
 
     public bool $showEditModal = false;
@@ -272,6 +274,16 @@ class Index extends Component
         }
 
         return AdminInvitation::find($this->selectedInvitationId);
+    }
+
+    public function openInvitationsModal(): void
+    {
+        $this->showInvitationsModal = true;
+    }
+
+    public function closeInvitationsModal(): void
+    {
+        $this->showInvitationsModal = false;
     }
 
     public function openInviteModal(): void
