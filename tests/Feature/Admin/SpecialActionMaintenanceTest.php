@@ -50,13 +50,21 @@ class SpecialActionMaintenanceTest extends TestCase
 
     public function test_super_admin_can_access_special_actions_page(): void
     {
-        $response = $this->actingAs($this->superAdmin)->get('/admin/tindakan-khusus');
+        $response = $this->actingAs($this->superAdmin)->get('/admin/special-actions');
 
         $response->assertOk();
         $response->assertSeeLivewire(SpecialActionIndex::class);
         $response->assertSee('TINDAKAN KHUSUS');
         $response->assertSee('Maintenance Mode');
         $response->assertSee('Status Sistem');
+    }
+
+    public function test_legacy_tindakan_khusus_redirects_to_special_actions(): void
+    {
+        $response = $this->actingAs($this->superAdmin)->get('/admin/tindakan-khusus');
+
+        $response->assertRedirect(route('admin.special-actions.index'));
+        $response->assertStatus(301);
     }
 
     public function test_direct_tindakan_khusus_route_redirects_to_admin_special_actions(): void
@@ -68,21 +76,21 @@ class SpecialActionMaintenanceTest extends TestCase
 
     public function test_regular_admin_cannot_access_special_actions_page(): void
     {
-        $response = $this->actingAs($this->admin)->get('/admin/tindakan-khusus');
+        $response = $this->actingAs($this->admin)->get('/admin/special-actions');
 
         $response->assertForbidden();
     }
 
     public function test_voter_cannot_access_special_actions_page(): void
     {
-        $response = $this->actingAs($this->voterUser)->get('/admin/tindakan-khusus');
+        $response = $this->actingAs($this->voterUser)->get('/admin/special-actions');
 
         $response->assertForbidden();
     }
 
     public function test_guest_is_redirected_to_login_when_accessing_special_actions(): void
     {
-        $response = $this->get('/admin/tindakan-khusus');
+        $response = $this->get('/admin/special-actions');
 
         $response->assertRedirect('/login');
     }
@@ -213,7 +221,7 @@ class SpecialActionMaintenanceTest extends TestCase
         $dashboardResponse = $this->actingAs($this->superAdmin)->get('/admin');
         $dashboardResponse->assertOk();
 
-        $specialActionsResponse = $this->actingAs($this->superAdmin)->get('/admin/tindakan-khusus');
+        $specialActionsResponse = $this->actingAs($this->superAdmin)->get('/admin/special-actions');
         $specialActionsResponse->assertOk();
         $specialActionsResponse->assertSee('AKTIF');
     }
@@ -244,7 +252,7 @@ class SpecialActionMaintenanceTest extends TestCase
 
         $response = $this->actingAs($this->voterUser)
             ->postJson(route('default-livewire.update'), [], [
-                'Referer' => 'http://localhost/admin/paslon',
+                'Referer' => 'http://localhost/admin/candidate-pairs',
                 'X-Livewire' => 'true',
             ]);
 

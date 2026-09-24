@@ -97,7 +97,7 @@ class FeedbackManagementTest extends TestCase
 
     public function test_admin_can_access_feedbacks_page(): void
     {
-        $response = $this->actingAs($this->admin)->get('/admin/masukan-pemilih');
+        $response = $this->actingAs($this->admin)->get('/admin/feedbacks');
 
         $response->assertOk();
         $response->assertSeeLivewire(FeedbackIndex::class);
@@ -105,9 +105,17 @@ class FeedbackManagementTest extends TestCase
         $response->assertSee('SCOPE: ADMIN KPR (OPERASIONAL)', false);
     }
 
+    public function test_legacy_masukan_pemilih_redirects_to_feedbacks(): void
+    {
+        $response = $this->actingAs($this->admin)->get('/admin/masukan-pemilih');
+
+        $response->assertRedirect(route('admin.feedbacks.index'));
+        $response->assertStatus(301);
+    }
+
     public function test_super_admin_can_access_feedbacks_page(): void
     {
-        $response = $this->actingAs($this->superAdmin)->get('/admin/masukan-pemilih');
+        $response = $this->actingAs($this->superAdmin)->get('/admin/feedbacks');
 
         $response->assertOk();
         $response->assertSeeLivewire(FeedbackIndex::class);
@@ -117,14 +125,14 @@ class FeedbackManagementTest extends TestCase
 
     public function test_voter_cannot_access_feedbacks_page(): void
     {
-        $response = $this->actingAs($this->voterUser)->get('/admin/masukan-pemilih');
+        $response = $this->actingAs($this->voterUser)->get('/admin/feedbacks');
 
         $response->assertForbidden();
     }
 
     public function test_guest_is_redirected_to_login(): void
     {
-        $response = $this->get('/admin/masukan-pemilih');
+        $response = $this->get('/admin/feedbacks');
 
         $response->assertRedirect('/login');
     }

@@ -124,7 +124,7 @@ class CandidatePair extends Model
             })->first();
         }
 
-        if (preg_match('/^(?:paslon-)?(\d+)$/i', (string) $value, $matches)) {
+        if (preg_match('/^(?:paslon-|candidate-)?(\d+)$/i', (string) $value, $matches)) {
             $num = (int) $matches[1];
 
             return $query->where('candidate_number', $num)->first();

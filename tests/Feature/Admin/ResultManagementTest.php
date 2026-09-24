@@ -63,12 +63,20 @@ class ResultManagementTest extends TestCase
             'voting_end_at' => Carbon::now()->subDay(),
         ]);
 
-        $response = $this->actingAs($this->admin)->get('/admin/hasil-perhitungan');
+        $response = $this->actingAs($this->admin)->get('/admin/results');
 
         $response->assertOk();
         $response->assertSeeLivewire(ResultIndex::class);
         $response->assertSee('HASIL PERHITUNGAN SUARA RESMI');
         $response->assertSee('PEMIRA BEM PNB 2026');
+    }
+
+    public function test_legacy_hasil_perhitungan_redirects_to_results(): void
+    {
+        $response = $this->actingAs($this->admin)->get('/admin/hasil-perhitungan');
+
+        $response->assertRedirect(route('admin.results.index'));
+        $response->assertStatus(301);
     }
 
     public function test_super_admin_can_access_results_page(): void
@@ -83,7 +91,7 @@ class ResultManagementTest extends TestCase
             'voting_end_at' => Carbon::now()->subDay(),
         ]);
 
-        $response = $this->actingAs($this->superAdmin)->get('/admin/hasil-perhitungan');
+        $response = $this->actingAs($this->superAdmin)->get('/admin/results');
 
         $response->assertOk();
         $response->assertSeeLivewire(ResultIndex::class);
@@ -92,14 +100,14 @@ class ResultManagementTest extends TestCase
 
     public function test_voter_cannot_access_results_page(): void
     {
-        $response = $this->actingAs($this->voter)->get('/admin/hasil-perhitungan');
+        $response = $this->actingAs($this->voter)->get('/admin/results');
 
         $response->assertForbidden();
     }
 
     public function test_guest_is_redirected_to_login(): void
     {
-        $response = $this->get('/admin/hasil-perhitungan');
+        $response = $this->get('/admin/results');
 
         $response->assertRedirect('/login');
     }

@@ -57,16 +57,24 @@ class ScheduleChangeRequestTest extends TestCase
 
     public function test_admin_can_access_schedule_requests_page(): void
     {
-        $response = $this->actingAs($this->admin)->get('/admin/pengajuan-jadwal');
+        $response = $this->actingAs($this->admin)->get('/admin/schedule-requests');
 
         $response->assertOk();
         $response->assertSeeLivewire(ScheduleRequestIndex::class);
         $response->assertSee('PENGAJUAN PERUBAHAN JADWAL', false);
     }
 
+    public function test_legacy_pengajuan_jadwal_redirects_to_schedule_requests(): void
+    {
+        $response = $this->actingAs($this->admin)->get('/admin/pengajuan-jadwal');
+
+        $response->assertRedirect(route('admin.schedule-requests.index'));
+        $response->assertStatus(301);
+    }
+
     public function test_super_admin_can_access_schedule_requests_page(): void
     {
-        $response = $this->actingAs($this->superAdmin)->get('/admin/pengajuan-jadwal');
+        $response = $this->actingAs($this->superAdmin)->get('/admin/schedule-requests');
 
         $response->assertOk();
         $response->assertSeeLivewire(ScheduleRequestIndex::class);
@@ -75,14 +83,14 @@ class ScheduleChangeRequestTest extends TestCase
 
     public function test_voter_cannot_access_schedule_requests_page(): void
     {
-        $response = $this->actingAs($this->voter)->get('/admin/pengajuan-jadwal');
+        $response = $this->actingAs($this->voter)->get('/admin/schedule-requests');
 
         $response->assertForbidden();
     }
 
     public function test_guest_is_redirected_to_login(): void
     {
-        $response = $this->get('/admin/pengajuan-jadwal');
+        $response = $this->get('/admin/schedule-requests');
 
         $response->assertRedirect('/login');
     }

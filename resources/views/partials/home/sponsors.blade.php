@@ -113,8 +113,8 @@
             @touchend.passive="handleTouchEnd($event)"
             class="relative w-full">
 
-                <div class="overflow-hidden py-3 -mx-2 sm:-mx-3">
-                    <div class="flex transition-transform duration-500 ease-out {{ $sponsors->count() < 5 ? 'lg:justify-center' : '' }}"
+                <div class="overflow-hidden py-4 -mx-2 sm:-mx-3">
+                    <div class="flex items-center transition-transform duration-500 ease-out {{ $sponsors->count() < 5 ? 'lg:justify-center' : '' }}"
                          :style="'transform: translateX(-' + (active * (100 / perPage)) + '%);'">
                         @foreach ($sponsors as $sponsor)
                             @php
@@ -122,38 +122,25 @@
                                 $logoUrl = $sponsor->logoUrl();
                             @endphp
 
-                            <div class="w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/5 shrink-0 px-2 sm:px-3">
+                            <div class="w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/5 shrink-0 px-3 sm:px-4 md:px-6 flex items-center justify-center">
                                 @if ($hasWebsite)
                                     <a href="{{ $sponsor->website_url }}"
                                        target="_blank"
                                        rel="noopener noreferrer"
                                        title="{{ $sponsor->name }}"
-                                       class="group bg-surface border-2 border-ink p-3 sm:p-4 shadow-brutal hover:shadow-brutal-sm hover:translate-x-0.5 hover:translate-y-0.5 transition-all flex flex-col items-center justify-between text-center h-full min-w-0">
-                                        <div class="w-full aspect-square bg-surface-muted border border-ink/20 p-2 sm:p-3 flex items-center justify-center overflow-hidden mb-2.5 group-hover:border-ink transition-colors">
-                                            <img src="{{ $logoUrl }}"
-                                                 alt="{{ $sponsor->name }}"
-                                                 loading="lazy"
-                                                 class="w-full h-full object-contain filter group-hover:scale-105 transition-transform duration-200" />
-                                        </div>
-                                        <div class="w-full min-w-0">
-                                            <span class="font-display font-bold text-xs sm:text-sm text-ink uppercase tracking-wide group-hover:text-brand truncate block">
-                                                {{ $sponsor->name }}
-                                            </span>
-                                        </div>
+                                       class="group flex items-center justify-center w-full h-16 sm:h-20 md:h-24 transition-transform duration-200 hover:scale-105">
+                                        <img src="{{ $logoUrl }}"
+                                             alt="{{ $sponsor->name }}"
+                                             loading="lazy"
+                                             class="max-h-12 sm:max-h-16 md:max-h-20 w-auto max-w-full object-contain filter group-hover:drop-shadow-xs transition-all" />
                                     </a>
                                 @else
-                                    <div class="bg-surface border-2 border-ink p-3 sm:p-4 shadow-brutal flex flex-col items-center justify-between text-center h-full min-w-0">
-                                        <div class="w-full aspect-square bg-surface-muted border border-ink/20 p-2 sm:p-3 flex items-center justify-center overflow-hidden mb-2.5">
-                                            <img src="{{ $logoUrl }}"
-                                                 alt="{{ $sponsor->name }}"
-                                                 loading="lazy"
-                                                 class="w-full h-full object-contain" />
-                                        </div>
-                                        <div class="w-full min-w-0">
-                                            <span class="font-display font-bold text-xs sm:text-sm text-ink uppercase tracking-wide truncate block">
-                                                {{ $sponsor->name }}
-                                            </span>
-                                        </div>
+                                    <div title="{{ $sponsor->name }}"
+                                         class="flex items-center justify-center w-full h-16 sm:h-20 md:h-24">
+                                        <img src="{{ $logoUrl }}"
+                                             alt="{{ $sponsor->name }}"
+                                             loading="lazy"
+                                             class="max-h-12 sm:max-h-16 md:max-h-20 w-auto max-w-full object-contain" />
                                     </div>
                                 @endif
                             </div>

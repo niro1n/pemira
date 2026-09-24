@@ -326,7 +326,7 @@ class LandingPageTest extends TestCase
         $response->assertSee(route('public.candidates.show', $pair));
         $response->assertDontSee('BELUM ADA PASLON TERDAFTAR');
 
-        $detailResponse = $this->get('/paslon/paslon-01');
+        $detailResponse = $this->get('/candidates/paslon-01');
         $detailResponse->assertOk();
         $detailResponse->assertSee('Mewujudkan BEM PNB yang inklusif, inovatif, dan berintegritas.');
 
@@ -392,7 +392,7 @@ class LandingPageTest extends TestCase
             'position' => 'wakil',
         ]);
 
-        $response = $this->get('/paslon/paslon-01');
+        $response = $this->get('/candidates/paslon-01');
         $response->assertOk();
 
         $response->assertSee('PASLON 01');
@@ -408,7 +408,7 @@ class LandingPageTest extends TestCase
         $response->assertSee('KEMBALI KE PASLON');
         $response->assertSee(route('home').'#paslon');
 
-        $responseNum = $this->get('/paslon/1');
+        $responseNum = $this->get('/candidates/1');
         $responseNum->assertOk();
 
         Carbon::setTestNow();
@@ -438,10 +438,10 @@ class LandingPageTest extends TestCase
             'is_active' => false,
         ]);
 
-        $response = $this->get('/paslon/paslon-02');
+        $response = $this->get('/candidates/paslon-02');
         $response->assertNotFound();
 
-        $response404 = $this->get('/paslon/paslon-99');
+        $response404 = $this->get('/candidates/paslon-99');
         $response404->assertNotFound();
 
         Carbon::setTestNow();
@@ -579,7 +579,7 @@ class LandingPageTest extends TestCase
         $response->assertSee(route('public.candidates.show', 'paslon-01'));
         $response->assertDontSee('BELUM ADA PASLON TERDAFTAR');
 
-        $detailResponse = $this->get('/paslon/paslon-01');
+        $detailResponse = $this->get('/candidates/paslon-01');
         $detailResponse->assertOk();
         $detailResponse->assertSee('Visi Sinergi Kolaboratif 2026');
         $detailResponse->assertSee('Misi Pengabdian Mahasiswa PNB');
@@ -610,7 +610,7 @@ class LandingPageTest extends TestCase
         $response->assertOk();
         $response->assertSee('Ketua Terpilih Test');
 
-        $detailResponse = $this->get('/paslon/paslon-01');
+        $detailResponse = $this->get('/candidates/paslon-01');
         $detailResponse->assertOk();
         $detailResponse->assertSee('Visi Terupdate Transformasi Digital');
 
@@ -687,7 +687,7 @@ class LandingPageTest extends TestCase
             'sort_order' => 2,
         ]);
 
-        $response = $this->get('/paslon/paslon-01');
+        $response = $this->get('/candidates/paslon-01');
         $response->assertOk();
         $response->assertSee('MISI PASLON 01');
         $response->assertSee('01');

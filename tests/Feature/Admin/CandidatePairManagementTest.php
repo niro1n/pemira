@@ -110,21 +110,28 @@ class CandidatePairManagementTest extends TestCase
 
     public function test_voter_cannot_access_candidate_pair_management(): void
     {
-        $response = $this->actingAs($this->voter)->get('/admin/paslon');
+        $response = $this->actingAs($this->voter)->get('/admin/candidate-pairs');
         $response->assertForbidden();
     }
 
     public function test_admin_can_access_candidate_pair_management(): void
     {
-        $response = $this->actingAs($this->admin)->get('/admin/paslon');
+        $response = $this->actingAs($this->admin)->get('/admin/candidate-pairs');
         $response->assertOk();
         $response->assertSee('MANAJEMEN PASLON');
         $response->assertSee('TAMBAH PASLON');
     }
 
+    public function test_legacy_paslon_redirects_to_candidate_pairs(): void
+    {
+        $response = $this->actingAs($this->admin)->get('/admin/paslon');
+        $response->assertRedirect(route('admin.candidate-pairs.index'));
+        $response->assertStatus(301);
+    }
+
     public function test_super_admin_can_access_candidate_pair_management(): void
     {
-        $response = $this->actingAs($this->superAdmin)->get('/admin/paslon');
+        $response = $this->actingAs($this->superAdmin)->get('/admin/candidate-pairs');
         $response->assertOk();
         $response->assertSee('MANAJEMEN PASLON');
     }
@@ -567,10 +574,14 @@ class CandidatePairManagementTest extends TestCase
         $response->assertSee('Ni Kadek Ayu');
         $response->assertSee(route('public.candidates.show', $pair));
 
-        $detailResponse = $this->get('/paslon/paslon-01');
+        $detailResponse = $this->get('/candidates/paslon-01');
         $detailResponse->assertOk();
         $detailResponse->assertSee('Visi Dinamis Kampus Merdeka');
         $detailResponse->assertSee('Misi Dinamis Kampus');
+
+        $legacyResponse = $this->get('/paslon/paslon-01');
+        $legacyResponse->assertRedirect(route('public.candidates.show', $pair));
+        $legacyResponse->assertStatus(301);
     }
 
     public function test_landing_page_does_not_contain_hardcoded_dummy_candidates(): void
@@ -1224,7 +1235,7 @@ class CandidatePairManagementTest extends TestCase
             'position' => 'wakil',
         ]);
 
-        $response = $this->get('/paslon/paslon-01');
+        $response = $this->get('/candidates/paslon-01');
         $response->assertOk();
         $response->assertSee('Belum ada butir misi yang ditetapkan.');
 
@@ -1277,7 +1288,7 @@ class CandidatePairManagementTest extends TestCase
             'sort_order' => 3,
         ]);
 
-        $response = $this->get('/paslon/paslon-01');
+        $response = $this->get('/candidates/paslon-01');
         $response->assertOk();
         $response->assertSee('MISI PASLON 01');
         $response->assertSee('01');
