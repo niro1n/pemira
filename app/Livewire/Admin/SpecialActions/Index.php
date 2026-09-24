@@ -43,11 +43,7 @@ class Index extends Component
     #[Computed]
     public function lastMaintenanceLog(): ?AuditLog
     {
-        return AuditLog::query()
-            ->whereIn('action', ['maintenance_mode_enabled', 'maintenance_mode_disabled'])
-            ->with('user')
-            ->latest('id')
-            ->first();
+        return $this->recentMaintenanceLogs->first();
     }
 
     public function requestToggle(bool $state): void
