@@ -67,6 +67,14 @@ class Index extends Component
 
     public bool $showToggleStatusModal = false;
 
+    public bool $showChangeRoleModal = false;
+
+    public string $targetRole = '';
+
+    public string $role = 'admin';
+
+    public string $createRole = 'admin';
+
     public ?int $selectedAdminId = null;
 
     public ?int $selectedInvitationId = null;
@@ -490,6 +498,7 @@ class Index extends Component
         $this->email = '';
         $this->password = '';
         $this->password_confirmation = '';
+        $this->createRole = 'admin';
         $this->isActive = true;
         $this->showCreateModal = true;
     }
@@ -500,6 +509,7 @@ class Index extends Component
         $this->email = '';
         $this->password = '';
         $this->password_confirmation = '';
+        $this->createRole = 'admin';
         $this->resetErrorBag();
     }
 
@@ -510,6 +520,7 @@ class Index extends Component
         $validated = $this->validate([
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'string', Password::defaults(), 'confirmed'],
+            'createRole' => ['required', Rule::in(['admin', 'super_admin'])],
             'isActive' => ['boolean'],
         ], [
             'email.required' => 'Alamat email wajib diisi.',
@@ -517,12 +528,14 @@ class Index extends Component
             'email.unique' => 'Email ini sudah terdaftar dalam sistem.',
             'password.required' => 'Kata sandi wajib diisi.',
             'password.confirmed' => 'Konfirmasi kata sandi tidak cocok.',
+            'createRole.required' => 'Peran akun wajib dipilih.',
+            'createRole.in' => 'Pilihan peran akun tidak valid.',
         ]);
 
         $admin = User::create([
             'email' => strtolower(trim($validated['email'])),
             'password' => Hash::make($validated['password']),
-            'role' => 'admin',
+            'role' => $validated['createRole'],
             'email_verified_at' => $this->isActive ? now() : null,
         ]);
 
@@ -531,12 +544,12 @@ class Index extends Component
             'action' => 'admin_created',
             'entity_type' => 'User',
             'entity_id' => $admin->id,
-            'description' => "Super Admin membuat akun admin baru: {$admin->email}",
+            'description' => "Super Admin membuat akun admin baru: {$admin->email} ({$admin->role})",
             'ip_address' => request()->ip(),
             'user_agent' => request()->userAgent(),
             'metadata' => [
                 'email' => $admin->email,
-                'role' => 'admin',
+                'role' => $admin->role,
                 'status' => $this->isActive ? 'active' : 'inactive',
             ],
         ]);
@@ -558,6 +571,7 @@ class Index extends Component
         $this->email = $target->email;
         $this->password = '';
         $this->password_confirmation = '';
+        $this->role = $target->role;
         $this->isActive = $target->email_verified_at !== null;
         $this->showEditModal = true;
     }
@@ -569,6 +583,7 @@ class Index extends Component
         $this->email = '';
         $this->password = '';
         $this->password_confirmation = '';
+        $this->role = 'admin';
         $this->resetErrorBag();
     }
 
@@ -591,18 +606,39 @@ class Index extends Component
         $validated = $this->validate([
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users', 'email')->ignore($target->id)],
             'password' => ['nullable', 'string', Password::defaults(), 'confirmed'],
+            'role' => ['required', Rule::in(['admin', 'super_admin'])],
             'isActive' => ['boolean'],
         ], [
             'email.required' => 'Alamat email wajib diisi.',
             'email.email' => 'Format email tidak valid.',
             'email.unique' => 'Email ini sudah digunakan oleh akun lain.',
             'password.confirmed' => 'Konfirmasi kata sandi tidak cocok.',
+            'role.required' => 'Peran akun wajib dipilih.',
+            'role.in' => 'Pilihan peran akun tidak valid.',
         ]);
+
+        if ($target->id === Auth::id() && $validated['role'] !== $target->role) {
+            $this->addError('role', 'Anda tidak dapat mengubah peran akun Anda sendiri.');
+
+            return;
+        }
 
         if ($target->id === Auth::id() && ! $this->isActive) {
             $this->addError('isActive', 'Anda tidak dapat menonaktifkan akun Anda sendiri.');
 
             return;
+        }
+
+        if ($target->isSuperAdmin() && $validated['role'] === 'admin') {
+            $activeSuperAdminCount = User::where('role', 'super_admin')
+                ->whereNotNull('email_verified_at')
+                ->count();
+
+            if ($activeSuperAdminCount <= 1) {
+                $this->addError('role', 'Akun Super Admin aktif terakhir tidak dapat diturunkan perannya.');
+
+                return;
+            }
         }
 
         if ($target->isSuperAdmin() && ! $this->isActive) {
@@ -618,7 +654,9 @@ class Index extends Component
         }
 
         $oldEmail = $target->email;
+        $oldRole = $target->role;
         $target->email = strtolower(trim($validated['email']));
+        $target->role = $validated['role'];
 
         if (! empty($validated['password'])) {
             $target->password = Hash::make($validated['password']);
@@ -643,6 +681,9 @@ class Index extends Component
                 'new_email' => $target->email,
                 'status' => $this->isActive ? 'active' : 'inactive',
                 'password_changed' => ! empty($validated['password']),
+                'role_changed' => $oldRole !== $target->role,
+                'old_role' => $oldRole,
+                'new_role' => $target->role,
             ],
         ]);
 
@@ -746,6 +787,115 @@ class Index extends Component
 
         session()->flash('success', "Akun admin {$target->email} berhasil {$statusLabel}.");
         $this->closeToggleStatusModal();
+    }
+
+    public function openChangeRoleModal(int $id): void
+    {
+        Gate::authorize('super-admin-only');
+
+        $target = User::find($id);
+
+        if (! $target || ! in_array($target->role, ['admin', 'super_admin'], true)) {
+            return;
+        }
+
+        if ($target->id === Auth::id()) {
+            session()->flash('error', 'Anda tidak dapat mengubah peran akun Anda sendiri.');
+
+            return;
+        }
+
+        if ($target->isSuperAdmin()) {
+            $activeSuperAdminCount = User::where('role', 'super_admin')
+                ->whereNotNull('email_verified_at')
+                ->count();
+
+            if ($activeSuperAdminCount <= 1) {
+                session()->flash('error', 'Akun Super Admin aktif terakhir tidak dapat diturunkan perannya.');
+
+                return;
+            }
+        }
+
+        $this->selectedAdminId = $id;
+        $this->targetRole = $target->role === 'super_admin' ? 'admin' : 'super_admin';
+        $this->showChangeRoleModal = true;
+    }
+
+    public function closeChangeRoleModal(): void
+    {
+        $this->selectedAdminId = null;
+        $this->showChangeRoleModal = false;
+        $this->targetRole = '';
+    }
+
+    public function changeRole(): void
+    {
+        Gate::authorize('super-admin-only');
+
+        if (! $this->selectedAdminId) {
+            return;
+        }
+
+        $target = User::find($this->selectedAdminId);
+
+        if (! $target || ! in_array($target->role, ['admin', 'super_admin'], true)) {
+            $this->closeChangeRoleModal();
+
+            return;
+        }
+
+        if ($target->id === Auth::id()) {
+            session()->flash('error', 'Anda tidak dapat mengubah peran akun Anda sendiri.');
+            $this->closeChangeRoleModal();
+
+            return;
+        }
+
+        $newRole = $target->role === 'super_admin' ? 'admin' : 'super_admin';
+
+        if ($target->isSuperAdmin()) {
+            $activeSuperAdminCount = User::where('role', 'super_admin')
+                ->whereNotNull('email_verified_at')
+                ->count();
+
+            if ($activeSuperAdminCount <= 1) {
+                session()->flash('error', 'Akun Super Admin aktif terakhir tidak dapat diturunkan perannya.');
+                $this->closeChangeRoleModal();
+
+                return;
+            }
+        }
+
+        $oldRole = $target->role;
+        $target->role = $newRole;
+        $target->save();
+
+        $isPromote = $newRole === 'super_admin';
+        $actionName = $isPromote ? 'admin_promoted' : 'admin_demoted';
+        $roleTitle = $isPromote ? 'Super Administrator' : 'Admin KPR';
+        $actionDescription = $isPromote
+            ? "Super Admin menaikkan peran {$target->email} menjadi Super Administrator"
+            : "Super Admin menurunkan peran {$target->email} menjadi Admin KPR";
+
+        AuditLog::create([
+            'user_id' => Auth::id(),
+            'action' => $actionName,
+            'entity_type' => 'User',
+            'entity_id' => $target->id,
+            'description' => $actionDescription,
+            'ip_address' => request()->ip(),
+            'user_agent' => request()->userAgent(),
+            'metadata' => [
+                'target_user_id' => $target->id,
+                'target_email' => $target->email,
+                'old_role' => $oldRole,
+                'new_role' => $newRole,
+            ],
+        ]);
+
+        session()->flash('success', "Peran akun {$target->email} berhasil diubah menjadi {$roleTitle}.");
+        $this->closeChangeRoleModal();
     }
 
     public function openDeleteModal(int $id): void

@@ -13,14 +13,14 @@
             </p>
         </div>
 
-        <div class="flex flex-wrap items-center gap-3 shrink-0">
+        <div class="flex flex-row items-center gap-2 sm:gap-3 shrink-0 w-full lg:w-auto">
             <button wire:click="openInvitationsModal"
                     type="button"
-                    class="inline-flex items-center justify-center gap-2 px-3.5 py-2.5 bg-surface hover:bg-surface-muted border-2 border-ink shadow-brutal font-display font-black text-xs uppercase tracking-wider text-ink transition-all cursor-pointer min-h-10.5">
-                <svg class="w-4 h-4 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    class="inline-flex items-center justify-center gap-1.5 sm:gap-2 px-2.5 sm:px-3.5 py-2.5 bg-surface hover:bg-surface-muted border-2 border-ink shadow-brutal font-display font-black text-[11px] sm:text-xs uppercase tracking-wider text-ink transition-all cursor-pointer min-h-10.5 flex-1 lg:flex-initial">
+                <svg class="w-4 h-4 text-brand shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
                 </svg>
-                <span>RIWAYAT UNDANGAN</span>
+                <span class="truncate">RIWAYAT UNDANGAN</span>
                 @if ($statistics['pending_invitations_count'] > 0)
                     <span class="inline-flex items-center justify-center px-1.5 py-0.2 bg-amber-400 text-ink text-[10px] font-black border border-ink">
                         {{ $statistics['pending_invitations_count'] }}
@@ -30,11 +30,11 @@
 
             <button wire:click="openInviteModal"
                     type="button"
-                    class="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-brand text-accent hover:bg-brand-dark border-2 border-ink shadow-brutal font-display font-black text-xs uppercase tracking-wider transition-all cursor-pointer min-h-10.5">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    class="inline-flex items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2.5 bg-brand text-accent hover:bg-brand-dark border-2 border-ink shadow-brutal font-display font-black text-[11px] sm:text-xs uppercase tracking-wider transition-all cursor-pointer min-h-10.5 flex-1 lg:flex-initial">
+                <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
                 </svg>
-                <span>UNDANG ADMIN</span>
+                <span class="truncate">UNDANG ADMIN</span>
             </button>
         </div>
     </div>
@@ -102,7 +102,7 @@
 
         <button type="button"
                 wire:click="openInvitationsModal"
-                class="bg-surface border-2 border-ink p-3.5 sm:p-4 shadow-brutal flex flex-col justify-between col-span-2 sm:col-span-1 text-left hover:bg-accent/10 transition-colors cursor-pointer group">
+                class="bg-surface border-2 border-ink p-3.5 sm:p-4 shadow-brutal flex flex-col justify-between col-span-2 lg:col-span-1 text-left hover:bg-accent/10 transition-colors cursor-pointer group">
             <div class="flex items-center justify-between">
                 <span class="text-xs font-display font-bold uppercase tracking-wider text-ink/60 block">UNDANGAN PENDING</span>
                 <span class="text-[10px] font-display font-black uppercase text-brand group-hover:underline flex items-center gap-1">
@@ -117,7 +117,7 @@
         </button>
     </div>
 
-    <div class="bg-surface border-2 border-ink p-3.5 sm:p-4 shadow-brutal flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 min-w-0">
+    <div class="bg-surface border-2 border-ink p-3 sm:p-4 shadow-brutal flex items-center justify-between gap-2.5 sm:gap-3 min-w-0">
         <div class="relative flex-1 min-w-0 sm:min-w-64">
             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-ink/40">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -127,7 +127,7 @@
             <input type="text"
                    wire:model.live.debounce.300ms="search"
                    placeholder="Cari admin (email atau nama)..."
-                   class="w-full pl-9 pr-8 py-2 bg-surface-muted border-2 border-ink text-xs sm:text-sm font-sans font-bold text-ink placeholder:text-ink/40 shadow-brutal-sm focus:outline-none focus:bg-surface" />
+                   class="w-full pl-9 pr-8 py-2 bg-surface-muted border-2 border-ink text-xs sm:text-sm font-sans font-bold text-ink placeholder:text-ink/40 shadow-brutal-sm focus:outline-none focus:bg-surface min-h-10" />
             @if ($search !== '')
                 <button wire:click="$set('search', '')"
                         type="button"
@@ -140,10 +140,10 @@
             @endif
         </div>
 
-        <div class="flex items-center gap-2.5 shrink-0">
+        <div class="flex items-center gap-2 sm:gap-2.5 shrink-0">
             <button wire:click="openFilterModal"
                     type="button"
-                    class="inline-flex items-center gap-2 px-3.5 py-2 bg-surface-muted hover:bg-accent border-2 border-ink shadow-brutal-sm text-xs font-display font-bold uppercase tracking-wider text-ink transition-colors cursor-pointer min-h-10">
+                    class="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-3.5 py-2 bg-surface-muted hover:bg-accent border-2 border-ink shadow-brutal-sm text-xs font-display font-bold uppercase tracking-wider text-ink transition-colors cursor-pointer min-h-10">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
                 </svg>
@@ -192,7 +192,7 @@
 
     <div class="bg-surface border-2 border-ink shadow-brutal overflow-hidden min-w-0">
         <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse min-w-135">
+            <table class="w-full text-left border-collapse min-w-160">
                 <thead>
                     <tr class="border-b-2 border-ink bg-surface-muted">
                         <th class="p-3 sm:p-4 text-xs font-display font-black uppercase tracking-wider text-ink">
@@ -301,6 +301,22 @@
                                     </button>
 
                                     @if ($admin->id !== auth()->id())
+                                        <button wire:click="openChangeRoleModal({{ $admin->id }})"
+                                                type="button"
+                                                class="w-8 h-8 border-2 border-ink {{ $admin->role === 'admin' ? 'bg-accent/40 hover:bg-accent text-ink' : 'bg-brand/10 hover:bg-brand/20 text-brand' }} flex items-center justify-center transition-colors shadow-brutal-sm cursor-pointer"
+                                                title="{{ $admin->role === 'admin' ? 'Naikkan Role ke Super Admin' : 'Turunkan Role ke Admin KPR' }}"
+                                                aria-label="{{ $admin->role === 'admin' ? 'Naikkan role ke Super Admin' : 'Turunkan role ke Admin KPR' }} {{ $admin->email }}">
+                                            @if ($admin->role === 'admin')
+                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 11l7-7 7 7M5 19l7-7 7 7" />
+                                                </svg>
+                                            @else
+                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 13l-7 7-7-7m14-8l-7 7-7-7" />
+                                                </svg>
+                                            @endif
+                                        </button>
+
                                         <button wire:click="openToggleStatusModal({{ $admin->id }})"
                                                 type="button"
                                                 class="w-8 h-8 border-2 border-ink {{ $admin->email_verified_at !== null ? 'bg-amber-100 hover:bg-amber-200 text-amber-950' : 'bg-emerald-100 hover:bg-emerald-200 text-emerald-950' }} flex items-center justify-center transition-colors shadow-brutal-sm cursor-pointer"
@@ -472,16 +488,16 @@
                     </div>
                 </div>
 
-                <div class="px-4 py-3 sm:px-5 sm:py-3.5 border-t-2 border-ink flex items-center justify-between bg-surface-muted shrink-0">
+                <div class="px-4 py-3 sm:px-5 sm:py-3.5 border-t-2 border-ink flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-2.5 sm:gap-3 bg-surface-muted shrink-0">
                     <button wire:click="resetFilters"
                             type="button"
-                            class="px-4 py-2 bg-surface hover:bg-red-50 text-red-700 border-2 border-ink font-display font-black text-xs uppercase tracking-wider transition-colors cursor-pointer">
+                            class="px-4 py-2.5 sm:py-2 bg-surface hover:bg-red-50 text-red-700 border-2 border-ink font-display font-black text-xs uppercase tracking-wider text-center transition-colors cursor-pointer">
                         RESET
                     </button>
 
                     <button wire:click="closeFilterModal"
                             type="button"
-                            class="px-5 py-2.5 bg-brand text-surface hover:bg-brand-dark border-2 border-ink shadow-brutal-sm font-display font-black text-xs uppercase tracking-wider transition-all cursor-pointer">
+                            class="px-5 py-2.5 bg-brand text-surface hover:bg-brand-dark border-2 border-ink shadow-brutal-sm font-display font-black text-xs uppercase tracking-wider text-center transition-all cursor-pointer">
                         TERAPKAN FILTER
                     </button>
                 </div>
@@ -529,28 +545,85 @@
                         </div>
 
                         <div class="space-y-1.5">
+                            <label class="font-display font-bold text-xs uppercase tracking-wider text-ink block">
+                                Peran Akses <span class="text-red-600">*</span>
+                            </label>
+                            <div class="grid grid-cols-2 gap-2">
+                                <label class="flex items-center gap-2 p-2.5 border-2 border-ink cursor-pointer transition-all {{ $createRole === 'admin' ? 'bg-brand text-surface shadow-brutal-xs font-bold' : 'bg-surface hover:bg-surface-muted text-ink' }}">
+                                    <input type="radio" wire:model.live="createRole" value="admin" class="sr-only">
+                                    <span class="w-3.5 h-3.5 border-2 border-current rounded-full flex items-center justify-center shrink-0">
+                                        @if ($createRole === 'admin')
+                                            <span class="w-1.5 h-1.5 bg-current rounded-full"></span>
+                                        @endif
+                                    </span>
+                                    <span class="text-xs font-display uppercase tracking-wider truncate">Admin KPR</span>
+                                </label>
+                                <label class="flex items-center gap-2 p-2.5 border-2 border-ink cursor-pointer transition-all {{ $createRole === 'super_admin' ? 'bg-accent text-ink shadow-brutal-xs font-bold' : 'bg-surface hover:bg-surface-muted text-ink' }}">
+                                    <input type="radio" wire:model.live="createRole" value="super_admin" class="sr-only">
+                                    <span class="w-3.5 h-3.5 border-2 border-current rounded-full flex items-center justify-center shrink-0">
+                                        @if ($createRole === 'super_admin')
+                                            <span class="w-1.5 h-1.5 bg-current rounded-full"></span>
+                                        @endif
+                                    </span>
+                                    <span class="text-xs font-display uppercase tracking-wider truncate">Super Admin</span>
+                                </label>
+                            </div>
+                            @error('createRole')
+                                <span class="text-xs font-bold text-red-600 block">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        <div class="space-y-1.5" x-data="{ showCreatePassword: false }">
                             <label for="create-password" class="font-display font-bold text-xs uppercase tracking-wider text-ink block">
                                 Kata Sandi <span class="text-red-600">*</span>
                             </label>
-                            <input type="password"
-                                   id="create-password"
-                                   wire:model="password"
-                                   placeholder="Minimal 8 karakter"
-                                   class="w-full bg-surface-muted border-2 border-ink px-3 py-2 text-xs sm:text-sm font-bold text-ink shadow-brutal-sm focus:outline-none focus:bg-surface" />
+                            <div class="relative">
+                                <input :type="showCreatePassword ? 'text' : 'password'"
+                                       id="create-password"
+                                       wire:model="password"
+                                       placeholder="Minimal 8 karakter"
+                                       class="w-full bg-surface-muted border-2 border-ink px-3 py-2 pr-10 text-xs sm:text-sm font-bold text-ink shadow-brutal-sm focus:outline-none focus:bg-surface" />
+                                <button type="button"
+                                        @click="showCreatePassword = !showCreatePassword"
+                                        class="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-ink/70 hover:text-brand transition-colors cursor-pointer"
+                                        :aria-label="showCreatePassword ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi'">
+                                    <svg x-show="!showCreatePassword" class="w-4 h-4 block" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                    </svg>
+                                    <svg x-show="showCreatePassword" x-cloak class="w-4 h-4 block" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18" />
+                                    </svg>
+                                </button>
+                            </div>
                             @error('password')
                                 <span class="text-xs font-bold text-red-600 block">{{ $message }}</span>
                             @enderror
                         </div>
 
-                        <div class="space-y-1.5">
+                        <div class="space-y-1.5" x-data="{ showCreateConfirmPassword: false }">
                             <label for="create-password-confirmation" class="font-display font-bold text-xs uppercase tracking-wider text-ink block">
                                 Konfirmasi Kata Sandi <span class="text-red-600">*</span>
                             </label>
-                            <input type="password"
-                                   id="create-password-confirmation"
-                                   wire:model="password_confirmation"
-                                   placeholder="Ulangi kata sandi"
-                                   class="w-full bg-surface-muted border-2 border-ink px-3 py-2 text-xs sm:text-sm font-bold text-ink shadow-brutal-sm focus:outline-none focus:bg-surface" />
+                            <div class="relative">
+                                <input :type="showCreateConfirmPassword ? 'text' : 'password'"
+                                       id="create-password-confirmation"
+                                       wire:model="password_confirmation"
+                                       placeholder="Ulangi kata sandi"
+                                       class="w-full bg-surface-muted border-2 border-ink px-3 py-2 pr-10 text-xs sm:text-sm font-bold text-ink shadow-brutal-sm focus:outline-none focus:bg-surface" />
+                                <button type="button"
+                                        @click="showCreateConfirmPassword = !showCreateConfirmPassword"
+                                        class="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-ink/70 hover:text-brand transition-colors cursor-pointer"
+                                        :aria-label="showCreateConfirmPassword ? 'Sembunyikan konfirmasi kata sandi' : 'Tampilkan konfirmasi kata sandi'">
+                                    <svg x-show="!showCreateConfirmPassword" class="w-4 h-4 block" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                    </svg>
+                                    <svg x-show="showCreateConfirmPassword" x-cloak class="w-4 h-4 block" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18" />
+                                    </svg>
+                                </button>
+                            </div>
                         </div>
 
                         <div class="p-3 bg-surface-muted border-2 border-ink flex items-center justify-between">
@@ -620,34 +693,107 @@
                             @enderror
                         </div>
 
+                        <div class="space-y-1.5">
+                            <label class="font-display font-bold text-xs uppercase tracking-wider text-ink block">
+                                Peran Akses <span class="text-red-600">*</span>
+                            </label>
+                            @if ($selectedAdmin && $selectedAdmin->id === auth()->id())
+                                <div class="p-3 bg-surface-muted border-2 border-ink flex items-center justify-between">
+                                    <div>
+                                        <span class="text-xs font-display font-black uppercase text-brand">
+                                            {{ $role === 'super_admin' ? 'SUPER ADMIN' : 'ADMIN KPR' }}
+                                        </span>
+                                        <span class="text-[11px] text-ink/60 block mt-0.5">
+                                            Peran akun Anda sendiri tidak dapat diubah di sini demi keamanan sistem.
+                                        </span>
+                                    </div>
+                                    <span class="px-2 py-0.5 bg-accent border border-ink text-[10px] font-display font-bold uppercase text-ink">
+                                        AKUN ANDA
+                                    </span>
+                                </div>
+                            @else
+                                <div class="grid grid-cols-2 gap-2">
+                                    <label class="flex items-center gap-2 p-2.5 border-2 border-ink cursor-pointer transition-all {{ $role === 'admin' ? 'bg-brand text-surface shadow-brutal-xs font-bold' : 'bg-surface hover:bg-surface-muted text-ink' }}">
+                                        <input type="radio" wire:model.live="role" value="admin" class="sr-only">
+                                        <span class="w-3.5 h-3.5 border-2 border-current rounded-full flex items-center justify-center shrink-0">
+                                            @if ($role === 'admin')
+                                                <span class="w-1.5 h-1.5 bg-current rounded-full"></span>
+                                            @endif
+                                        </span>
+                                        <span class="text-xs font-display uppercase tracking-wider truncate">Admin KPR</span>
+                                    </label>
+                                    <label class="flex items-center gap-2 p-2.5 border-2 border-ink cursor-pointer transition-all {{ $role === 'super_admin' ? 'bg-accent text-ink shadow-brutal-xs font-bold' : 'bg-surface hover:bg-surface-muted text-ink' }}">
+                                        <input type="radio" wire:model.live="role" value="super_admin" class="sr-only">
+                                        <span class="w-3.5 h-3.5 border-2 border-current rounded-full flex items-center justify-center shrink-0">
+                                            @if ($role === 'super_admin')
+                                                <span class="w-1.5 h-1.5 bg-current rounded-full"></span>
+                                            @endif
+                                        </span>
+                                        <span class="text-xs font-display uppercase tracking-wider truncate">Super Admin</span>
+                                    </label>
+                                </div>
+                            @endif
+                            @error('role')
+                                <span class="text-xs font-bold text-red-600 block">{{ $message }}</span>
+                            @enderror
+                        </div>
+
                         <div class="p-3 bg-amber-50 border border-ink text-xs text-amber-950 space-y-1">
                             <span class="font-bold block">Ganti Kata Sandi (Opsional):</span>
                             <p class="text-[11px] text-ink/70">Biarkan kolom kata sandi kosong jika tidak ingin mengubah kata sandi akun ini.</p>
                         </div>
 
-                        <div class="space-y-1.5">
+                        <div class="space-y-1.5" x-data="{ showEditPassword: false }">
                             <label for="edit-password" class="font-display font-bold text-xs uppercase tracking-wider text-ink block">
                                 Kata Sandi Baru
                             </label>
-                            <input type="password"
-                                   id="edit-password"
-                                   wire:model="password"
-                                   placeholder="Kosongi jika tidak ingin diubah"
-                                   class="w-full bg-surface-muted border-2 border-ink px-3 py-2 text-xs sm:text-sm font-bold text-ink shadow-brutal-sm focus:outline-none focus:bg-surface" />
+                            <div class="relative">
+                                <input :type="showEditPassword ? 'text' : 'password'"
+                                       id="edit-password"
+                                       wire:model="password"
+                                       placeholder="Kosongi jika tidak ingin diubah"
+                                       class="w-full bg-surface-muted border-2 border-ink px-3 py-2 pr-10 text-xs sm:text-sm font-bold text-ink shadow-brutal-sm focus:outline-none focus:bg-surface" />
+                                <button type="button"
+                                        @click="showEditPassword = !showEditPassword"
+                                        class="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-ink/70 hover:text-brand transition-colors cursor-pointer"
+                                        :aria-label="showEditPassword ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi'">
+                                    <svg x-show="!showEditPassword" class="w-4 h-4 block" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                    </svg>
+                                    <svg x-show="showEditPassword" x-cloak class="w-4 h-4 block" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18" />
+                                    </svg>
+                                </button>
+                            </div>
                             @error('password')
                                 <span class="text-xs font-bold text-red-600 block">{{ $message }}</span>
                             @enderror
                         </div>
 
-                        <div class="space-y-1.5">
+                        <div class="space-y-1.5" x-data="{ showEditConfirmPassword: false }">
                             <label for="edit-password-confirmation" class="font-display font-bold text-xs uppercase tracking-wider text-ink block">
                                 Konfirmasi Kata Sandi Baru
                             </label>
-                            <input type="password"
-                                   id="edit-password-confirmation"
-                                   wire:model="password_confirmation"
-                                   placeholder="Ulangi kata sandi baru"
-                                   class="w-full bg-surface-muted border-2 border-ink px-3 py-2 text-xs sm:text-sm font-bold text-ink shadow-brutal-sm focus:outline-none focus:bg-surface" />
+                            <div class="relative">
+                                <input :type="showEditConfirmPassword ? 'text' : 'password'"
+                                       id="edit-password-confirmation"
+                                       wire:model="password_confirmation"
+                                       placeholder="Ulangi kata sandi baru"
+                                       class="w-full bg-surface-muted border-2 border-ink px-3 py-2 pr-10 text-xs sm:text-sm font-bold text-ink shadow-brutal-sm focus:outline-none focus:bg-surface" />
+                                <button type="button"
+                                        @click="showEditConfirmPassword = !showEditConfirmPassword"
+                                        class="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-ink/70 hover:text-brand transition-colors cursor-pointer"
+                                        :aria-label="showEditConfirmPassword ? 'Sembunyikan konfirmasi kata sandi' : 'Tampilkan konfirmasi kata sandi'">
+                                    <svg x-show="!showEditConfirmPassword" class="w-4 h-4 block" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                    </svg>
+                                    <svg x-show="showEditConfirmPassword" x-cloak class="w-4 h-4 block" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18" />
+                                    </svg>
+                                </button>
+                            </div>
                         </div>
 
                         <div class="p-3 bg-surface-muted border-2 border-ink flex items-center justify-between">
@@ -722,7 +868,16 @@
 
                     <div class="grid grid-cols-2 gap-3 text-xs">
                         <div class="p-3 bg-surface border border-ink">
-                            <span class="font-display font-bold uppercase text-[10px] text-ink/60 block mb-1">Peran Akses</span>
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="font-display font-bold uppercase text-[10px] text-ink/60">Peran Akses</span>
+                                @if ($selectedAdmin->id !== auth()->id())
+                                    <button wire:click="openChangeRoleModal({{ $selectedAdmin->id }})"
+                                            type="button"
+                                            class="text-[10px] font-display font-bold uppercase text-brand hover:underline cursor-pointer">
+                                        {{ $selectedAdmin->isSuperAdmin() ? 'Turunkan Role' : 'Naikkan Role' }}
+                                    </button>
+                                @endif
+                            </div>
                             @if ($selectedAdmin->isSuperAdmin())
                                 <span class="inline-flex items-center gap-1.5 px-2 py-0.5 bg-accent border border-ink font-display font-black text-[11px] uppercase text-ink">
                                     SUPER ADMIN
@@ -800,12 +955,106 @@
         </div>
     @endif
 
+    @if ($showChangeRoleModal && $selectedAdmin)
+        @php
+            $isPromote = $selectedAdmin->role === 'admin';
+        @endphp
+        <div class="fixed inset-0 z-50 overflow-y-auto flex items-end sm:items-center justify-center p-2.5 sm:p-4 bg-ink/70 backdrop-blur-xs"
+             role="dialog"
+             aria-modal="true"
+             aria-labelledby="change-role-modal-title">
+            <div class="w-full sm:max-w-md bg-surface border-2 border-ink shadow-brutal max-h-[92dvh] sm:max-h-[90vh] flex flex-col min-w-0">
+                <div class="px-4 py-3 sm:px-5 sm:py-4 border-b-2 border-ink flex items-center justify-between {{ $isPromote ? 'bg-accent/40' : 'bg-surface-muted' }} shrink-0">
+                    <div>
+                        <span class="text-xs font-display font-bold uppercase tracking-wider text-ink/60 block">KONFIRMASI PERUBAHAN PERAN</span>
+                        <h3 id="change-role-modal-title" class="font-display font-black text-sm sm:text-lg text-brand uppercase truncate min-w-0">
+                            {{ $isPromote ? 'NAIKKAN KE SUPER ADMIN' : 'TURUNKAN KE ADMIN KPR' }}
+                        </h3>
+                    </div>
+                    <button wire:click="closeChangeRoleModal"
+                            type="button"
+                            class="w-10 h-10 border-2 border-ink bg-surface hover:bg-accent flex items-center justify-center shrink-0 transition-colors shadow-brutal-sm cursor-pointer"
+                            aria-label="Tutup modal">
+                        <svg class="w-4 h-4 text-ink" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="p-4 sm:p-5 space-y-4 font-sans overflow-y-auto flex-1 min-w-0">
+                    <div class="p-3.5 bg-surface-muted border-2 border-ink flex items-center gap-3">
+                        <div class="w-11 h-11 border-2 border-ink bg-surface flex items-center justify-center font-display font-black text-sm uppercase shadow-brutal-xs shrink-0 {{ $selectedAdmin->isSuperAdmin() ? 'bg-accent text-ink' : 'bg-brand text-surface' }}">
+                            {{ substr($selectedAdmin->email, 0, 2) }}
+                        </div>
+                        <div class="min-w-0 flex-1">
+                            <h4 class="font-display font-black text-sm text-ink uppercase truncate">
+                                {{ $selectedAdmin->getAdminDisplayName() }}
+                            </h4>
+                            <span class="text-xs font-medium text-ink/70 truncate block">
+                                {{ $selectedAdmin->email }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="p-3 bg-surface border-2 border-ink">
+                        <span class="text-[10px] font-display font-bold uppercase tracking-wider text-ink/60 block mb-2">TRANSISI PERAN</span>
+                        <div class="flex items-center justify-between gap-2">
+                            <div class="flex-1 text-center p-2 border border-ink bg-surface-muted">
+                                <span class="text-[10px] text-ink/60 block">Peran Sekarang</span>
+                                <span class="text-xs font-display font-bold uppercase {{ $selectedAdmin->isSuperAdmin() ? 'text-brand' : 'text-ink' }}">
+                                    {{ $selectedAdmin->isSuperAdmin() ? 'SUPER ADMIN' : 'ADMIN KPR' }}
+                                </span>
+                            </div>
+                            <div class="text-ink font-bold text-lg">&rarr;</div>
+                            <div class="flex-1 text-center p-2 border-2 border-ink {{ $isPromote ? 'bg-accent text-ink' : 'bg-surface-muted text-ink' }}">
+                                <span class="text-[10px] text-ink/60 block">Peran Baru</span>
+                                <span class="text-xs font-display font-black uppercase text-brand">
+                                    {{ $isPromote ? 'SUPER ADMIN' : 'ADMIN KPR' }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    @if ($isPromote)
+                        <div class="p-3 bg-amber-50 border border-ink text-xs text-amber-950 space-y-1">
+                            <span class="font-bold block text-amber-900">Hak Akses yang Diperoleh:</span>
+                            <p class="text-[11px] text-ink/80 leading-relaxed">
+                                Akun ini akan mendapatkan hak akses tertinggi untuk mengelola seluruh akun admin lain, mengonfigurasi pengaturan sistem, melihat semua audit log, serta melakukan aksi khusus tingkat tinggi.
+                            </p>
+                        </div>
+                    @else
+                        <div class="p-3 bg-blue-50 border border-ink text-xs text-blue-950 space-y-1">
+                            <span class="font-bold block text-blue-900">Perubahan Hak Akses:</span>
+                            <p class="text-[11px] text-ink/80 leading-relaxed">
+                                Hak akses akun ini akan dibatasi hanya pada operasional umum (seperti verifikasi pemilih dan monitoring bilik suara). Akun tidak lagi dapat mengelola admin lain atau konfigurasi utama PEMIRA.
+                            </p>
+                        </div>
+                    @endif
+                </div>
+
+                <div class="px-4 py-3 sm:px-5 sm:py-3.5 border-t-2 border-ink flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-2.5 sm:gap-3 bg-surface-muted shrink-0">
+                    <button wire:click="closeChangeRoleModal"
+                            type="button"
+                            class="px-4 py-2.5 sm:py-2 bg-surface hover:bg-ink/10 border-2 border-ink font-display font-bold text-xs uppercase tracking-wider text-center transition-colors cursor-pointer">
+                        BATAL
+                    </button>
+
+                    <button wire:click="changeRole"
+                            type="button"
+                            class="px-5 py-2.5 {{ $isPromote ? 'bg-accent hover:bg-accent/80 text-ink' : 'bg-brand hover:bg-brand-dark text-accent' }} border-2 border-ink shadow-brutal-sm font-display font-black text-xs uppercase tracking-wider text-center transition-all cursor-pointer">
+                        {{ $isPromote ? 'YA, NAIKKAN KE SUPER ADMIN' : 'YA, TURUNKAN KE ADMIN KPR' }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    @endif
+
     @if ($showToggleStatusModal && $selectedAdmin)
         <div class="fixed inset-0 z-50 overflow-y-auto flex items-end sm:items-center justify-center p-2.5 sm:p-4 bg-ink/70 backdrop-blur-xs"
              role="dialog"
              aria-modal="true"
              aria-labelledby="toggle-modal-title">
-            <div class="w-full sm:max-w-md bg-surface border-2 border-ink shadow-brutal flex flex-col min-w-0">
+            <div class="w-full sm:max-w-md bg-surface border-2 border-ink shadow-brutal max-h-[92dvh] sm:max-h-[90vh] flex flex-col min-w-0">
                 <div class="px-4 py-3 sm:px-5 sm:py-4 border-b-2 border-ink flex items-center justify-between bg-surface-muted shrink-0">
                     <div>
                         <span class="text-xs font-display font-bold uppercase tracking-wider text-ink/60 block">KONFIRMASI STATUS</span>
@@ -823,7 +1072,7 @@
                     </button>
                 </div>
 
-                <div class="p-4 sm:p-5 space-y-3 font-sans">
+                <div class="p-4 sm:p-5 space-y-3 font-sans overflow-y-auto flex-1 min-w-0">
                     <p class="text-xs sm:text-sm text-ink leading-relaxed">
                         Anda akan mengubah status akun admin <strong class="font-bold text-brand">{{ $selectedAdmin->email }}</strong> menjadi:
                         @if ($selectedAdmin->email_verified_at !== null)
@@ -846,16 +1095,16 @@
                     @endif
                 </div>
 
-                <div class="px-4 py-3 sm:px-5 sm:py-3.5 border-t-2 border-ink flex items-center justify-between bg-surface-muted shrink-0">
+                <div class="px-4 py-3 sm:px-5 sm:py-3.5 border-t-2 border-ink flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-2.5 sm:gap-3 bg-surface-muted shrink-0">
                     <button wire:click="closeToggleStatusModal"
                             type="button"
-                            class="px-4 py-2 bg-surface hover:bg-ink/10 border-2 border-ink font-display font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer">
+                            class="px-4 py-2.5 sm:py-2 bg-surface hover:bg-ink/10 border-2 border-ink font-display font-bold text-xs uppercase tracking-wider text-center transition-colors cursor-pointer">
                         BATAL
                     </button>
 
                     <button wire:click="toggleStatus"
                             type="button"
-                            class="px-5 py-2.5 {{ $selectedAdmin->email_verified_at !== null ? 'bg-rose-700 hover:bg-rose-800 text-surface' : 'bg-brand hover:bg-brand-dark text-accent' }} border-2 border-ink shadow-brutal-sm font-display font-black text-xs uppercase tracking-wider transition-all cursor-pointer">
+                            class="px-5 py-2.5 {{ $selectedAdmin->email_verified_at !== null ? 'bg-rose-700 hover:bg-rose-800 text-surface' : 'bg-brand hover:bg-brand-dark text-accent' }} border-2 border-ink shadow-brutal-sm font-display font-black text-xs uppercase tracking-wider text-center transition-all cursor-pointer">
                         {{ $selectedAdmin->email_verified_at !== null ? 'YA, NONAKTIFKAN' : 'YA, AKTIFKAN' }}
                     </button>
                 </div>
@@ -868,7 +1117,7 @@
              role="dialog"
              aria-modal="true"
              aria-labelledby="delete-modal-title">
-            <div class="w-full sm:max-w-md bg-surface border-2 border-ink shadow-brutal flex flex-col min-w-0">
+            <div class="w-full sm:max-w-md bg-surface border-2 border-ink shadow-brutal max-h-[92dvh] sm:max-h-[90vh] flex flex-col min-w-0">
                 <div class="px-4 py-3 sm:px-5 sm:py-4 border-b-2 border-ink flex items-center justify-between bg-surface-muted shrink-0">
                     <div>
                         <span class="text-xs font-display font-bold uppercase tracking-wider text-rose-700 block">TINDAKAN PERMANEN</span>
@@ -886,7 +1135,7 @@
                     </button>
                 </div>
 
-                <div class="p-4 sm:p-5 space-y-3 font-sans">
+                <div class="p-4 sm:p-5 space-y-3 font-sans overflow-y-auto flex-1 min-w-0">
                     <p class="text-xs sm:text-sm text-ink leading-relaxed">
                         Apakah Anda yakin ingin menghapus akun admin <strong class="font-bold text-rose-800">{{ $selectedAdmin->email }}</strong>?
                     </p>
@@ -897,16 +1146,16 @@
                     </div>
                 </div>
 
-                <div class="px-4 py-3 sm:px-5 sm:py-3.5 border-t-2 border-ink flex items-center justify-between bg-surface-muted shrink-0">
+                <div class="px-4 py-3 sm:px-5 sm:py-3.5 border-t-2 border-ink flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-2.5 sm:gap-3 bg-surface-muted shrink-0">
                     <button wire:click="closeDeleteModal"
                             type="button"
-                            class="px-4 py-2 bg-surface hover:bg-ink/10 border-2 border-ink font-display font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer">
+                            class="px-4 py-2.5 sm:py-2 bg-surface hover:bg-ink/10 border-2 border-ink font-display font-bold text-xs uppercase tracking-wider text-center transition-colors cursor-pointer">
                         BATAL
                     </button>
 
                     <button wire:click="deleteAdmin"
                             type="button"
-                            class="px-5 py-2.5 bg-rose-700 hover:bg-rose-800 text-surface border-2 border-ink shadow-brutal-sm font-display font-black text-xs uppercase tracking-wider transition-all cursor-pointer">
+                            class="px-5 py-2.5 bg-rose-700 hover:bg-rose-800 text-surface border-2 border-ink shadow-brutal-sm font-display font-black text-xs uppercase tracking-wider text-center transition-all cursor-pointer">
                         HAPUS PERMANEN
                     </button>
                 </div>
@@ -1246,16 +1495,16 @@
                         </div>
                     </div>
 
-                    <div class="px-4 py-3 sm:px-5 sm:py-3.5 border-t-2 border-ink flex items-center justify-between bg-surface-muted shrink-0">
+                    <div class="px-4 py-3 sm:px-5 sm:py-3.5 border-t-2 border-ink flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-2.5 sm:gap-3 bg-surface-muted shrink-0">
                         <button wire:click="closeInviteModal"
                                 type="button"
-                                class="px-4 py-2 bg-surface hover:bg-ink/10 border-2 border-ink font-display font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer">
+                                class="px-4 py-2.5 sm:py-2 bg-surface hover:bg-ink/10 border-2 border-ink font-display font-bold text-xs uppercase tracking-wider text-center transition-colors cursor-pointer">
                             BATAL
                         </button>
 
                         <button type="submit"
                                 wire:loading.attr="disabled"
-                                class="px-5 py-2.5 bg-brand text-accent hover:bg-brand-dark border-2 border-ink shadow-brutal-sm font-display font-black text-xs uppercase tracking-wider transition-all cursor-pointer flex items-center gap-2">
+                                class="px-5 py-2.5 bg-brand text-accent hover:bg-brand-dark border-2 border-ink shadow-brutal-sm font-display font-black text-xs uppercase tracking-wider text-center transition-all cursor-pointer flex items-center justify-center gap-2">
                             <span wire:loading.remove wire:target="sendInvitation">KIRIM UNDANGAN</span>
                             <span wire:loading wire:target="sendInvitation" class="inline-flex items-center gap-2">
                                 <svg class="animate-spin h-4 w-4" viewBox="0 0 24 24">
@@ -1294,7 +1543,7 @@
                     </button>
                 </div>
 
-                <div class="p-4 sm:p-5 space-y-4 font-sans text-xs sm:text-sm text-ink">
+                <div class="p-4 sm:p-5 space-y-4 font-sans text-xs sm:text-sm text-ink overflow-y-auto flex-1 min-w-0">
                     <p class="leading-relaxed">
                         Apakah Anda yakin ingin membatalkan undangan untuk calon admin:
                     </p>
@@ -1306,17 +1555,17 @@
                     </p>
                 </div>
 
-                <div class="px-4 py-3 sm:px-5 sm:py-3.5 border-t-2 border-ink flex items-center justify-between bg-surface-muted shrink-0">
+                <div class="px-4 py-3 sm:px-5 sm:py-3.5 border-t-2 border-ink flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-2.5 sm:gap-3 bg-surface-muted shrink-0">
                     <button wire:click="closeRevokeModal"
                             type="button"
-                            class="px-4 py-2 bg-surface hover:bg-ink/10 border-2 border-ink font-display font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer">
+                            class="px-4 py-2.5 sm:py-2 bg-surface hover:bg-ink/10 border-2 border-ink font-display font-bold text-xs uppercase tracking-wider text-center transition-colors cursor-pointer">
                         BATAL
                     </button>
 
                     <button wire:click="revokeInvitation"
                             type="button"
                             wire:loading.attr="disabled"
-                            class="px-5 py-2.5 bg-rose-600 text-surface hover:bg-rose-700 border-2 border-ink shadow-brutal-sm font-display font-black text-xs uppercase tracking-wider transition-all cursor-pointer">
+                            class="px-5 py-2.5 bg-rose-600 text-surface hover:bg-rose-700 border-2 border-ink shadow-brutal-sm font-display font-black text-xs uppercase tracking-wider text-center transition-all cursor-pointer">
                         <span wire:loading.remove wire:target="revokeInvitation">YA, BATALKAN UNDANGAN</span>
                         <span wire:loading wire:target="revokeInvitation">MEMPROSES...</span>
                     </button>

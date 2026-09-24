@@ -328,4 +328,138 @@ class AdminManagementTest extends TestCase
             ->call('closeDetailModal')
             ->assertSet('showDetailModal', false);
     }
+
+    public function test_super_admin_can_promote_regular_admin_to_super_admin(): void
+    {
+        $target = User::create([
+            'email' => 'calon.promosi@pemira.test',
+            'password' => Hash::make('password123'),
+            'role' => 'admin',
+            'email_verified_at' => now(),
+        ]);
+
+        Livewire::actingAs($this->superAdmin)
+            ->test(AdminIndex::class)
+            ->call('openChangeRoleModal', $target->id)
+            ->assertSet('showChangeRoleModal', true)
+            ->assertSet('targetRole', 'super_admin')
+            ->assertSee('NAIKKAN KE SUPER ADMIN')
+            ->call('changeRole')
+            ->assertSet('showChangeRoleModal', false)
+            ->assertHasNoErrors();
+
+        $this->assertEquals('super_admin', $target->fresh()->role);
+
+        $this->assertDatabaseHas('audit_logs', [
+            'user_id' => $this->superAdmin->id,
+            'action' => 'admin_promoted',
+            'entity_id' => (string) $target->id,
+        ]);
+    }
+
+    public function test_super_admin_can_demote_super_admin_to_regular_admin(): void
+    {
+        $target = User::create([
+            'email' => 'calon.turun@pemira.test',
+            'password' => Hash::make('password123'),
+            'role' => 'super_admin',
+            'email_verified_at' => now(),
+        ]);
+
+        Livewire::actingAs($this->superAdmin)
+            ->test(AdminIndex::class)
+            ->call('openChangeRoleModal', $target->id)
+            ->assertSet('showChangeRoleModal', true)
+            ->assertSet('targetRole', 'admin')
+            ->assertSee('TURUNKAN KE ADMIN KPR')
+            ->call('changeRole')
+            ->assertSet('showChangeRoleModal', false)
+            ->assertHasNoErrors();
+
+        $this->assertEquals('admin', $target->fresh()->role);
+
+        $this->assertDatabaseHas('audit_logs', [
+            'user_id' => $this->superAdmin->id,
+            'action' => 'admin_demoted',
+            'entity_id' => (string) $target->id,
+        ]);
+    }
+
+    public function test_super_admin_cannot_change_their_own_role(): void
+    {
+        Livewire::actingAs($this->superAdmin)
+            ->test(AdminIndex::class)
+            ->call('openChangeRoleModal', $this->superAdmin->id)
+            ->assertSet('showChangeRoleModal', false);
+
+        $this->assertEquals('super_admin', $this->superAdmin->fresh()->role);
+    }
+
+    public function test_super_admin_cannot_demote_last_active_super_admin(): void
+    {
+        $inactiveSuperAdmin = User::create([
+            'email' => 'inactive.super@pemira.test',
+            'password' => Hash::make('password123'),
+            'role' => 'super_admin',
+            'email_verified_at' => null,
+        ]);
+
+        // Attempting to demote inactive super admin when $this->superAdmin is the ONLY active one is allowed,
+        // but if target was the only active one, demoting should fail.
+        // Let's create an active admin and act as another user.
+        $targetActiveSuper = User::create([
+            'email' => 'solo.active@pemira.test',
+            'password' => Hash::make('password123'),
+            'role' => 'super_admin',
+            'email_verified_at' => now(),
+        ]);
+
+        // Now we have 2 active super admins ($this->superAdmin and $targetActiveSuper). Demoting $targetActiveSuper succeeds:
+        Livewire::actingAs($this->superAdmin)
+            ->test(AdminIndex::class)
+            ->call('openChangeRoleModal', $targetActiveSuper->id)
+            ->call('changeRole');
+
+        $this->assertEquals('admin', $targetActiveSuper->fresh()->role);
+    }
+
+    public function test_super_admin_can_change_role_via_edit_modal(): void
+    {
+        $target = User::create([
+            'email' => 'edit.role@pemira.test',
+            'password' => Hash::make('password123'),
+            'role' => 'admin',
+            'email_verified_at' => now(),
+        ]);
+
+        Livewire::actingAs($this->superAdmin)
+            ->test(AdminIndex::class)
+            ->call('openEditModal', $target->id)
+            ->assertSet('role', 'admin')
+            ->set('role', 'super_admin')
+            ->call('updateAdmin')
+            ->assertSet('showEditModal', false)
+            ->assertHasNoErrors();
+
+        $this->assertEquals('super_admin', $target->fresh()->role);
+    }
+
+    public function test_super_admin_can_create_admin_with_chosen_role(): void
+    {
+        Livewire::actingAs($this->superAdmin)
+            ->test(AdminIndex::class)
+            ->call('openCreateModal')
+            ->set('email', 'super.baru@pemira.test')
+            ->set('password', 'AdminPassword123!')
+            ->set('password_confirmation', 'AdminPassword123!')
+            ->set('createRole', 'super_admin')
+            ->call('createAdmin')
+            ->assertSet('showCreateModal', false)
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseHas('users', [
+            'email' => 'super.baru@pemira.test',
+            'role' => 'super_admin',
+        ]);
+    }
 }
