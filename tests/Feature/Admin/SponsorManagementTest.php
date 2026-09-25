@@ -374,7 +374,8 @@ class SponsorManagementTest extends TestCase
         $response->assertSee('id="sponsors"', false);
         $response->assertSee('TERBUKA UNTUK KERJA SAMA & SPONSORSHIP', false);
         $response->assertSee('HUBUNGI TIM HUMAS');
-        $response->assertSee('HUBUNGI VIA WHATSAPP');
+        $response->assertSee('HUBUNGI HUMAS');
+        $response->assertSee('KETUA PANITIA');
     }
 
     public function test_admin_can_open_and_close_detail_modal(): void
