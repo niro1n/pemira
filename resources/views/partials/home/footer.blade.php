@@ -5,7 +5,12 @@
 ])
 
 @php
-    $whatsappUrl = 'https://wa.me/REPLACE_WITH_OFFICIAL_NUMBER';
+    $humasWaNumber = env('HUMAS_WHATSAPP', config('pemira.contacts.humas.whatsapp_number', '6281337534761'));
+    $ketuaWaNumber = env('KETUA_PANITIA_WHATSAPP', config('pemira.contacts.ketua_panitia.whatsapp_number', '628970898383'));
+
+    $humasWhatsappUrl = "https://wa.me/{$humasWaNumber}?text=".rawurlencode('Halo kak Sintya (Humas PEMIRA), saya membutuhkan informasi seputar PEMIRA.');
+    $ketuaWhatsappUrl = "https://wa.me/{$ketuaWaNumber}?text=".rawurlencode('Halo kak Diana (Ketua Panitia PEMIRA), saya membutuhkan informasi seputar PEMIRA.');
+    $whatsappUrl = $humasWhatsappUrl;
     $resolvedPeriod = $period ?? ($election?->year ? "'".substr((string) $election->year, -2) : "'26");
 @endphp
 
@@ -117,22 +122,40 @@
             <div class="md:col-span-4 lg:col-span-3">
                 <div class="text-xs font-display font-bold uppercase tracking-widest text-accent mb-3 sm:mb-4 flex items-center gap-2">
                     <span class="w-1.5 h-1.5 bg-accent inline-block border border-ink"></span>
-                    <span>BANTUAN</span>
+                    <span>BANTUAN & KONTAK</span>
                 </div>
 
                 <p class="text-xs sm:text-sm font-sans font-medium text-surface/80 leading-relaxed mb-3 sm:mb-4">
-                    Hubungi panitia PEMIRA melalui WhatsApp jika membutuhkan bantuan atau informasi lebih lanjut.
+                    Hubungi panitia PEMIRA melalui WhatsApp jika membutuhkan bantuan atau informasi lebih lanjut:
                 </p>
 
-                <a
-                    href="{{ $whatsappUrl }}"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 text-xs sm:text-sm font-display font-bold tracking-wide uppercase text-ink bg-accent border-2 border-ink shadow-brutal hover:bg-accent-light hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-brutal-sm active:translate-x-1 active:translate-y-1 active:shadow-none transition-all focus:outline-none focus:ring-2 focus:ring-surface"
-                >
-                    <span>HUBUNGI PANITIA VIA WHATSAPP</span>
-                    <span aria-hidden="true">&rarr;</span>
-                </a>
+                <div class="space-y-2">
+                    <a
+                        href="{{ $humasWhatsappUrl }}"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="w-full inline-flex items-center justify-between gap-2 px-3.5 py-2.5 text-xs sm:text-sm font-display font-bold tracking-wide uppercase text-ink bg-accent border-2 border-ink shadow-brutal hover:bg-accent-light hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-brutal-sm active:translate-x-1 active:translate-y-1 active:shadow-none transition-all focus:outline-none focus:ring-2 focus:ring-surface"
+                    >
+                        <div class="flex flex-col text-left">
+                            <span class="text-[10px] font-sans font-extrabold text-ink/75 leading-tight">HUMAS</span>
+                            <span class="font-extrabold">SINTYA</span>
+                        </div>
+                        <span class="font-display text-xs font-bold">CHAT WHATSAPP &rarr;</span>
+                    </a>
+
+                    <a
+                        href="{{ $ketuaWhatsappUrl }}"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="w-full inline-flex items-center justify-between gap-2 px-3.5 py-2.5 text-xs sm:text-sm font-display font-bold tracking-wide uppercase text-surface bg-brand-dark border-2 border-surface/30 hover:border-accent hover:text-accent shadow-brutal hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-brutal-sm active:translate-x-1 active:translate-y-1 active:shadow-none transition-all focus:outline-none focus:ring-2 focus:ring-surface"
+                    >
+                        <div class="flex flex-col text-left">
+                            <span class="text-[10px] font-sans font-extrabold text-accent leading-tight">KETUA PANITIA</span>
+                            <span class="font-extrabold">DIANA</span>
+                        </div>
+                        <span class="font-display text-xs font-bold text-surface/90">CHAT WHATSAPP &rarr;</span>
+                    </a>
+                </div>
             </div>
         </div>
     </div>

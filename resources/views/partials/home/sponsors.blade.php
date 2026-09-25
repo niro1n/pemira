@@ -3,7 +3,12 @@
 ])
 
 @php
-    $whatsappUrl = 'https://wa.me/REPLACE_WITH_OFFICIAL_NUMBER';
+    $humasWaNumber = env('HUMAS_WHATSAPP', config('pemira.contacts.humas.whatsapp_number', '6281337534761'));
+    $ketuaWaNumber = env('KETUA_PANITIA_WHATSAPP', config('pemira.contacts.ketua_panitia.whatsapp_number', '628970898383'));
+
+    $humasWhatsappUrl = "https://wa.me/{$humasWaNumber}?text=".rawurlencode('Halo kak Sintya (Humas PEMIRA), kami tertarik untuk menjalin kerja sama sponsorship PEMIRA.');
+    $ketuaWhatsappUrl = "https://wa.me/{$ketuaWaNumber}?text=".rawurlencode('Halo kak Diana (Ketua Panitia PEMIRA), kami tertarik untuk berdiskusi terkait sponsorship PEMIRA.');
+    $whatsappUrl = $humasWhatsappUrl;
 @endphp
 
 <section id="sponsors"
@@ -257,13 +262,25 @@
                             <p class="text-xs font-sans text-ink/70">
                                 Tertarik menjalin kerja sama atau ingin mendiskusikan proposal sponsorship? Hubungi panitia melalui kontak di bawah.
                             </p>
-                            <a href="{{ $whatsappUrl }}"
-                               target="_blank"
-                               rel="noopener noreferrer"
-                               class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-accent text-ink hover:bg-accent-light border-2 border-ink shadow-brutal-sm font-display font-bold text-xs uppercase tracking-wider transition-all">
-                                <span>HUBUNGI VIA WHATSAPP</span>
-                                <span aria-hidden="true">&rarr;</span>
-                            </a>
+                            <div class="text-[11px] font-sans text-ink/80 text-left bg-surface-muted p-2.5 border border-ink/20 space-y-1">
+                                <div>&bull; Humas: <strong>Sintya</strong></div>
+                                <div>&bull; Ketua Panitia: <strong>Diana</strong></div>
+                            </div>
+                            <div class="space-y-2">
+                                <a href="{{ $whatsappUrl }}"
+                                   target="_blank"
+                                   rel="noopener noreferrer"
+                                   class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-accent text-ink hover:bg-accent-light border-2 border-ink shadow-brutal-sm font-display font-bold text-xs uppercase tracking-wider transition-all">
+                                    <span>HUBUNGI VIA WHATSAPP</span>
+                                    <span aria-hidden="true">&rarr;</span>
+                                </a>
+                                <a href="{{ $ketuaWhatsappUrl }}"
+                                   target="_blank"
+                                   rel="noopener noreferrer"
+                                   class="w-full inline-flex items-center justify-center gap-2 px-3 py-2 bg-brand text-accent hover:bg-brand-dark border-2 border-ink text-xs font-display font-bold uppercase tracking-wider transition-all">
+                                    <span>HUBUNGI KETUA PANITIA (DIANA)</span>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>

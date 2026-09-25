@@ -76,15 +76,30 @@
             </div>
         </div>
 
-        <div class="p-4 bg-surface-muted border-2 border-dashed border-ink/40 flex items-start gap-3">
-            <svg class="w-5 h-5 text-brand shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <p class="text-xs text-ink/75 leading-relaxed">
-                Data identitas di atas bersumber dari Surat Keputusan penetapan DPT oleh Komisi Pemilihan Raya.
-                Demi integritas pemilu, data ini tidak dapat disunting secara mandiri.
-                Jika terdapat kekeliruan data, silakan berkoordinasi langsung dengan panitia KPR dengan melampirkan KTM aktif.
-            </p>
+        <div class="p-4 bg-surface-muted border-2 border-dashed border-ink/40 flex flex-col sm:flex-row items-start justify-between gap-3">
+            <div class="flex items-start gap-3">
+                <svg class="w-5 h-5 text-brand shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <div class="text-xs text-ink/75 leading-relaxed space-y-1">
+                    <p>
+                        Data identitas di atas bersumber dari Surat Keputusan penetapan DPT oleh Komisi Pemilihan Raya.
+                        Demi integritas pemilu, data ini tidak dapat disunting secara mandiri.
+                        Jika terdapat kekeliruan data, silakan berkoordinasi langsung dengan panitia KPR dengan melampirkan KTM aktif.
+                    </p>
+                    <div class="pt-1 text-[11px] text-ink/80 flex flex-wrap gap-x-3 gap-y-1">
+                        <span>Humas: <strong>Sintya</strong></span>
+                        <span>Ketua Panitia: <strong>Diana</strong></span>
+                    </div>
+                </div>
+            </div>
+            <a href="https://wa.me/{{ env('HUMAS_WHATSAPP', config('pemira.contacts.humas.whatsapp_number', '6281337534761')) }}?text={{ rawurlencode('Halo kak Sintya (Humas PEMIRA), saya ingin konfirmasi perbaikan data profil DPT saya.') }}"
+               target="_blank"
+               rel="noopener noreferrer"
+               class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-brand text-accent hover:bg-brand-dark border-2 border-ink shadow-brutal-sm font-display font-bold text-xs uppercase tracking-wider shrink-0 transition-all">
+                <span>Hubungi Humas</span>
+                <span aria-hidden="true">&rarr;</span>
+            </a>
         </div>
     </div>
 

@@ -52,14 +52,20 @@ class Register extends Component
 
     public ?string $incompleteVoterName = null;
 
+    public bool $isUnregisteredVoter = false;
+
+    public ?string $unregisteredNim = null;
+
     public function updatedNim(): void
     {
         $this->resetIncompleteState();
+        $this->resetUnregisteredState();
     }
 
     public function updatedBirthDate(): void
     {
         $this->resetIncompleteState();
+        $this->resetUnregisteredState();
     }
 
     public function resetIncompleteState(): void
@@ -71,28 +77,73 @@ class Register extends Component
         $this->resetErrorBag();
     }
 
+    public function resetUnregisteredState(): void
+    {
+        $this->isUnregisteredVoter = false;
+        $this->unregisteredNim = null;
+        $this->resetErrorBag();
+    }
+
     #[Computed]
     public function humasWhatsappUrl(): string
     {
-        $phone = SystemSetting::get('humas_whatsapp') ?? env('HUMAS_WHATSAPP');
-        if (! $phone) {
-            $phone = 'REPLACE_WITH_OFFICIAL_NUMBER';
-        }
+        $phone = SystemSetting::get('humas_whatsapp') ?? env('HUMAS_WHATSAPP') ?? config('pemira.contacts.humas.whatsapp_number', '6281337534761');
 
         $cleanPhone = preg_replace('/[^0-9]/', '', (string) $phone);
         if (str_starts_with($cleanPhone, '08')) {
             $cleanPhone = '628'.substr($cleanPhone, 2);
+        }
+        if ($cleanPhone === '' || $cleanPhone === 'REPLACE_WITH_OFFICIAL_NUMBER') {
+            $cleanPhone = '6281337534761';
         }
 
         $voterName = $this->incompleteVoterName ?? 'Mahasiswa';
         $voterNim = $this->incompleteVoterNim ?? $this->nim;
         $missing = ! empty($this->incompleteMissingFields) ? implode(', ', $this->incompleteMissingFields) : 'informasi pemilih';
 
-        $text = "Halo Tim Humas PEMIRA, saya {$voterName} (NIM: {$voterNim}). Data pemilih saya belum lengkap ({$missing}). Mohon bantuannya untuk verifikasi dan melengkapi data agar dapat membuat akun voter.";
+        $text = "Halo Tim Humas PEMIRA (kak Sintya), saya {$voterName} (NIM: {$voterNim}). Data pemilih saya belum lengkap ({$missing}). Mohon bantuannya untuk verifikasi dan melengkapi data agar dapat membuat akun voter.";
 
-        if ($cleanPhone === '' || $phone === 'REPLACE_WITH_OFFICIAL_NUMBER') {
-            return 'https://wa.me/REPLACE_WITH_OFFICIAL_NUMBER?text='.rawurlencode($text);
+        return "https://wa.me/{$cleanPhone}?text=".rawurlencode($text);
+    }
+
+    #[Computed]
+    public function unregisteredHumasWhatsappUrl(): string
+    {
+        $phone = SystemSetting::get('humas_whatsapp') ?? env('HUMAS_WHATSAPP') ?? config('pemira.contacts.humas.whatsapp_number', '6281337534761');
+
+        $cleanPhone = preg_replace('/[^0-9]/', '', (string) $phone);
+        if (str_starts_with($cleanPhone, '08')) {
+            $cleanPhone = '628'.substr($cleanPhone, 2);
         }
+        if ($cleanPhone === '' || $cleanPhone === 'REPLACE_WITH_OFFICIAL_NUMBER') {
+            $cleanPhone = '6281337534761';
+        }
+
+        $voterNim = trim($this->unregisteredNim ?? $this->nim);
+        $nimText = $voterNim !== '' ? "NIM: {$voterNim}" : 'mahasiswa aktif';
+
+        $text = "Halo kak Sintya (Humas PEMIRA), saya ({$nimText}) ingin mendaftar akun voter PEMIRA namun NIM saya belum terdaftar di Daftar Pemilih Tetap (DPT). Mohon bantuannya untuk verifikasi status pemilih aktif. Terima kasih.";
+
+        return "https://wa.me/{$cleanPhone}?text=".rawurlencode($text);
+    }
+
+    #[Computed]
+    public function ketuaPanitiaWhatsappUrl(): string
+    {
+        $phone = env('KETUA_PANITIA_WHATSAPP') ?? config('pemira.contacts.ketua_panitia.whatsapp_number', '628970898383');
+
+        $cleanPhone = preg_replace('/[^0-9]/', '', (string) $phone);
+        if (str_starts_with($cleanPhone, '08')) {
+            $cleanPhone = '628'.substr($cleanPhone, 2);
+        }
+        if ($cleanPhone === '' || $cleanPhone === 'REPLACE_WITH_OFFICIAL_NUMBER') {
+            $cleanPhone = '628970898383';
+        }
+
+        $voterNim = trim($this->unregisteredNim ?? $this->nim);
+        $nimText = $voterNim !== '' ? "NIM: {$voterNim}" : 'mahasiswa aktif';
+
+        $text = "Halo kak Diana (Ketua Panitia PEMIRA), saya ({$nimText}) ingin konfirmasi pendaftaran akun voter PEMIRA karena NIM belum terdaftar di DPT. Mohon bantuannya.";
 
         return "https://wa.me/{$cleanPhone}?text=".rawurlencode($text);
     }
@@ -100,6 +151,7 @@ class Register extends Component
     public function validateStudent()
     {
         $this->resetIncompleteState();
+        $this->resetUnregisteredState();
 
         $this->validate([
             'nim' => ['required', 'string'],
@@ -113,7 +165,9 @@ class Register extends Component
         $voter = EligibleVoter::with('studyProgram')->where('nim', trim($this->nim))->first();
 
         if (! $voter) {
-            $this->addError('nim', 'NIM atau tanggal lahir tidak cocok dengan data pemilih aktif.');
+            $this->isUnregisteredVoter = true;
+            $this->unregisteredNim = trim($this->nim);
+            $this->addError('nim', 'NIM Anda belum terdaftar dalam Daftar Pemilih Tetap (DPT). Silakan hubungi Tim Humas.');
 
             return;
         }

@@ -1,5 +1,10 @@
 @php
-    $whatsappUrl = 'https://wa.me/REPLACE_WITH_OFFICIAL_NUMBER';
+    $humasWaNumber = env('HUMAS_WHATSAPP', config('pemira.contacts.humas.whatsapp_number', '6281337534761'));
+    $ketuaWaNumber = env('KETUA_PANITIA_WHATSAPP', config('pemira.contacts.ketua_panitia.whatsapp_number', '628970898383'));
+
+    $humasWhatsappUrl = "https://wa.me/{$humasWaNumber}?text=".rawurlencode('Halo kak Sintya (Humas PEMIRA), saya ingin bertanya seputar PEMIRA.');
+    $ketuaWhatsappUrl = "https://wa.me/{$ketuaWaNumber}?text=".rawurlencode('Halo kak Diana (Ketua Panitia PEMIRA), saya ingin bertanya seputar PEMIRA.');
+    $whatsappUrl = $humasWhatsappUrl;
 
     $faqs = [
         [
@@ -42,7 +47,7 @@
             'number' => '07',
             'question' => 'Bagaimana jika saya mengalami kendala saat memilih?',
             'answer' =>
-                'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Apabila mengalami kendala teknis, gagal login, atau gangguan sistem saat voting, silakan langsung menghubungi tim helpdesk panitia melalui tautan WhatsApp resmi di bawah.',
+                'Apabila mengalami kendala teknis, gagal login, atau gangguan sistem saat voting, silakan langsung menghubungi tim panitia: Sintya (Humas) atau Diana (Ketua Panitia) melalui tautan WhatsApp resmi di bawah.',
         ],
     ];
 @endphp
@@ -157,7 +162,7 @@
                 </div>
 
                 <div class="relative z-10 grid grid-cols-1 md:grid-cols-12 gap-4 sm:gap-6 items-center">
-                    <div class="md:col-span-8">
+                    <div class="md:col-span-7">
                         <div
                             class="inline-flex items-center gap-2 px-2.5 py-0.5 bg-brand-dark border border-surface/20 text-xs font-sans font-bold uppercase tracking-wider text-accent mb-2">
                             <span class="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-accent inline-block border border-ink"></span>
@@ -171,15 +176,31 @@
 
                         <p class="text-xs sm:text-sm font-sans font-medium text-surface/85 max-w-xl leading-relaxed">
                             Tidak menemukan jawaban yang kamu cari? Hubungi panitia PEMIRA melalui WhatsApp untuk
-                            mendapatkan bantuan langsung.
+                            mendapatkan bantuan langsung:
                         </p>
+
+                        <div class="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs font-sans text-surface/90">
+                            <span class="inline-flex items-center gap-1.5">
+                                <span class="w-1.5 h-1.5 bg-accent inline-block"></span>
+                                Humas: <strong class="text-accent">Sintya</strong>
+                            </span>
+                            <span class="inline-flex items-center gap-1.5">
+                                <span class="w-1.5 h-1.5 bg-accent inline-block"></span>
+                                Ketua Panitia: <strong class="text-accent">Diana</strong>
+                            </span>
+                        </div>
                     </div>
 
-                    <div class="md:col-span-4 flex flex-col items-start md:items-end justify-center pt-1 md:pt-0">
-                        <a href="{{ $whatsappUrl }}" target="_blank" rel="noopener noreferrer"
-                            class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 text-xs sm:text-sm font-display font-bold tracking-wide uppercase text-ink bg-accent border-2 border-ink shadow-brutal hover:bg-accent-light hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-brutal-sm active:translate-x-1 active:translate-y-1 active:shadow-none transition-all focus:outline-none focus:ring-2 focus:ring-surface">
-                            <span>HUBUNGI VIA WHATSAPP</span>
-                            <span aria-hidden="true">&rarr;</span>
+                    <div class="md:col-span-5 flex flex-col gap-2.5 pt-1 md:pt-0">
+                        <a href="{{ $humasWhatsappUrl }}" target="_blank" rel="noopener noreferrer"
+                            class="w-full inline-flex items-center justify-between gap-2 px-4 py-2.5 text-xs sm:text-sm font-display font-bold tracking-wide uppercase text-ink bg-accent border-2 border-ink shadow-brutal hover:bg-accent-light hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-brutal-sm active:translate-x-1 active:translate-y-1 active:shadow-none transition-all focus:outline-none focus:ring-2 focus:ring-surface">
+                            <span>HUBUNGI HUMAS</span>
+                            <span class="font-display text-xs font-bold">CHAT &rarr;</span>
+                        </a>
+                        <a href="{{ $ketuaWhatsappUrl }}" target="_blank" rel="noopener noreferrer"
+                            class="w-full inline-flex items-center justify-between gap-2 px-4 py-2.5 text-xs sm:text-sm font-display font-bold tracking-wide uppercase text-surface bg-brand-dark border-2 border-surface/30 hover:border-accent hover:text-accent shadow-brutal hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-brutal-sm active:translate-x-1 active:translate-y-1 active:shadow-none transition-all focus:outline-none focus:ring-2 focus:ring-surface">
+                            <span>KETUA PANITIA</span>
+                            <span class="font-display text-xs font-bold text-surface/90">CHAT &rarr;</span>
                         </a>
                     </div>
                 </div>

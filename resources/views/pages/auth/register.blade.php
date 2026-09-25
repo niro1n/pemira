@@ -206,7 +206,7 @@
                             </div>
 
                             <div class="p-5 sm:p-7">
-                                @if ($errors->any() && ! $isIncompleteVoter)
+                                @if ($errors->any() && ! $isIncompleteVoter && ! $isUnregisteredVoter)
                                     <div class="bg-surface-muted border-2 border-ink p-3.5 shadow-brutal-sm mb-5 text-ink">
                                         <div class="flex items-center gap-2 text-xs font-display font-bold uppercase text-brand mb-1">
                                             <span class="w-2 h-2 bg-accent inline-block border border-ink"></span>
@@ -253,15 +253,15 @@
                                                         @endforeach
                                                     </ul>
                                                     <p class="text-ink/80 leading-relaxed text-xs">
-                                                        Untuk melengkapi data dan mengaktifkan hak suara kamu di PEMIRA, silakan hubungi <strong>Tim Humas / Panitia PEMIRA</strong> melalui kontak di bawah ini:
+                                                        Untuk melengkapi data dan mengaktifkan hak suara kamu di PEMIRA, silakan hubungi Tim Humas melalui kontak WhatsApp berikut:
                                                     </p>
                                                 </div>
 
-                                                <div class="pt-1 flex flex-col sm:flex-row gap-2.5">
+                                                <div class="pt-1 flex flex-wrap gap-2">
                                                     <a href="{{ $this->humasWhatsappUrl }}"
                                                        target="_blank"
                                                        rel="noopener noreferrer"
-                                                       class="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-brand text-accent hover:bg-brand-dark border-2 border-ink shadow-brutal-sm font-display font-bold text-xs uppercase tracking-wider transition-all">
+                                                       class="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 bg-brand text-accent hover:bg-brand-dark border-2 border-ink shadow-brutal-sm font-display font-bold text-xs uppercase tracking-wider transition-all">
                                                         <svg class="w-4 h-4 fill-current shrink-0" viewBox="0 0 24 24">
                                                             <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/>
                                                         </svg>
@@ -271,7 +271,54 @@
 
                                                     <button type="button"
                                                             wire:click="resetIncompleteState"
-                                                            class="inline-flex items-center justify-center px-4 py-2.5 bg-surface hover:bg-ink/10 border-2 border-ink text-xs font-display font-bold uppercase tracking-wider text-ink transition-colors cursor-pointer">
+                                                            class="inline-flex items-center justify-center px-3.5 py-2 bg-surface hover:bg-ink/10 border-2 border-ink text-xs font-display font-bold uppercase tracking-wider text-ink transition-colors cursor-pointer">
+                                                        COBA NIM LAIN
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        @endif
+
+                                        @if ($isUnregisteredVoter)
+                                            <div class="bg-rose-50 border-2 border-ink p-4 sm:p-5 shadow-brutal mb-6 space-y-3">
+                                                <div class="flex items-center gap-2 pb-2 border-b border-ink/20">
+                                                    <span class="w-2.5 h-2.5 bg-red-600 inline-block border border-ink"></span>
+                                                    <span class="font-display font-black text-xs sm:text-sm uppercase tracking-wide text-brand">
+                                                        NIM BELUM TERDAFTAR DI DPT
+                                                    </span>
+                                                </div>
+
+                                                <div class="space-y-1.5 text-xs sm:text-sm font-sans text-ink">
+                                                    <p class="font-semibold text-brand">
+                                                        NIM ({{ $unregisteredNim ?? $nim }}) tidak tercatat dalam data DPT PEMIRA.
+                                                    </p>
+                                                    <p class="text-ink/85 leading-relaxed text-xs">
+                                                        Pendaftaran akun hanya bagi mahasiswa aktif di DPT. Jika kamu mahasiswa aktif PNB, silakan hubungi panitia untuk verifikasi:
+                                                    </p>
+                                                </div>
+
+                                                <div class="pt-1 flex flex-wrap gap-2">
+                                                    <a href="{{ $this->unregisteredHumasWhatsappUrl }}"
+                                                       target="_blank"
+                                                       rel="noopener noreferrer"
+                                                       class="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 bg-accent text-ink hover:bg-accent-light border-2 border-ink shadow-brutal-sm font-display font-bold text-xs uppercase tracking-wider transition-all">
+                                                        <svg class="w-4 h-4 fill-current shrink-0" viewBox="0 0 24 24">
+                                                            <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/>
+                                                        </svg>
+                                                        <span>HUBUNGI HUMAS</span>
+                                                        <span aria-hidden="true">&rarr;</span>
+                                                    </a>
+
+                                                    <a href="{{ $this->ketuaPanitiaWhatsappUrl }}"
+                                                       target="_blank"
+                                                       rel="noopener noreferrer"
+                                                       class="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 bg-brand text-accent hover:bg-brand-dark border-2 border-ink shadow-brutal-sm font-display font-bold text-xs uppercase tracking-wider transition-all">
+                                                        <span>KETUA PANITIA</span>
+                                                        <span aria-hidden="true">&rarr;</span>
+                                                    </a>
+
+                                                    <button type="button"
+                                                            wire:click="resetUnregisteredState"
+                                                            class="inline-flex items-center justify-center px-3.5 py-2 bg-surface hover:bg-ink/10 border-2 border-ink text-xs font-display font-bold uppercase tracking-wider text-ink transition-colors cursor-pointer">
                                                         COBA NIM LAIN
                                                     </button>
                                                 </div>
@@ -294,7 +341,7 @@
                                                     class="w-full px-3.5 py-2.5 sm:py-3 text-xs sm:text-sm font-sans font-medium text-ink bg-surface border-2 border-ink shadow-brutal-sm focus:outline-none focus:ring-2 focus:ring-brand focus:border-ink transition-all placeholder:text-ink/40"
                                                 >
                                                 @error('nim')
-                                                    @if (! $isIncompleteVoter)
+                                                    @if (! $isIncompleteVoter && ! $isUnregisteredVoter)
                                                         <p class="mt-1.5 text-xs font-sans font-bold text-brand">
                                                             {{ $message }}
                                                         </p>

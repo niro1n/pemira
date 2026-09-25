@@ -51,6 +51,10 @@
             </p>
         </div>
     @elseif (! $hasVoterAccount)
+        @php
+            $humasWa = env('HUMAS_WHATSAPP', config('pemira.contacts.humas.whatsapp_number', '6281337534761'));
+            $ketuaWa = env('KETUA_PANITIA_WHATSAPP', config('pemira.contacts.ketua_panitia.whatsapp_number', '628970898383'));
+        @endphp
         <div class="bg-amber-50 border-2 border-ink p-6 sm:p-8 shadow-brutal">
             <div class="flex items-start gap-4">
                 <div class="w-12 h-12 bg-amber-400 text-ink border-2 border-ink flex items-center justify-center shrink-0 shadow-brutal-sm">
@@ -67,12 +71,31 @@
                         Akun Anda berhasil masuk, namun belum tertaut dengan data Daftar Pemilih Tetap (DPT) mahasiswa untuk agenda <strong>{{ $election->name }}</strong>.
                     </p>
                     <p class="text-xs font-mono text-ink/70 mt-3">
-                        Silakan hubungi panitia KPR atau operator administrasi pemilu untuk verifikasi dan penautan NIM akun Anda.
+                        Silakan hubungi panitia KPR atau operator administrasi pemilu untuk verifikasi dan penautan NIM akun Anda:
                     </p>
+                    <div class="mt-3 flex flex-wrap gap-2">
+                        <a href="https://wa.me/{{ $humasWa }}?text={{ rawurlencode('Halo kak Sintya (Humas PEMIRA), akun saya belum tertaut ke DPT. Mohon bantuannya untuk verifikasi data pemilih.') }}"
+                           target="_blank"
+                           rel="noopener noreferrer"
+                           class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-brand text-accent hover:bg-brand-dark border-2 border-ink shadow-brutal-sm font-display font-bold text-xs uppercase tracking-wider transition-all">
+                            <span>Hubungi Humas (Sintya)</span>
+                            <span aria-hidden="true">&rarr;</span>
+                        </a>
+                        <a href="https://wa.me/{{ $ketuaWa }}?text={{ rawurlencode('Halo kak Diana (Ketua Panitia PEMIRA), akun saya belum tertaut ke DPT. Mohon bantuannya untuk verifikasi data pemilih.') }}"
+                           target="_blank"
+                           rel="noopener noreferrer"
+                           class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-surface hover:bg-ink/10 text-ink border-2 border-ink shadow-brutal-sm font-display font-bold text-xs uppercase tracking-wider transition-all">
+                            <span>Ketua Panitia (Diana)</span>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
     @elseif (! $isEligible)
+        @php
+            $humasWa = env('HUMAS_WHATSAPP', config('pemira.contacts.humas.whatsapp_number', '6281337534761'));
+            $ketuaWa = env('KETUA_PANITIA_WHATSAPP', config('pemira.contacts.ketua_panitia.whatsapp_number', '628970898383'));
+        @endphp
         <div class="bg-amber-50 border-2 border-ink p-6 sm:p-8 shadow-brutal">
             <div class="flex items-start gap-4">
                 <div class="w-12 h-12 bg-red-500 text-surface border-2 border-ink flex items-center justify-center shrink-0 shadow-brutal-sm">
@@ -89,8 +112,23 @@
                         Berdasarkan penetapan Daftar Pemilih Tetap (DPT) KPR, akun Anda saat ini tidak tercatat sebagai pemilih yang berhak memberikan suara pada <strong>{{ $election->name }}</strong>.
                     </p>
                     <p class="text-xs font-mono text-ink/60 mt-3">
-                        Jika Anda merasa ini adalah kekeliruan data, segera hubungi sekretariat panitia KPR dengan membawa KTM / bukti mahasiswa aktif.
+                        Jika Anda merasa ini adalah kekeliruan data, segera hubungi sekretariat panitia KPR dengan membawa KTM / bukti mahasiswa aktif:
                     </p>
+                    <div class="mt-3 flex flex-wrap gap-2">
+                        <a href="https://wa.me/{{ $humasWa }}?text={{ rawurlencode('Halo kak Sintya (Humas PEMIRA), status DPT saya non-eligible. Saya ingin konfirmasi kelayakan pemilih.') }}"
+                           target="_blank"
+                           rel="noopener noreferrer"
+                           class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-brand text-accent hover:bg-brand-dark border-2 border-ink shadow-brutal-sm font-display font-bold text-xs uppercase tracking-wider transition-all">
+                            <span>Hubungi Humas (Sintya)</span>
+                            <span aria-hidden="true">&rarr;</span>
+                        </a>
+                        <a href="https://wa.me/{{ $ketuaWa }}?text={{ rawurlencode('Halo kak Diana (Ketua Panitia PEMIRA), status DPT saya non-eligible. Saya ingin konfirmasi kelayakan pemilih.') }}"
+                           target="_blank"
+                           rel="noopener noreferrer"
+                           class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-surface hover:bg-ink/10 text-ink border-2 border-ink shadow-brutal-sm font-display font-bold text-xs uppercase tracking-wider transition-all">
+                            <span>Ketua Panitia (Diana)</span>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>

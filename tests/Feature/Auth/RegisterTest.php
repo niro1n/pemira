@@ -488,4 +488,27 @@ class RegisterTest extends TestCase
             ->assertSee('Jurusan / Program Studi belum terdata')
             ->assertSee('HUBUNGI TIM HUMAS');
     }
+
+    public function test_unregistered_nim_shows_dpt_warning_and_humas_cta(): void
+    {
+        $test = Livewire::test(Register::class)
+            ->set('nim', '999111222')
+            ->set('birth_date', '2004-01-01')
+            ->call('validateStudent')
+            ->assertSet('isUnregisteredVoter', true)
+            ->assertSet('unregisteredNim', '999111222')
+            ->assertSet('currentStep', 1)
+            ->assertSee('NIM BELUM TERDAFTAR DI DPT')
+            ->assertSee('HUBUNGI HUMAS')
+            ->assertSee('KETUA PANITIA')
+            ->assertDontSee('+62 813-3753-4761')
+            ->assertDontSee('+62 897-0898-383');
+
+        $this->assertStringContainsString('6281337534761', $test->instance()->unregisteredHumasWhatsappUrl);
+        $this->assertStringContainsString('628970898383', $test->instance()->ketuaPanitiaWhatsappUrl);
+        $this->assertStringContainsString('999111222', $test->instance()->unregisteredHumasWhatsappUrl);
+
+        $test->call('resetUnregisteredState')
+            ->assertSet('isUnregisteredVoter', false);
+    }
 }
