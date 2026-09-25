@@ -56,6 +56,14 @@ class Register extends Component
 
     public ?string $unregisteredNim = null;
 
+    public ?string $unregisteredTitle = null;
+
+    public ?string $unregisteredMessage = null;
+
+    public ?string $unregisteredSubMessage = null;
+
+    public ?string $unregisteredWaIssue = null;
+
     public function updatedNim(): void
     {
         $this->resetIncompleteState();
@@ -81,6 +89,10 @@ class Register extends Component
     {
         $this->isUnregisteredVoter = false;
         $this->unregisteredNim = null;
+        $this->unregisteredTitle = null;
+        $this->unregisteredMessage = null;
+        $this->unregisteredSubMessage = null;
+        $this->unregisteredWaIssue = null;
         $this->resetErrorBag();
     }
 
@@ -121,8 +133,9 @@ class Register extends Component
 
         $voterNim = trim($this->unregisteredNim ?? $this->nim);
         $nimText = $voterNim !== '' ? "NIM: {$voterNim}" : 'mahasiswa aktif';
+        $issue = $this->unregisteredWaIssue ?? 'NIM saya belum terdaftar di Daftar Pemilih Tetap (DPT)';
 
-        $text = "Halo kak Sintya (Humas PEMIRA), saya ({$nimText}) ingin mendaftar akun voter PEMIRA namun NIM saya belum terdaftar di Daftar Pemilih Tetap (DPT). Mohon bantuannya untuk verifikasi status pemilih aktif. Terima kasih.";
+        $text = "Halo kak Sintya (Humas PEMIRA), saya ({$nimText}) ingin mendaftar akun voter PEMIRA namun {$issue}. Mohon bantuannya untuk verifikasi status pemilih aktif. Terima kasih.";
 
         return "https://wa.me/{$cleanPhone}?text=".rawurlencode($text);
     }
@@ -142,8 +155,9 @@ class Register extends Component
 
         $voterNim = trim($this->unregisteredNim ?? $this->nim);
         $nimText = $voterNim !== '' ? "NIM: {$voterNim}" : 'mahasiswa aktif';
+        $issue = $this->unregisteredWaIssue ?? 'NIM belum terdaftar di DPT';
 
-        $text = "Halo kak Diana (Ketua Panitia PEMIRA), saya ({$nimText}) ingin konfirmasi pendaftaran akun voter PEMIRA karena NIM belum terdaftar di DPT. Mohon bantuannya.";
+        $text = "Halo kak Diana (Ketua Panitia PEMIRA), saya ({$nimText}) ingin konfirmasi pendaftaran akun voter PEMIRA karena {$issue}. Mohon bantuannya.";
 
         return "https://wa.me/{$cleanPhone}?text=".rawurlencode($text);
     }
@@ -162,23 +176,40 @@ class Register extends Component
             'birth_date.date' => 'Format tanggal lahir tidak valid.',
         ]);
 
-        $voter = EligibleVoter::with('studyProgram')->where('nim', trim($this->nim))->first();
+        $nim = trim((string) $this->nim);
+        $voter = EligibleVoter::with('studyProgram')->where('nim', $nim)->first();
 
         if (! $voter) {
             $this->isUnregisteredVoter = true;
-            $this->unregisteredNim = trim($this->nim);
+            $this->unregisteredNim = $nim;
+            $this->unregisteredTitle = 'NIM BELUM TERDAFTAR DI DPT';
+            $this->unregisteredMessage = "NIM ({$nim}) tidak tercatat dalam data DPT PEMIRA.";
+            $this->unregisteredSubMessage = 'Pendaftaran akun hanya bagi mahasiswa aktif di DPT. Jika kamu mahasiswa aktif PNB, silakan hubungi panitia untuk verifikasi:';
+            $this->unregisteredWaIssue = 'NIM saya belum terdaftar di Daftar Pemilih Tetap (DPT)';
             $this->addError('nim', 'NIM Anda belum terdaftar dalam Daftar Pemilih Tetap (DPT). Silakan hubungi Tim Humas.');
 
             return;
         }
 
         if (! $voter->is_eligible) {
+            $this->isUnregisteredVoter = true;
+            $this->unregisteredNim = $nim;
+            $this->unregisteredTitle = 'STATUS MAHASISWA TIDAK MEMENUHI SYARAT';
+            $this->unregisteredMessage = "NIM ({$nim}) berstatus tidak memenuhi syarat pemilih aktif PEMIRA.";
+            $this->unregisteredSubMessage = 'Jika kamu adalah mahasiswa aktif dan merasa status ini keliru, silakan hubungi panitia untuk verifikasi:';
+            $this->unregisteredWaIssue = 'status pemilih saya dinyatakan tidak memenuhi syarat aktif';
             $this->addError('nim', 'Status mahasiswa tidak memenuhi syarat sebagai pemilih aktif PEMIRA.');
 
             return;
         }
 
         if (VoterAccount::where('eligible_voter_id', $voter->id)->exists()) {
+            $this->isUnregisteredVoter = true;
+            $this->unregisteredNim = $nim;
+            $this->unregisteredTitle = 'AKUN PEMILIH SUDAH TERDAFTAR';
+            $this->unregisteredMessage = "NIM ({$nim}) sudah memiliki akun pemilih di sistem PEMIRA.";
+            $this->unregisteredSubMessage = 'Kamu tidak perlu mendaftar ulang. Silakan langsung masuk ke akun pemilih atau hubungi panitia jika mengalami kendala:';
+            $this->unregisteredWaIssue = 'NIM saya terdeteksi sudah memiliki akun pemilih terdaftar';
             $this->addError('nim', 'Mahasiswa dengan NIM ini sudah memiliki akun pemilih terdaftar.');
 
             return;
@@ -198,6 +229,12 @@ class Register extends Component
         $dbDob = $voter->date_of_birth?->format('Y-m-d');
 
         if ($inputDob !== $dbDob) {
+            $this->isUnregisteredVoter = true;
+            $this->unregisteredNim = $nim;
+            $this->unregisteredTitle = 'TANGGAL LAHIR TIDAK SESUAI DPT';
+            $this->unregisteredMessage = "NIM ({$nim}) terdaftar di DPT, namun tanggal lahir yang dimasukkan tidak cocok.";
+            $this->unregisteredSubMessage = 'Pastikan tanggal lahir sesuai data mahasiswa aktif kamu. Jika tanggal lahir sudah benar tetapi berbeda di sistem panitia, silakan hubungi panitia untuk verifikasi:';
+            $this->unregisteredWaIssue = 'tanggal lahir saya tidak cocok dengan data terdaftar di DPT';
             $this->addError('nim', 'NIM atau tanggal lahir tidak cocok dengan data pemilih aktif.');
 
             return;

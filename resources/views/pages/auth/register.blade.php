@@ -283,16 +283,16 @@
                                                 <div class="flex items-center gap-2 pb-2 border-b border-ink/20">
                                                     <span class="w-2.5 h-2.5 bg-red-600 inline-block border border-ink"></span>
                                                     <span class="font-display font-black text-xs sm:text-sm uppercase tracking-wide text-brand">
-                                                        NIM BELUM TERDAFTAR DI DPT
+                                                        {{ $unregisteredTitle ?? 'NIM BELUM TERDAFTAR DI DPT' }}
                                                     </span>
                                                 </div>
 
                                                 <div class="space-y-1.5 text-xs sm:text-sm font-sans text-ink">
                                                     <p class="font-semibold text-brand">
-                                                        NIM ({{ $unregisteredNim ?? $nim }}) tidak tercatat dalam data DPT PEMIRA.
+                                                        {{ $unregisteredMessage ?? 'NIM (' . ($unregisteredNim ?? $nim) . ') tidak tercatat dalam data DPT PEMIRA.' }}
                                                     </p>
                                                     <p class="text-ink/85 leading-relaxed text-xs">
-                                                        Pendaftaran akun hanya bagi mahasiswa aktif di DPT. Jika kamu mahasiswa aktif PNB, silakan hubungi panitia untuk verifikasi:
+                                                        {{ $unregisteredSubMessage ?? 'Pendaftaran akun hanya bagi mahasiswa aktif di DPT. Jika kamu mahasiswa aktif PNB, silakan hubungi panitia untuk verifikasi:' }}
                                                     </p>
                                                 </div>
 
@@ -364,9 +364,11 @@
                                                     Digunakan sebagai autentikasi awal identitas mahasiswa.
                                                 </p>
                                                 @error('birth_date')
-                                                    <p class="mt-1.5 text-xs font-sans font-bold text-brand">
-                                                        {{ $message }}
-                                                    </p>
+                                                    @if (! $isIncompleteVoter && ! $isUnregisteredVoter)
+                                                        <p class="mt-1.5 text-xs font-sans font-bold text-brand">
+                                                            {{ $message }}
+                                                        </p>
+                                                    @endif
                                                 @enderror
                                             </div>
 

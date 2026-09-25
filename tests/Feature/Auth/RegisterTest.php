@@ -511,4 +511,100 @@ class RegisterTest extends TestCase
         $test->call('resetUnregisteredState')
             ->assertSet('isUnregisteredVoter', false);
     }
+
+    public function test_dob_mismatch_shows_dpt_warning_and_humas_cta(): void
+    {
+        EligibleVoter::create([
+            'nim' => '2415323007',
+            'name' => 'Komang Sucipta Triyasa',
+            'date_of_birth' => '2006-04-29',
+            'study_program_id' => $this->studyProgram->id,
+            'is_eligible' => true,
+        ]);
+
+        $test = Livewire::test(Register::class)
+            ->set('nim', '2415323007')
+            ->set('birth_date', '2006-01-20')
+            ->call('validateStudent')
+            ->assertSet('isUnregisteredVoter', true)
+            ->assertSet('unregisteredNim', '2415323007')
+            ->assertSet('currentStep', 1)
+            ->assertSee('TANGGAL LAHIR TIDAK SESUAI DPT')
+            ->assertSee('HUBUNGI HUMAS')
+            ->assertSee('COBA NIM LAIN')
+            ->assertDontSee('TERJADI KESALAHAN')
+            ->assertDontSee('+62 813-3753-4761');
+
+        $this->assertStringContainsString('6281337534761', $test->instance()->unregisteredHumasWhatsappUrl);
+        $this->assertStringContainsString('2415323007', $test->instance()->unregisteredHumasWhatsappUrl);
+
+        $test->call('resetUnregisteredState')
+            ->assertSet('isUnregisteredVoter', false);
+    }
+
+    public function test_already_registered_voter_shows_dpt_warning_and_cta(): void
+    {
+        $voter = EligibleVoter::create([
+            'nim' => '220101077',
+            'name' => 'Voter Sudah Ada',
+            'date_of_birth' => '2004-01-01',
+            'study_program_id' => $this->studyProgram->id,
+            'is_eligible' => true,
+        ]);
+
+        $user = User::create([
+            'email' => 'voter_exists@example.com',
+            'password' => 'Password123!',
+            'role' => 'voter',
+            'email_verified_at' => now(),
+        ]);
+
+        VoterAccount::create([
+            'user_id' => $user->id,
+            'eligible_voter_id' => $voter->id,
+        ]);
+
+        $test = Livewire::test(Register::class)
+            ->set('nim', '220101077')
+            ->set('birth_date', '2004-01-01')
+            ->call('validateStudent')
+            ->assertSet('isUnregisteredVoter', true)
+            ->assertSet('unregisteredNim', '220101077')
+            ->assertSet('currentStep', 1)
+            ->assertSee('AKUN PEMILIH SUDAH TERDAFTAR')
+            ->assertSee('HUBUNGI HUMAS')
+            ->assertDontSee('TERJADI KESALAHAN');
+
+        $test->call('resetUnregisteredState')
+            ->assertSet('isUnregisteredVoter', false);
+    }
+
+    public function test_ineligible_voter_shows_dpt_warning_and_cta(): void
+    {
+        EligibleVoter::create([
+            'nim' => '220101078',
+            'name' => 'Voter Tidak Syarat',
+            'date_of_birth' => '2004-01-01',
+            'study_program_id' => $this->studyProgram->id,
+            'is_eligible' => false,
+        ]);
+
+        $test = Livewire::test(Register::class)
+            ->set('nim', '220101078')
+            ->set('birth_date', '2004-01-01')
+            ->call('validateStudent')
+            ->assertSet('isUnregisteredVoter', true)
+            ->assertSet('unregisteredNim', '220101078')
+            ->assertSet('currentStep', 1)
+            ->assertSee('STATUS MAHASISWA TIDAK MEMENUHI SYARAT')
+            ->assertSee('HUBUNGI HUMAS')
+            ->assertDontSee('TERJADI KESALAHAN')
+            ->assertDontSee('+62 813-3753-4761');
+
+        $this->assertStringContainsString('6281337534761', $test->instance()->unregisteredHumasWhatsappUrl);
+        $this->assertStringContainsString('220101078', $test->instance()->unregisteredHumasWhatsappUrl);
+
+        $test->call('resetUnregisteredState')
+            ->assertSet('isUnregisteredVoter', false);
+    }
 }
