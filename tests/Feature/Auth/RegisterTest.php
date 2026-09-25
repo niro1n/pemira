@@ -460,8 +460,12 @@ class RegisterTest extends TestCase
             ->assertSet('isIncompleteVoter', true)
             ->assertSet('currentStep', 1)
             ->assertSee('DATA PEMILIH BELUM LENGKAP')
-            ->assertSee('HUBUNGI TIM HUMAS')
+            ->assertSee('HUBUNGI HUMAS')
+            ->assertSee('KETUA PANITIA')
             ->assertSee('Tanggal Lahir belum terdata');
+
+        $this->assertStringContainsString('6281337534761', $test->instance()->humasWhatsappUrl);
+        $this->assertStringContainsString('628970898383', $test->instance()->incompleteKetuaPanitiaWhatsappUrl);
 
         $this->assertContains('Tanggal Lahir', $test->get('incompleteMissingFields'));
 
@@ -485,8 +489,9 @@ class RegisterTest extends TestCase
             ->call('validateStudent')
             ->assertSet('isIncompleteVoter', true)
             ->assertSet('currentStep', 1)
-            ->assertSee('Jurusan / Program Studi belum terdata')
-            ->assertSee('HUBUNGI TIM HUMAS');
+            ->assertSee('Jurusan belum terdata')
+            ->assertSee('HUBUNGI HUMAS')
+            ->assertSee('KETUA PANITIA');
     }
 
     public function test_unregistered_nim_shows_dpt_warning_and_humas_cta(): void

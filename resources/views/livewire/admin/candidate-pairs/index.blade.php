@@ -1034,7 +1034,7 @@
                                     NIM: <span class="font-mono font-bold">{{ $detailLeader?->nim ?? '-' }}</span>
                                 </div>
                                 <div class="text-xs font-sans text-ink/70">
-                                    Program Studi: <span class="font-semibold">{{ $detailLeader?->studyProgram?->name ?? '-' }}</span>
+                                    Jurusan: <span class="font-semibold">{{ $detailLeader?->studyProgram?->name ?? '-' }}</span>
                                 </div>
                             </div>
 
@@ -1047,7 +1047,7 @@
                                     NIM: <span class="font-mono font-bold">{{ $detailVice?->nim ?? '-' }}</span>
                                 </div>
                                 <div class="text-xs font-sans text-ink/70">
-                                    Program Studi: <span class="font-semibold">{{ $detailVice?->studyProgram?->name ?? '-' }}</span>
+                                    Jurusan: <span class="font-semibold">{{ $detailVice?->studyProgram?->name ?? '-' }}</span>
                                 </div>
                             </div>
                         </div>

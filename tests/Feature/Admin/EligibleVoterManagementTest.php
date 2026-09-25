@@ -227,8 +227,8 @@ class EligibleVoterManagementTest extends TestCase
         $this->assertNull($voter2->study_program_id);
         $this->assertFalse($voter1->isComplete());
         $this->assertFalse($voter2->isComplete());
-        $this->assertContains('Jurusan / Program Studi', $voter1->missingFields());
-        $this->assertContains('Jurusan / Program Studi', $voter2->missingFields());
+        $this->assertContains('Jurusan', $voter1->missingFields());
+        $this->assertContains('Jurusan', $voter2->missingFields());
     }
 
     public function test_duplicate_nim_does_not_create_duplicate_record(): void
@@ -808,7 +808,7 @@ class EligibleVoterManagementTest extends TestCase
             ->assertSet('showDetailModal', true)
             ->assertSet('selectedEligibleVoter.id', $voter->id)
             ->assertSee('DATA TIDAK LENGKAP')
-            ->assertSee('Jurusan / Program Studi')
+            ->assertSee('Jurusan')
             ->assertSee('Tanggal Lahir')
             ->call('closeDetailModal')
             ->assertSet('showDetailModal', false);

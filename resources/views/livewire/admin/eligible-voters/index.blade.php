@@ -402,12 +402,12 @@
 
                     <div class="space-y-1.5">
                         <label class="font-display font-bold text-xs uppercase tracking-wider text-ink block">
-                            Program Studi / Jurusan
+                            Jurusan
                         </label>
                         <select wire:model.live="studyProgramFilter"
-                                aria-label="Pilih program studi"
+                                aria-label="Pilih jurusan"
                                 class="w-full bg-surface-muted border-2 border-ink px-3 py-2.5 text-xs sm:text-sm font-sans font-bold text-ink shadow-brutal-sm focus:outline-none focus:bg-surface cursor-pointer">
-                            <option value="">Semua Program Studi</option>
+                            <option value="">Semua Jurusan</option>
                             @foreach ($this->studyPrograms as $sp)
                                 <option value="{{ $sp->id }}">{{ $sp->name }} ({{ $sp->code }})</option>
                             @endforeach
@@ -528,11 +528,11 @@
 
                         <div>
                             <label class="block text-xs font-display font-bold uppercase tracking-wider text-ink mb-1">
-                                Jurusan / Program Studi
+                                Jurusan
                             </label>
                             <select wire:model="study_program_id"
                                     class="w-full bg-surface-muted border-2 border-ink px-3 py-2 text-xs sm:text-sm font-sans font-bold text-ink shadow-brutal-sm focus:outline-none focus:bg-surface cursor-pointer min-h-10">
-                                <option value="">Pilih Program Studi (Opsional)</option>
+                                <option value="">Pilih Jurusan (Opsional)</option>
                                 @foreach ($this->studyPrograms as $sp)
                                     <option value="{{ $sp->id }}">{{ $sp->name }} ({{ $sp->code }})</option>
                                 @endforeach
@@ -630,11 +630,11 @@
 
                         <div>
                             <label class="block text-xs font-display font-bold uppercase tracking-wider text-ink mb-1">
-                                Jurusan / Program Studi
+                                Jurusan
                             </label>
                             <select wire:model="study_program_id"
                                     class="w-full bg-surface-muted border-2 border-ink px-3 py-2 text-xs sm:text-sm font-sans font-bold text-ink shadow-brutal-sm focus:outline-none focus:bg-surface cursor-pointer min-h-10">
-                                <option value="">Pilih Program Studi</option>
+                                <option value="">Pilih Jurusan</option>
                                 @foreach ($this->studyPrograms as $sp)
                                     <option value="{{ $sp->id }}">{{ $sp->name }} ({{ $sp->code }})</option>
                                 @endforeach
@@ -740,7 +740,7 @@
 
                     <div class="grid grid-cols-2 gap-3">
                         <div class="bg-surface-muted border-2 border-ink p-3 shadow-brutal-sm space-y-1">
-                            <span class="text-xs font-display font-bold uppercase tracking-wider text-ink/60 block">JURUSAN / PRODI</span>
+                            <span class="text-xs font-display font-bold uppercase tracking-wider text-ink/60 block">JURUSAN</span>
                             <div class="font-sans font-bold text-xs sm:text-sm text-ink">
                                 {{ $selectedEligibleVoter->studyProgram?->name ?? 'Belum terpetakan' }}
                             </div>

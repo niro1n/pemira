@@ -235,7 +235,7 @@
                         </h3>
 
                         <p class="text-xs sm:text-sm md:text-base font-sans text-surface/85 leading-relaxed max-w-2xl">
-                            PEMIRA PNB menjangkau ribuan mahasiswa aktif dari berbagai program studi. Kami membuka kesempatan kerja sama dan sponsorship bagi perusahaan, instansi, maupun unit usaha yang ingin berkontribusi dalam mendukung lahirnya calon-calon pemimpin masa depan.
+                            PEMIRA PNB menjangkau ribuan mahasiswa aktif dari berbagai jurusan. Kami membuka kesempatan kerja sama dan sponsorship bagi perusahaan, instansi, maupun unit usaha yang ingin berkontribusi dalam mendukung lahirnya calon-calon pemimpin masa depan.
                         </p>
 
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">

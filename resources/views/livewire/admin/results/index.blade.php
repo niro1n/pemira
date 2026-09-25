@@ -444,7 +444,7 @@
                 <div class="bg-surface border-2 border-ink p-5 sm:p-6 shadow-brutal space-y-4">
                     <div class="border-b-2 border-ink pb-2.5">
                         <h4 class="font-display font-black text-lg text-brand uppercase tracking-tight">
-                            PARTISIPASI PER PROGRAM STUDI / JURUSAN
+                            PARTISIPASI PER JURUSAN
                         </h4>
                         <p class="text-xs font-sans text-ink/70">
                             Tingkat partisipasi penggunaan hak suara di masing-masing jurusan.

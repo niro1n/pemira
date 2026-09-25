@@ -44,7 +44,7 @@ class EligibleVoter extends Model
         }
 
         if (empty($this->study_program_id)) {
-            $missing[] = 'Jurusan / Program Studi';
+            $missing[] = 'Jurusan';
         }
 
         if (empty($this->date_of_birth)) {

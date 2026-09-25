@@ -142,11 +142,11 @@
 
                 @if ($studyProgramFilter !== 'all')
                     @php
-                        $prodiLabel = $studyProgramList->firstWhere('id', (int) $studyProgramFilter)?->name ?? 'Prodi #' . $studyProgramFilter;
+                        $prodiLabel = $studyProgramList->firstWhere('id', (int) $studyProgramFilter)?->name ?? 'Jurusan #' . $studyProgramFilter;
                     @endphp
                     <span class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-surface-muted border border-ink text-xs font-sans font-bold text-ink shadow-2xs">
-                        <span>Prodi: {{ $prodiLabel }}</span>
-                        <button wire:click="clearFilter('prodi')" type="button" aria-label="Hapus filter program studi" class="hover:text-red-600 cursor-pointer p-0.5">
+                        <span>Jurusan: {{ $prodiLabel }}</span>
+                        <button wire:click="clearFilter('prodi')" type="button" aria-label="Hapus filter jurusan" class="hover:text-red-600 cursor-pointer p-0.5">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg>
                         </button>
                     </span>
@@ -402,12 +402,12 @@
 
                     <div class="space-y-1.5">
                         <label for="filter-prodi" class="font-display font-bold text-xs uppercase tracking-wider text-ink block">
-                            Program Studi Pemilih
+                            Jurusan Pemilih
                         </label>
                         <select id="filter-prodi"
                                 wire:model.live="studyProgramFilter"
                                 class="w-full bg-surface-muted border-2 border-ink px-3 py-2.5 text-xs sm:text-sm font-sans font-bold text-ink shadow-brutal-sm focus:outline-none focus:bg-surface cursor-pointer">
-                            <option value="all">Semua Program Studi</option>
+                            <option value="all">Semua Jurusan</option>
                             @foreach ($studyProgramList as $prodi)
                                 <option value="{{ $prodi->id }}">{{ $prodi->name }} ({{ $prodi->code }})</option>
                             @endforeach

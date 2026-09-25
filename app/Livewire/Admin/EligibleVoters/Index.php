@@ -338,7 +338,7 @@ class Index extends Component
         ], [
             'nim.required' => 'NIM wajib diisi.',
             'nim.unique' => 'NIM sudah terdaftar dalam sistem.',
-            'study_program_id.exists' => 'Jurusan / Program Studi tidak valid.',
+            'study_program_id.exists' => 'Jurusan tidak valid.',
             'date_of_birth.date' => 'Format tanggal lahir tidak valid.',
             'date_of_birth.before' => 'Tanggal lahir harus sebelum hari ini.',
         ]);
@@ -421,7 +421,7 @@ class Index extends Component
         ], [
             'nim.required' => 'NIM wajib diisi.',
             'nim.unique' => 'NIM sudah terdaftar pada mahasiswa lain.',
-            'study_program_id.exists' => 'Jurusan / Program Studi tidak valid.',
+            'study_program_id.exists' => 'Jurusan tidak valid.',
             'date_of_birth.date' => 'Format tanggal lahir tidak valid.',
             'date_of_birth.before' => 'Tanggal lahir harus sebelum hari ini.',
         ]);

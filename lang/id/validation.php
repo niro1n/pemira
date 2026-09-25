@@ -188,7 +188,7 @@ return [
         'current_password' => 'kata sandi saat ini',
         'role' => 'peran',
         'nim' => 'NIM',
-        'study_program_id' => 'program studi',
+        'study_program_id' => 'jurusan',
         'token' => 'token',
         'inviteEmail' => 'alamat email undangan',
         'startDate' => 'tanggal mulai',

@@ -270,7 +270,7 @@
                             <dd class="font-mono font-bold text-ink">{{ $eligibleVoter?->nim ?? '-' }}</dd>
                         </div>
                         <div>
-                            <dt class="font-mono text-ink/60 uppercase text-[10px]">Program Studi</dt>
+                            <dt class="font-mono text-ink/60 uppercase text-[10px]">Jurusan</dt>
                             <dd class="font-bold text-ink">{{ $studyProgram?->name ?? '-' }}</dd>
                         </div>
                         <div>

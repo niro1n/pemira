@@ -119,6 +119,28 @@ class Register extends Component
     }
 
     #[Computed]
+    public function incompleteKetuaPanitiaWhatsappUrl(): string
+    {
+        $phone = SystemSetting::get('ketua_panitia_whatsapp') ?? env('KETUA_PANITIA_WHATSAPP') ?? config('pemira.contacts.ketua_panitia.whatsapp_number', '628970898383');
+
+        $cleanPhone = preg_replace('/[^0-9]/', '', (string) $phone);
+        if (str_starts_with($cleanPhone, '08')) {
+            $cleanPhone = '628'.substr($cleanPhone, 2);
+        }
+        if ($cleanPhone === '' || $cleanPhone === 'REPLACE_WITH_OFFICIAL_NUMBER') {
+            $cleanPhone = '628970898383';
+        }
+
+        $voterName = $this->incompleteVoterName ?? 'Mahasiswa';
+        $voterNim = $this->incompleteVoterNim ?? $this->nim;
+        $missing = ! empty($this->incompleteMissingFields) ? implode(', ', $this->incompleteMissingFields) : 'informasi pemilih';
+
+        $text = "Halo kak Diana (Ketua Panitia PEMIRA), saya {$voterName} (NIM: {$voterNim}). Data pemilih saya belum lengkap ({$missing}). Mohon bantuannya untuk verifikasi dan melengkapi data agar dapat membuat akun voter.";
+
+        return "https://wa.me/{$cleanPhone}?text=".rawurlencode($text);
+    }
+
+    #[Computed]
     public function unregisteredHumasWhatsappUrl(): string
     {
         $phone = SystemSetting::get('humas_whatsapp') ?? env('HUMAS_WHATSAPP') ?? config('pemira.contacts.humas.whatsapp_number', '6281337534761');
@@ -243,7 +265,7 @@ class Register extends Component
         $this->eligibleVoterId = $voter->id;
         $this->studentName = $voter->name ?? 'Mahasiswa';
         $this->studentNim = $voter->nim;
-        $this->studentProdi = $voter->studyProgram?->name ?? 'Program Studi Terdaftar';
+        $this->studentProdi = $voter->studyProgram?->name ?? 'Jurusan Terdaftar';
         $this->currentStep = 2;
     }
 

@@ -52,7 +52,7 @@
             </div>
 
             <div class="p-3.5 bg-surface-muted border border-ink">
-                <span class="text-[10px] font-mono font-bold uppercase text-ink/60 block">Program Studi / Jurusan</span>
+                <span class="text-[10px] font-mono font-bold uppercase text-ink/60 block">Jurusan</span>
                 <span class="text-sm sm:text-base font-bold text-ink mt-0.5 block">{{ $studyProgram?->name ?? '-' }}</span>
             </div>
 
