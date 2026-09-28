@@ -421,6 +421,22 @@ class AdminInvitationTest extends TestCase
             ->assertDontSee('validation.password.mixed')
             ->assertDontSee('validation.password.symbols')
             ->assertSee('Nama lengkap wajib diisi.')
+            ->assertSee('Kata sandi minimal harus 8 karakter.')
+            ->assertDontSee('Kata sandi minimal harus 12 karakter.')
             ->assertSee('Konfirmasi kata sandi baru tidak cocok.');
+    }
+
+    public function test_production_password_policy_standardized_to_8_characters(): void
+    {
+        $this->app['env'] = 'production';
+
+        $rule = \Illuminate\Validation\Rules\Password::defaults();
+        $this->assertInstanceOf(\Illuminate\Validation\Rules\Password::class, $rule);
+
+        // Reflection to inspect minimum length
+        $reflection = new \ReflectionClass($rule);
+        $minProperty = $reflection->getProperty('min');
+        $minProperty->setAccessible(true);
+        $this->assertEquals(8, $minProperty->getValue($rule));
     }
 }

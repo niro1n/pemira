@@ -596,6 +596,9 @@
                                     </svg>
                                 </button>
                             </div>
+                            <p class="text-[11px] font-sans text-ink/60">
+                                Wajib minimal 8 karakter (kombinasi huruf besar, kecil, angka, dan simbol).
+                            </p>
                             @error('password')
                                 <span class="text-xs font-bold text-red-600 block">{{ $message }}</span>
                             @enderror
@@ -766,6 +769,9 @@
                                     </svg>
                                 </button>
                             </div>
+                            <p class="text-[11px] font-sans text-ink/60">
+                                Jika diisi, wajib minimal 8 karakter (kombinasi huruf besar, kecil, angka, dan simbol).
+                            </p>
                             @error('password')
                                 <span class="text-xs font-bold text-red-600 block">{{ $message }}</span>
                             @enderror
