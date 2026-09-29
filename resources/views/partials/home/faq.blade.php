@@ -11,43 +11,43 @@
             'number' => '01',
             'question' => 'Siapa yang dapat memilih?',
             'answer' =>
-                'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent commodo, mauris sed tincidunt consequat, justo erat facilisis lorem, vitae posuere neque erat vel nisl. Seluruh mahasiswa aktif yang terdaftar berhak menggunakan hak pilihnya.',
+                'Seluruh mahasiswa aktif Politeknik Negeri Bali yang terdaftar secara sah dan tercantum dalam daftar pemilih. Setiap mahasiswa hanya dapat memilih satu kali.',
         ],
         [
             'number' => '02',
             'question' => 'Bagaimana cara mendaftar sebagai pemilih?',
             'answer' =>
-                'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer facilisis, nisl at interdum tincidunt, lorem neque consequat lorem, nec semper urna nisi eget lacus. Pendaftaran dilakukan secara online melalui portal resmi PEMIRA.',
+                'Mahasiswa aktif yang terdaftar secara sah di Politeknik Negeri Bali dapat membuat akun terlebih dahulu pada formulir pendaftaran dengan mengikuti setiap langkah yang tertera.',
         ],
         [
             'number' => '03',
             'question' => 'Bagaimana jika saya lupa password?',
             'answer' =>
-                'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris feugiat ligula a nisl pellentesque, sit amet bibendum felis dignissim. Gunakan fitur pemulihan kata sandi dengan memasukkan NIM dan tanggal lahir terverifikasi.',
+                'Silakan melakukan reset password melalui tombol "Lupa Password", kemudian masukkan alamat email yang sudah didaftarkan sebelumnya.',
         ],
         [
             'number' => '04',
             'question' => 'Apakah suara yang sudah diberikan dapat diubah?',
             'answer' =>
-                'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis auctor, nunc non faucibus molestie, magna nunc feugiat velit, vel lacinia libero mauris id tortor. Setiap pemilih hanya memiliki satu kali kesempatan dan suara yang telah dikirim bersifat final.',
+                'Tidak. Suara yang telah diberikan tidak dapat diubah dan setiap mahasiswa hanya dapat memilih satu kali.',
         ],
         [
             'number' => '05',
             'question' => 'Kapan pemungutan suara dilaksanakan?',
             'answer' =>
-                'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pemungutan suara berlangsung sesuai rentang tanggal pada jadwal resmi. Sistem e-voting akan dibuka secara otomatis pada pukul 08.00 hingga 16.00 WITA.',
+                'Pemungutan suara dilaksanakan pada 5 November 2026, mulai pukul 08.00 hingga 23.59 WITA.',
         ],
         [
             'number' => '06',
             'question' => 'Kapan hasil PEMIRA diumumkan?',
             'answer' =>
-                'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Penghitungan dan rekapitulasi perolehan suara dilakukan secara transparan segera setelah sesi pemungutan suara resmi ditutup oleh panitia.',
+                'Hasil penghitungan suara diumumkan maksimal 1 × 24 jam setelah rangkaian penghitungan suara berlangsung.',
         ],
         [
             'number' => '07',
             'question' => 'Bagaimana jika saya mengalami kendala saat memilih?',
             'answer' =>
-                'Apabila mengalami kendala teknis, gagal login, atau gangguan sistem saat voting, silakan langsung menghubungi tim panitia: Sintya (Humas) atau Diana (Ketua Panitia) melalui tautan WhatsApp resmi di bawah.',
+                'Segera hubungi KPR melalui kontak resmi PEMIRA apabila mengalami kendala saat memilih. Jika terjadi gangguan teknis yang berdampak signifikan terhadap pemungutan suara, ikuti arahan resmi dari panitia.',
         ],
     ];
 @endphp

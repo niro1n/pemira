@@ -64,6 +64,12 @@
                     >
                         Profil DPT
                     </a>
+                    <a
+                        href="{{ route('home') }}"
+                        class="px-4 py-2 text-sm font-display font-bold tracking-wide uppercase transition-all border-2 border-transparent text-ink hover:border-ink hover:bg-surface focus:outline-none focus:ring-2 focus:ring-brand"
+                    >
+                        Landing Page
+                    </a>
 
                     <div class="h-6 w-0.5 bg-ink/20 mx-2"></div>
 
@@ -139,6 +145,12 @@
                         class="block px-3 py-2 text-sm font-display font-bold uppercase border-2 {{ request()->routeIs('voter.profile') ? 'border-ink bg-brand text-surface shadow-brutal-sm' : 'border-transparent text-ink hover:border-ink hover:bg-surface-muted' }}"
                     >
                         Profil DPT
+                    </a>
+                    <a
+                        href="{{ route('home') }}"
+                        class="block px-3 py-2 text-sm font-display font-bold uppercase border-2 border-transparent text-ink hover:border-ink hover:bg-surface-muted"
+                    >
+                        Landing Page
                     </a>
                 </div>
 
