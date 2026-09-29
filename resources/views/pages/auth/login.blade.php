@@ -148,16 +148,16 @@
                                 <form wire:submit="login" class="space-y-4 sm:space-y-5">
                                     <div>
                                         <label for="email" class="block text-xs sm:text-sm font-display font-bold uppercase tracking-wider text-brand mb-1.5">
-                                            ALAMAT EMAIL / NIM
+                                            EMAIL / NIM
                                         </label>
                                         <input
-                                            type="email"
+                                            type="text"
                                             id="email"
                                             wire:model="email"
                                             required
                                             autofocus
-                                            autocomplete="email"
-                                            placeholder="nama@student.pnb.ac.id"
+                                            autocomplete="username"
+                                            placeholder="nama@student.pnb.ac.id atau NIM"
                                             class="w-full px-3.5 py-2.5 sm:py-3 text-xs sm:text-sm font-sans font-medium text-ink bg-surface border-2 border-ink shadow-brutal-sm focus:outline-none focus:ring-2 focus:ring-brand focus:border-ink transition-all placeholder:text-ink/40 {{ $errors->has('email') ? 'border-brand ring-1 ring-brand' : '' }}"
                                         >
                                         @error('email')

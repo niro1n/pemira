@@ -261,7 +261,7 @@ class Index extends Component
         $currentElection = $this->currentElection;
 
         return EligibleVoter::query()
-            ->with('studyProgram')
+            ->with(['studyProgram', 'voterAccount.user'])
             ->withExists('voterAccount')
             ->when($currentElection, function ($query) use ($currentElection) {
                 $query->withExists([
@@ -276,7 +276,8 @@ class Index extends Component
                 $term = '%'.trim($this->search).'%';
                 $query->where(function ($q) use ($term) {
                     $q->where('nim', 'like', $term)
-                        ->orWhere('name', 'like', $term);
+                        ->orWhere('name', 'like', $term)
+                        ->orWhereHas('voterAccount.user', fn ($userQuery) => $userQuery->where('email', 'like', $term));
                 });
             })
             ->when($this->studyProgramFilter, function ($query) {

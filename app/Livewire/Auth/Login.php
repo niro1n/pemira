@@ -24,7 +24,7 @@ class Login extends Component
     protected function rules(): array
     {
         return [
-            'email' => ['required', 'string', 'email'],
+            'email' => ['required', 'string'],
             'password' => ['required', 'string'],
         ];
     }
@@ -32,8 +32,7 @@ class Login extends Component
     protected function messages(): array
     {
         return [
-            'email.required' => 'Alamat email wajib diisi.',
-            'email.email' => 'Format alamat email tidak valid.',
+            'email.required' => 'Email atau NIM wajib diisi.',
             'password.required' => 'Kata sandi wajib diisi.',
         ];
     }
@@ -42,7 +41,8 @@ class Login extends Component
     {
         $this->validate();
 
-        $throttleKey = Str::transliterate(Str::lower($this->email).'|'.request()->ip());
+        $identifier = trim($this->email);
+        $throttleKey = Str::transliterate(Str::lower($identifier).'|'.request()->ip());
 
         if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
             $seconds = RateLimiter::availableIn($throttleKey);
@@ -51,7 +51,12 @@ class Login extends Component
             return;
         }
 
-        if (! Auth::attempt(['email' => $this->email, 'password' => $this->password], $this->remember)) {
+        $user = User::query()
+            ->where('email', $identifier)
+            ->orWhereHas('voterAccount.eligibleVoter', fn ($query) => $query->where('nim', $identifier))
+            ->first();
+
+        if (! $user || ! Auth::attempt(['id' => $user->id, 'password' => $this->password], $this->remember)) {
             RateLimiter::hit($throttleKey, 300);
             $this->addError('email', 'Kredensial yang dimasukkan tidak cocok dengan data kami.');
 
