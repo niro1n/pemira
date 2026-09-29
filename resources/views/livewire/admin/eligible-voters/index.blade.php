@@ -266,6 +266,7 @@
                         <tr class="bg-surface-muted">
                             <th class="sticky top-0 z-20 bg-surface-muted border-b-2 border-ink px-3 py-3 text-xs font-display font-black text-brand uppercase tracking-wider text-center w-12 sm:w-16">NO</th>
                             <th class="sticky top-0 z-20 bg-surface-muted border-b-2 border-ink px-4 py-3 text-xs font-display font-black text-brand uppercase tracking-wider text-center">NIM</th>
+                            <th class="sticky top-0 z-20 bg-surface-muted border-b-2 border-ink px-4 py-3 text-xs font-display font-black text-brand uppercase tracking-wider text-center">EMAIL AKUN</th>
                             <th class="sticky top-0 z-20 bg-surface-muted border-b-2 border-ink px-4 py-3 text-xs font-display font-black text-brand uppercase tracking-wider text-center">NAMA</th>
                             <th class="sticky top-0 z-20 bg-surface-muted border-b-2 border-ink px-4 py-3 text-xs font-display font-black text-brand uppercase tracking-wider text-center">JURUSAN</th>
                             <th class="sticky top-0 z-20 bg-surface-muted border-b-2 border-ink px-4 py-3 text-xs font-display font-black text-brand uppercase tracking-wider text-center">TGL LAHIR</th>
@@ -283,6 +284,9 @@
                                 </td>
                                 <td class="px-4 py-3 text-xs sm:text-sm font-mono font-bold text-brand whitespace-nowrap border-b border-ink/10">
                                     {{ $voter->nim }}
+                                </td>
+                                <td class="px-4 py-3 text-xs sm:text-sm font-sans text-ink/80 whitespace-nowrap border-b border-ink/10">
+                                    {{ $voter->voterAccount?->user?->email ?? '—' }}
                                 </td>
                                 <td class="px-4 py-3 text-xs sm:text-sm font-sans font-bold text-ink uppercase border-b border-ink/10">
                                     {{ $voter->name ?: '—' }}

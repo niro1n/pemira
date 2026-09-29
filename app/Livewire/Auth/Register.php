@@ -64,6 +64,19 @@ class Register extends Component
 
     public ?string $unregisteredWaIssue = null;
 
+    protected function ensureRegistrationIsOpen(): bool
+    {
+        $election = \App\Models\Election::current();
+
+        if (! $election || ! $election->isRegistrationOpen()) {
+            $this->addError('nim', 'Pendaftaran akun pemilih sedang tidak dibuka. Silakan kembali pada jadwal pendaftaran yang tersedia.');
+
+            return false;
+        }
+
+        return true;
+    }
+
     public function updatedNim(): void
     {
         $this->resetIncompleteState();
@@ -186,6 +199,10 @@ class Register extends Component
 
     public function validateStudent()
     {
+        if (! $this->ensureRegistrationIsOpen()) {
+            return;
+        }
+
         $this->resetIncompleteState();
         $this->resetUnregisteredState();
 
@@ -271,6 +288,10 @@ class Register extends Component
 
     public function submitAccountData()
     {
+        if (! $this->ensureRegistrationIsOpen()) {
+            return;
+        }
+
         if (! $this->eligibleVoterId) {
             $this->currentStep = 1;
 
@@ -311,6 +332,10 @@ class Register extends Component
 
     public function verifyOtp()
     {
+        if (! $this->ensureRegistrationIsOpen()) {
+            return;
+        }
+
         if (! $this->eligibleVoterId || ! $this->email) {
             $this->currentStep = 1;
 
@@ -401,6 +426,10 @@ class Register extends Component
 
     public function resendOtp()
     {
+        if (! $this->ensureRegistrationIsOpen()) {
+            return;
+        }
+
         if (! $this->email) {
             return;
         }

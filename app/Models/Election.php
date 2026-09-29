@@ -192,6 +192,14 @@ class Election extends Model
         return $this->currentPhase($reference) === ElectionPhase::VOTING;
     }
 
+    public function isRegistrationOpen(?CarbonInterface $reference = null): bool
+    {
+        $now = $reference ?? Carbon::now();
+
+        return $now->gte($this->registration_start_at)
+            && $now->lt($this->registration_end_at);
+    }
+
     public function hasHistoricalData(): bool
     {
         if (! $this->exists) {

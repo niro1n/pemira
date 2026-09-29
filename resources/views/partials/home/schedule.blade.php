@@ -245,9 +245,12 @@
                     </div>
                     <div>
                         <h4 class="font-display font-bold text-lg sm:text-xl text-brand uppercase mb-2">
-                            PENDAFTARAN
+                            PENDAFTARAN PEMILIH
                         </h4>
                         <p class="text-xs sm:text-sm font-sans font-medium text-ink/80 leading-relaxed">
+                            Pendaftaran akun pemilih / voter
+                        </p>
+                        <p class="text-xs sm:text-sm font-sans font-medium text-ink/80 leading-relaxed mt-1">
                             {{ $regStartFormatted }} — {{ $regEndFormatted }}
                         </p>
                     </div>
