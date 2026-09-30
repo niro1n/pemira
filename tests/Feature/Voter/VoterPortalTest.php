@@ -530,4 +530,36 @@ class VoterPortalTest extends TestCase
             ->assertSee('Bilik Suara Sedang Dibuka!')
             ->assertSee('Masuk Bilik Suara');
     }
+
+    public function test_voter_dashboard_accessible_via_dashboard_and_voters_aliases(): void
+    {
+        $this->actingAs($this->voterUser)->get('/dashboard')
+            ->assertRedirect(route('voter.dashboard'));
+
+        $this->actingAs($this->voterUser)->get('/voters')
+            ->assertRedirect(route('voter.dashboard'));
+
+        $this->actingAs($this->voterUser)->get('/voter/dashboard')
+            ->assertRedirect(route('voter.dashboard'));
+
+        $this->actingAs($this->voterUser)->get('/voters/dashboard')
+            ->assertRedirect(route('voter.dashboard'));
+
+        $this->actingAs($this->voterUser)->get('/voters/voting')
+            ->assertRedirect('/voter/voting');
+    }
+
+    public function test_guest_visiting_dashboard_redirects_to_login(): void
+    {
+        $this->get('/dashboard')
+            ->assertRedirect(route('login'));
+    }
+
+    public function test_admin_visiting_dashboard_redirects_to_admin(): void
+    {
+        $admin = User::factory()->admin()->create();
+
+        $this->actingAs($admin)->get('/dashboard')
+            ->assertRedirect('/admin');
+    }
 }

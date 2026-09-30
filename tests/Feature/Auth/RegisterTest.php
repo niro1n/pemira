@@ -4,6 +4,7 @@ namespace Tests\Feature\Auth;
 
 use App\Livewire\Auth\Register;
 use App\Mail\RegistrationOtpMail;
+use App\Models\Election;
 use App\Models\EligibleVoter;
 use App\Models\RegistrationOtp;
 use App\Models\StudyProgram;
@@ -20,6 +21,8 @@ class RegisterTest extends TestCase
 
     private StudyProgram $studyProgram;
 
+    private Election $election;
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -27,6 +30,16 @@ class RegisterTest extends TestCase
         $this->studyProgram = StudyProgram::create([
             'name' => 'Teknik Informatika',
             'code' => 'IF',
+        ]);
+
+        $this->election = Election::create([
+            'name' => 'PEMIRA BEM PNB 2026',
+            'slug' => 'pemira-bem-pnb-2026',
+            'year' => 2026,
+            'registration_start_at' => now()->subDay(),
+            'registration_end_at' => now()->addDays(5),
+            'voting_start_at' => now()->addDays(10),
+            'voting_end_at' => now()->addDays(11),
         ]);
     }
 

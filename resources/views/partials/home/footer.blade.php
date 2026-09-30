@@ -110,6 +110,14 @@
                     </li>
                     <li>
                         <a
+                            href="{{ route('home') }}#mitra"
+                            class="text-surface/80 hover:text-accent hover:translate-x-1 inline-block transition-all focus:outline-none focus:ring-1 focus:ring-accent"
+                        >
+                            MITRA
+                        </a>
+                    </li>
+                    <li>
+                        <a
                             href="{{ route('home') }}#faq"
                             class="text-surface/80 hover:text-accent hover:translate-x-1 inline-block transition-all focus:outline-none focus:ring-1 focus:ring-accent"
                         >

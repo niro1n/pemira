@@ -14,12 +14,14 @@
         x-data="{
             mobileOpen: false,
             activeSection: 'beranda',
-            sectionIds: ['beranda', 'jadwal', 'paslon', 'cara-memilih', 'faq'],
+            sectionIds: ['beranda', 'jadwal', 'paslon', 'cara-memilih', 'mitra', 'faq'],
             isTicking: false,
             init() {
                 const initialHash = window.location.hash.replace('#', '');
                 if (this.sectionIds.includes(initialHash)) {
                     this.activeSection = initialHash;
+                } else if (initialHash === 'sponsors') {
+                    this.activeSection = 'mitra';
                 } else {
                     this.computeActive();
                 }
@@ -42,6 +44,8 @@
                     const hash = window.location.hash.replace('#', '');
                     if (this.sectionIds.includes(hash)) {
                         this.activeSection = hash;
+                    } else if (hash === 'sponsors') {
+                        this.activeSection = 'mitra';
                     } else {
                         this.computeActive();
                     }
@@ -111,6 +115,7 @@
                             ['id' => 'jadwal', 'label' => 'JADWAL'],
                             ['id' => 'paslon', 'label' => 'PASLON'],
                             ['id' => 'cara-memilih', 'label' => 'CARA MEMILIH'],
+                            ['id' => 'mitra', 'label' => 'MITRA'],
                             ['id' => 'faq', 'label' => 'FAQ'],
                         ];
                     @endphp

@@ -697,4 +697,15 @@ class LandingPageTest extends TestCase
 
         Carbon::setTestNow();
     }
+
+    public function test_navbar_and_footer_include_mitra_section_link(): void
+    {
+        $response = $this->get('/');
+
+        $response->assertOk();
+        $response->assertSee('#mitra', false);
+        $response->assertSee('MITRA');
+        $response->assertSee('id="mitra"', false);
+        $response->assertSee('id="sponsors"', false);
+    }
 }

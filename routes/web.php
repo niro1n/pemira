@@ -98,6 +98,29 @@ Route::get('/profile', function () {
     return redirect()->route('home');
 })->middleware('auth')->name('profile');
 
+Route::get('/dashboard', function () {
+    $user = Auth::user();
+
+    if (! $user) {
+        return redirect()->route('login');
+    }
+
+    if ($user instanceof User && $user->canAccessAdminPanel()) {
+        return redirect('/admin');
+    }
+
+    if ($user instanceof User && $user->isVoter()) {
+        return redirect()->route('voter.dashboard');
+    }
+
+    return redirect()->route('home');
+});
+
+Route::get('/voters', fn () => redirect()->route('voter.dashboard'));
+Route::get('/voters/dashboard', fn () => redirect()->route('voter.dashboard'));
+Route::get('/voter/dashboard', fn () => redirect()->route('voter.dashboard'));
+Route::get('/voters/{any}', fn (string $any) => redirect('/voter/'.$any, 301))->where('any', '.*');
+
 Route::prefix('voter')->middleware(['auth', 'role:voter'])->group(function () {
     Route::get('/', VoterDashboard::class)->name('voter.dashboard');
     Route::get('/voting', VoterVotingBooth::class)->name('voter.voting');

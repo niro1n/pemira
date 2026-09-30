@@ -667,10 +667,10 @@
 
                                             <div class="pt-2">
                                                 <a
-                                                    href="{{ route('login') }}"
+                                                    href="{{ auth()->check() && auth()->user()->isVoter() ? route('voter.dashboard') : route('login') }}"
                                                     class="w-full inline-flex items-center justify-center gap-2 px-6 py-3 text-xs sm:text-sm font-display font-bold tracking-wide uppercase text-surface bg-brand border-2 border-ink shadow-brutal hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-brutal-sm hover:bg-brand-dark active:translate-x-1 active:translate-y-1 active:shadow-none transition-all focus:outline-none focus:ring-2 focus:ring-brand"
                                                 >
-                                                    <span>MASUK KE PEMIRA</span>
+                                                    <span>{{ auth()->check() && auth()->user()->isVoter() ? 'MASUK KE DASHBOARD PEMILIH' : 'MASUK KE PEMIRA' }}</span>
                                                     <span aria-hidden="true">&rarr;</span>
                                                 </a>
                                             </div>

@@ -11,6 +11,7 @@ use App\Models\User;
 use App\Models\VoterAccount;
 use Carbon\Carbon;
 use Exception;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Livewire\Attributes\Computed;
@@ -415,6 +416,11 @@ class Register extends Component
                     'user_agent' => request()->userAgent(),
                 ]);
             });
+
+            $registeredUser = User::where('email', $this->email)->first();
+            if ($registeredUser) {
+                Auth::login($registeredUser);
+            }
 
             $this->password = '';
             $this->password_confirmation = '';

@@ -11,8 +11,9 @@
     $whatsappUrl = $humasWhatsappUrl;
 @endphp
 
-<section id="sponsors"
+<section id="mitra"
          class="relative w-full bg-surface border-b-2 border-ink overflow-hidden py-10 sm:py-16 md:py-20">
+    <div id="sponsors" class="sr-only" aria-hidden="true"></div>
     <div class="absolute inset-0 pointer-events-none select-none overflow-hidden z-0" aria-hidden="true">
         <svg class="absolute top-10 right-8 w-36 h-36 text-ink/10 hidden sm:block pointer-events-none"
              fill="currentColor">
