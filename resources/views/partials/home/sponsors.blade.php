@@ -12,7 +12,7 @@
 @endphp
 
 <section id="mitra"
-         class="relative w-full bg-surface border-b-2 border-ink overflow-hidden py-10 sm:py-16 md:py-20">
+         class="relative w-full bg-surface border-b-2 border-ink overflow-hidden py-10 sm:py-14 md:py-16">
     <div id="sponsors" class="sr-only" aria-hidden="true"></div>
     <div class="absolute inset-0 pointer-events-none select-none overflow-hidden z-0" aria-hidden="true">
         <svg class="absolute top-10 right-8 w-36 h-36 text-ink/10 hidden sm:block pointer-events-none"
@@ -30,7 +30,7 @@
 
     <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         @if ($sponsors->isNotEmpty())
-            <div class="text-center max-w-2xl mx-auto mb-8 sm:mb-12">
+            <div class="text-center max-w-2xl mx-auto mb-6 sm:mb-8 md:mb-10">
                 <div class="inline-flex items-center gap-2 px-3 py-1 bg-surface-muted border-2 border-ink shadow-brutal-sm text-xs sm:text-sm font-sans font-bold tracking-wider uppercase text-brand mb-3 sm:mb-4">
                     <span class="w-2 h-2 bg-accent inline-block border border-ink"></span>
                     <span>MITRA & SPONSOR</span>
@@ -45,147 +45,181 @@
                 </p>
             </div>
 
-            <div x-data="{
-                active: 0,
-                perPage: 5,
-                total: {{ $sponsors->count() }},
-                timer: null,
-                touchStartX: 0,
-                touchEndX: 0,
-                updatePerPage() {
-                    if (window.innerWidth < 640) {
-                        this.perPage = 2;
-                    } else if (window.innerWidth < 768) {
-                        this.perPage = 3;
-                    } else if (window.innerWidth < 1024) {
-                        this.perPage = 4;
-                    } else {
-                        this.perPage = 5;
-                    }
-                },
-                maxIndex() {
-                    return Math.max(0, this.total - this.perPage);
-                },
-                next() {
-                    if (this.maxIndex() === 0) return;
-                    this.active = this.active >= this.maxIndex() ? 0 : this.active + 1;
-                },
-                prev() {
-                    if (this.maxIndex() === 0) return;
-                    this.active = this.active <= 0 ? this.maxIndex() : this.active - 1;
-                },
-                goTo(index) {
-                    this.active = Math.min(Math.max(0, index), this.maxIndex());
-                },
-                startAutoplay() {
-                    this.stopAutoplay();
-                    if (this.total > this.perPage) {
-                        this.timer = setInterval(() => {
-                            this.next();
-                        }, 2800);
-                    }
-                },
-                stopAutoplay() {
-                    if (this.timer) {
-                        clearInterval(this.timer);
-                        this.timer = null;
-                    }
-                },
-                handleTouchStart(e) {
-                    this.touchStartX = e.changedTouches[0].screenX;
-                },
-                handleTouchEnd(e) {
-                    this.touchEndX = e.changedTouches[0].screenX;
-                    if (this.touchStartX - this.touchEndX > 50) {
-                        this.next();
-                    } else if (this.touchEndX - this.touchStartX > 50) {
-                        this.prev();
-                    }
-                },
-                init() {
-                    this.updatePerPage();
-                    window.addEventListener('resize', () => {
-                        this.updatePerPage();
-                        if (this.active > this.maxIndex()) {
-                            this.active = this.maxIndex();
+            @if ($sponsors->count() <= 5)
+                <div class="flex flex-wrap items-center justify-center gap-6 sm:gap-8 md:gap-10 py-2 sm:py-4">
+                    @foreach ($sponsors as $sponsor)
+                        @php
+                            $hasWebsite = ! empty($sponsor->website_url);
+                            $logoUrl = $sponsor->logoUrl();
+                        @endphp
+
+                        <div class="flex items-center justify-center">
+                            @if ($hasWebsite)
+                                <a href="{{ $sponsor->website_url }}"
+                                   target="_blank"
+                                   rel="noopener noreferrer"
+                                   title="{{ $sponsor->name }}"
+                                   class="group flex items-center justify-center p-2 sm:p-2.5 transition-transform duration-200 hover:scale-105">
+                                    <img src="{{ $logoUrl }}"
+                                         alt="{{ $sponsor->name }}"
+                                         loading="lazy"
+                                         class="h-16 sm:h-20 md:h-24 lg:h-28 xl:h-32 w-auto max-w-[150px] sm:max-w-[190px] md:max-w-[230px] lg:max-w-[270px] xl:max-w-[300px] object-contain filter group-hover:drop-shadow-xs transition-all" />
+                                </a>
+                            @else
+                                <div title="{{ $sponsor->name }}"
+                                     class="flex items-center justify-center p-2 sm:p-2.5">
+                                    <img src="{{ $logoUrl }}"
+                                         alt="{{ $sponsor->name }}"
+                                         loading="lazy"
+                                         class="h-16 sm:h-20 md:h-24 lg:h-28 xl:h-32 w-auto max-w-[150px] sm:max-w-[190px] md:max-w-[230px] lg:max-w-[270px] xl:max-w-[300px] object-contain" />
+                                </div>
+                            @endif
+                        </div>
+                    @endforeach
+                </div>
+            @else
+                <div x-data="{
+                    active: 0,
+                    perPage: 5,
+                    total: {{ $sponsors->count() }},
+                    timer: null,
+                    touchStartX: 0,
+                    touchEndX: 0,
+                    updatePerPage() {
+                        if (window.innerWidth < 640) {
+                            this.perPage = 2;
+                        } else if (window.innerWidth < 768) {
+                            this.perPage = 3;
+                        } else if (window.innerWidth < 1024) {
+                            this.perPage = 4;
+                        } else {
+                            this.perPage = 5;
                         }
-                    });
-                    this.startAutoplay();
-                }
-            }"
-            @mouseenter="stopAutoplay()"
-            @mouseleave="startAutoplay()"
-            @touchstart.passive="handleTouchStart($event)"
-            @touchend.passive="handleTouchEnd($event)"
-            class="relative w-full">
+                    },
+                    maxIndex() {
+                        return Math.max(0, this.total - this.perPage);
+                    },
+                    next() {
+                        if (this.maxIndex() === 0) return;
+                        this.active = this.active >= this.maxIndex() ? 0 : this.active + 1;
+                    },
+                    prev() {
+                        if (this.maxIndex() === 0) return;
+                        this.active = this.active <= 0 ? this.maxIndex() : this.active - 1;
+                    },
+                    goTo(index) {
+                        this.active = Math.min(Math.max(0, index), this.maxIndex());
+                    },
+                    startAutoplay() {
+                        this.stopAutoplay();
+                        if (this.total > this.perPage) {
+                            this.timer = setInterval(() => {
+                                this.next();
+                            }, 2800);
+                        }
+                    },
+                    stopAutoplay() {
+                        if (this.timer) {
+                            clearInterval(this.timer);
+                            this.timer = null;
+                        }
+                    },
+                    handleTouchStart(e) {
+                        this.touchStartX = e.changedTouches[0].screenX;
+                    },
+                    handleTouchEnd(e) {
+                        this.touchEndX = e.changedTouches[0].screenX;
+                        if (this.touchStartX - this.touchEndX > 50) {
+                            this.next();
+                        } else if (this.touchEndX - this.touchStartX > 50) {
+                            this.prev();
+                        }
+                    },
+                    init() {
+                        this.updatePerPage();
+                        window.addEventListener('resize', () => {
+                            this.updatePerPage();
+                            if (this.active > this.maxIndex()) {
+                                this.active = this.maxIndex();
+                            }
+                        });
+                        this.startAutoplay();
+                    }
+                }"
+                @mouseenter="stopAutoplay()"
+                @mouseleave="startAutoplay()"
+                @touchstart.passive="handleTouchStart($event)"
+                @touchend.passive="handleTouchEnd($event)"
+                class="relative w-full">
 
-                <div class="overflow-hidden py-4 -mx-2 sm:-mx-3">
-                    <div class="flex items-center transition-transform duration-500 ease-out {{ $sponsors->count() < 5 ? 'lg:justify-center' : '' }}"
-                         :style="'transform: translateX(-' + (active * (100 / perPage)) + '%);'">
-                        @foreach ($sponsors as $sponsor)
-                            @php
-                                $hasWebsite = ! empty($sponsor->website_url);
-                                $logoUrl = $sponsor->logoUrl();
-                            @endphp
+                    <div class="overflow-hidden py-4 -mx-2 sm:-mx-3">
+                        <div class="flex items-center transition-transform duration-500 ease-out"
+                             :style="'transform: translateX(-' + (active * (100 / perPage)) + '%);'">
+                            @foreach ($sponsors as $sponsor)
+                                @php
+                                    $hasWebsite = ! empty($sponsor->website_url);
+                                    $logoUrl = $sponsor->logoUrl();
+                                @endphp
 
-                            <div class="w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/5 shrink-0 px-3 sm:px-4 md:px-6 flex items-center justify-center">
-                                @if ($hasWebsite)
-                                    <a href="{{ $sponsor->website_url }}"
-                                       target="_blank"
-                                       rel="noopener noreferrer"
-                                       title="{{ $sponsor->name }}"
-                                       class="group flex items-center justify-center w-full h-16 sm:h-20 md:h-24 transition-transform duration-200 hover:scale-105">
-                                        <img src="{{ $logoUrl }}"
-                                             alt="{{ $sponsor->name }}"
-                                             loading="lazy"
-                                             class="max-h-12 sm:max-h-16 md:max-h-20 w-auto max-w-full object-contain filter group-hover:drop-shadow-xs transition-all" />
-                                    </a>
-                                @else
-                                    <div title="{{ $sponsor->name }}"
-                                         class="flex items-center justify-center w-full h-16 sm:h-20 md:h-24">
-                                        <img src="{{ $logoUrl }}"
-                                             alt="{{ $sponsor->name }}"
-                                             loading="lazy"
-                                             class="max-h-12 sm:max-h-16 md:max-h-20 w-auto max-w-full object-contain" />
-                                    </div>
-                                @endif
-                            </div>
-                        @endforeach
+                                <div class="w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/5 shrink-0 px-3 sm:px-4 md:px-5 flex items-center justify-center">
+                                    @if ($hasWebsite)
+                                        <a href="{{ $sponsor->website_url }}"
+                                           target="_blank"
+                                           rel="noopener noreferrer"
+                                           title="{{ $sponsor->name }}"
+                                           class="group flex items-center justify-center w-full h-20 sm:h-24 md:h-28 lg:h-32 transition-transform duration-200 hover:scale-105">
+                                            <img src="{{ $logoUrl }}"
+                                                 alt="{{ $sponsor->name }}"
+                                                 loading="lazy"
+                                                 class="h-16 sm:h-20 md:h-24 lg:h-28 xl:h-32 w-auto max-w-full object-contain filter group-hover:drop-shadow-xs transition-all" />
+                                        </a>
+                                    @else
+                                        <div title="{{ $sponsor->name }}"
+                                             class="flex items-center justify-center w-full h-20 sm:h-24 md:h-28 lg:h-32">
+                                            <img src="{{ $logoUrl }}"
+                                                 alt="{{ $sponsor->name }}"
+                                                 loading="lazy"
+                                                 class="h-16 sm:h-20 md:h-24 lg:h-28 xl:h-32 w-auto max-w-full object-contain" />
+                                        </div>
+                                    @endif
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+
+                    <div x-show="total > perPage" class="flex items-center justify-center gap-3 mt-4 sm:mt-6">
+                        <button @click="prev()"
+                                type="button"
+                                class="w-8 h-8 sm:w-9 sm:h-9 bg-surface border-2 border-ink shadow-brutal-sm hover:bg-accent flex items-center justify-center text-ink transition-all cursor-pointer active:translate-x-0.5 active:translate-y-0.5"
+                                aria-label="Sponsor sebelumnya">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
+                            </svg>
+                        </button>
+
+                        <div class="flex items-center gap-1.5 px-2">
+                            <template x-for="i in (maxIndex() + 1)" :key="i">
+                                <button @click="goTo(i - 1)"
+                                        type="button"
+                                        class="h-2 transition-all border border-ink cursor-pointer"
+                                        :class="active === (i - 1) ? 'w-6 bg-brand' : 'w-2 bg-ink/20 hover:bg-ink/40'"
+                                        :aria-label="'Ke slide ' + i"></button>
+                            </template>
+                        </div>
+
+                        <button @click="next()"
+                                type="button"
+                                class="w-8 h-8 sm:w-9 sm:h-9 bg-surface border-2 border-ink shadow-brutal-sm hover:bg-accent flex items-center justify-center text-ink transition-all cursor-pointer active:translate-x-0.5 active:translate-y-0.5"
+                                aria-label="Sponsor berikutnya">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
+                            </svg>
+                        </button>
                     </div>
                 </div>
+            @endif
 
-                <div x-show="total > perPage" class="flex items-center justify-center gap-3 mt-4 sm:mt-6">
-                    <button @click="prev()"
-                            type="button"
-                            class="w-8 h-8 sm:w-9 sm:h-9 bg-surface border-2 border-ink shadow-brutal-sm hover:bg-accent flex items-center justify-center text-ink transition-all cursor-pointer active:translate-x-0.5 active:translate-y-0.5"
-                            aria-label="Sponsor sebelumnya">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
-                        </svg>
-                    </button>
-
-                    <div class="flex items-center gap-1.5 px-2">
-                        <template x-for="i in (maxIndex() + 1)" :key="i">
-                            <button @click="goTo(i - 1)"
-                                    type="button"
-                                    class="h-2 transition-all border border-ink cursor-pointer"
-                                    :class="active === (i - 1) ? 'w-6 bg-brand' : 'w-2 bg-ink/20 hover:bg-ink/40'"
-                                    :aria-label="'Ke slide ' + i"></button>
-                        </template>
-                    </div>
-
-                    <button @click="next()"
-                            type="button"
-                            class="w-8 h-8 sm:w-9 sm:h-9 bg-surface border-2 border-ink shadow-brutal-sm hover:bg-accent flex items-center justify-center text-ink transition-all cursor-pointer active:translate-x-0.5 active:translate-y-0.5"
-                            aria-label="Sponsor berikutnya">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
-                        </svg>
-                    </button>
-                </div>
-            </div>
-
-            <div class="mt-10 sm:mt-12 bg-surface-muted border-2 border-ink shadow-brutal p-4 sm:p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="mt-8 sm:mt-10 md:mt-12 bg-surface-muted border-2 border-ink shadow-brutal p-4 sm:p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div class="text-center sm:text-left">
                     <span class="font-display font-bold text-xs sm:text-sm uppercase tracking-wide text-brand block">
                         Tertarik Menjadi Mitra Atau Sponsor PEMIRA?
