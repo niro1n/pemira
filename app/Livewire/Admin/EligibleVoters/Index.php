@@ -5,7 +5,9 @@ namespace App\Livewire\Admin\EligibleVoters;
 use App\Models\AuditLog;
 use App\Models\Election;
 use App\Models\EligibleVoter;
+use App\Models\RegistrationOtp;
 use App\Models\StudyProgram;
+use App\Models\User;
 use App\Models\VoterAccount;
 use App\Models\VotingParticipation;
 use Carbon\Carbon;
@@ -107,6 +109,18 @@ class Index extends Component
         'duplicates' => 0,
         'failed' => 0,
     ];
+
+    public bool $showSuperAdminActivationModal = false;
+
+    public string $superAdminActivationEmail = '';
+
+    public string $superAdminActivationPassword = '';
+
+    public string $superAdminActivationNote = '';
+
+    public bool $showSuperAdminSuccessModal = false;
+
+    public ?array $superAdminSuccessData = null;
 
     public function mount(): void
     {
@@ -498,6 +512,121 @@ class Index extends Component
         $this->showDetailModal = false;
         $this->selectedEligibleVoter = null;
         $this->selectedEligibleVoterId = null;
+    }
+
+    public function openSuperAdminActivationModal(int $id): void
+    {
+        Gate::authorize('super-admin-only');
+
+        $voter = EligibleVoter::with(['studyProgram', 'voterAccount.user'])->findOrFail($id);
+
+        if ($voter->voterAccount !== null) {
+            session()->flash('error', "Mahasiswa {$voter->name} sudah memiliki akun pemilih terdaftar.");
+
+            return;
+        }
+
+        $this->selectedEligibleVoter = $voter;
+        $this->selectedEligibleVoterId = $voter->id;
+        $this->superAdminActivationEmail = '';
+        $this->superAdminActivationPassword = 'Pemira'.$voter->nim.'!';
+        $this->superAdminActivationNote = 'Aktivasi manual Super Admin karena kendala pengiriman OTP email';
+        $this->showDetailModal = false;
+        $this->showSuperAdminActivationModal = true;
+    }
+
+    public function closeSuperAdminActivationModal(): void
+    {
+        $this->showSuperAdminActivationModal = false;
+    }
+
+    public function confirmSuperAdminActivation(): void
+    {
+        Gate::authorize('super-admin-only');
+
+        if (! $this->selectedEligibleVoterId) {
+            return;
+        }
+
+        $voter = EligibleVoter::with(['studyProgram', 'voterAccount'])->findOrFail($this->selectedEligibleVoterId);
+
+        if ($voter->voterAccount !== null) {
+            session()->flash('error', 'Mahasiswa ini sudah memiliki akun terdaftar.');
+            $this->showSuperAdminActivationModal = false;
+
+            return;
+        }
+
+        $this->validate([
+            'superAdminActivationEmail' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
+            'superAdminActivationPassword' => ['required', 'string', 'min:8'],
+            'superAdminActivationNote' => ['required', 'string', 'min:5', 'max:500'],
+        ], [
+            'superAdminActivationEmail.required' => 'Email mahasiswa wajib diisi.',
+            'superAdminActivationEmail.email' => 'Format email tidak valid.',
+            'superAdminActivationEmail.unique' => 'Email ini sudah terdaftar pada akun lain di sistem.',
+            'superAdminActivationPassword.required' => 'Password wajib diisi.',
+            'superAdminActivationPassword.min' => 'Password minimal 8 karakter.',
+            'superAdminActivationNote.required' => 'Catatan verifikasi manual wajib diisi.',
+            'superAdminActivationNote.min' => 'Catatan verifikasi minimal 5 karakter.',
+        ]);
+
+        $email = trim(strtolower($this->superAdminActivationEmail));
+        $password = $this->superAdminActivationPassword;
+        $note = $this->superAdminActivationNote;
+
+        DB::transaction(function () use ($voter, $email, $password, $note) {
+            $user = User::create([
+                'name' => $voter->name,
+                'email' => $email,
+                'password' => $password,
+                'role' => 'voter',
+                'email_verified_at' => now(),
+            ]);
+
+            VoterAccount::create([
+                'user_id' => $user->id,
+                'eligible_voter_id' => $voter->id,
+            ]);
+
+            RegistrationOtp::where('email', $email)->update(['used_at' => now()]);
+
+            AuditLog::create([
+                'user_id' => Auth::id(),
+                'action' => 'superadmin_manual_voter_activation',
+                'entity_type' => 'User',
+                'entity_id' => (string) $user->id,
+                'description' => "Super Admin mengaktivasi manual akun voter NIM {$voter->nim} ({$voter->name}) dengan email {$email}",
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+                'metadata' => [
+                    'nim' => $voter->nim,
+                    'name' => $voter->name,
+                    'email' => $email,
+                    'study_program' => $voter->studyProgram?->name,
+                    'admin_notes' => $note,
+                    'actor_email' => Auth::user()?->email,
+                ],
+            ]);
+
+            $this->superAdminSuccessData = [
+                'nim' => $voter->nim,
+                'name' => $voter->name,
+                'prodi' => $voter->studyProgram?->name ?? 'Jurusan Terdaftar',
+                'email' => $email,
+                'password' => $password,
+                'note' => $note,
+            ];
+        });
+
+        $this->showSuperAdminActivationModal = false;
+        $this->showSuperAdminSuccessModal = true;
+        session()->flash('success', "Akun voter atas nama {$voter->name} (NIM: {$voter->nim}) berhasil diaktivasi manual!");
+    }
+
+    public function closeSuperAdminSuccessModal(): void
+    {
+        $this->showSuperAdminSuccessModal = false;
     }
 
     public function openDeleteModal(int $id): void

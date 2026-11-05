@@ -297,6 +297,181 @@
         </div>
     @endif
 
+    @if ($hasVoterAccount && $isEligible && $resultsData && $isRealtimeResultsEnabled)
+        <div wire:poll.15s class="bg-surface border-2 border-ink p-5 sm:p-7 shadow-brutal space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b-2 border-ink pb-4">
+                <div>
+                    <div class="flex items-center gap-2 mb-1.5 flex-wrap">
+                        @if ($resultsData['is_finished'])
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 bg-emerald-100 text-emerald-950 border border-ink text-xs font-display font-bold uppercase tracking-wider">
+                                <span class="w-2 h-2 bg-emerald-600 inline-block"></span>
+                                HASIL AKHIR PERHITUNGAN RESMI
+                            </span>
+                        @elseif ($resultsData['is_voting'])
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 bg-accent text-brand border border-ink text-xs font-display font-bold uppercase tracking-wider">
+                                <span class="w-2 h-2 bg-red-600 rounded-full animate-ping"></span>
+                                LIVE COUNT SEMENTARA
+                            </span>
+                        @else
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 bg-surface-muted text-ink border border-ink text-xs font-display font-bold uppercase tracking-wider">
+                                {{ $resultsData['status_label'] }}
+                            </span>
+                        @endif
+                    </div>
+                    <h2 class="text-xl sm:text-2xl font-display font-black text-brand uppercase tracking-tight">
+                        Hasil Perhitungan Suara Pemira
+                    </h2>
+                    <p class="text-xs sm:text-sm font-sans text-ink/75 mt-0.5">
+                        {{ $resultsData['status_subtext'] }}
+                    </p>
+                </div>
+
+                <div class="flex items-center gap-2 shrink-0">
+                    <button wire:click="refreshResults"
+                            type="button"
+                            class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-surface hover:bg-accent text-ink border-2 border-ink shadow-brutal-sm text-xs font-display font-bold uppercase tracking-wider transition-colors cursor-pointer"
+                            title="Segarkan data perolehan suara">
+                        <svg class="w-3.5 h-3.5 text-ink" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                        </svg>
+                        <span>Segarkan</span>
+                    </button>
+                    <span class="text-[11px] font-mono text-ink/60">
+                        {{ $resultsData['calculated_at'] }}
+                    </span>
+                </div>
+            </div>
+
+            @if ($hasVoted)
+                <div class="p-3.5 bg-emerald-50 border-2 border-ink flex items-center justify-between gap-3 text-xs font-sans text-emerald-950">
+                    <div class="flex items-center gap-2 min-w-0">
+                        <span class="w-2.5 h-2.5 bg-emerald-600 shrink-0 inline-block"></span>
+                        <span class="font-medium">Hak suara Anda telah sah digunakan dan terakumulasi dalam perhitungan di bawah ini secara anonim.</span>
+                    </div>
+                    <a href="{{ route('voter.success') }}" class="font-display font-bold uppercase underline hover:text-brand shrink-0">
+                        Bukti &rarr;
+                    </a>
+                </div>
+            @endif
+
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 font-sans">
+                <div class="p-3 sm:p-4 bg-surface-muted border-2 border-ink">
+                    <span class="text-[10px] font-display font-bold uppercase tracking-wider text-ink/60 block">SUARA MASUK</span>
+                    <div class="font-display font-black text-xl sm:text-2xl text-brand mt-0.5">
+                        {{ $resultsData['total_ballots_formatted'] }}
+                    </div>
+                    <span class="text-[10px] text-ink/60 block mt-0.5">Surat suara sah</span>
+                </div>
+
+                <div class="p-3 sm:p-4 bg-surface-muted border-2 border-ink">
+                    <span class="text-[10px] font-display font-bold uppercase tracking-wider text-ink/60 block">PARTISIPASI</span>
+                    <div class="font-display font-black text-xl sm:text-2xl text-brand mt-0.5">
+                        {{ $resultsData['ballot_turnout_rate_formatted'] }}
+                    </div>
+                    <span class="text-[10px] text-ink/60 block mt-0.5">Dari total DPT</span>
+                </div>
+
+                <div class="p-3 sm:p-4 bg-surface-muted border-2 border-ink">
+                    <span class="text-[10px] font-display font-bold uppercase tracking-wider text-ink/60 block">TOTAL DPT</span>
+                    <div class="font-display font-black text-xl sm:text-2xl text-ink mt-0.5">
+                        {{ $resultsData['total_eligible_formatted'] }}
+                    </div>
+                    <span class="text-[10px] text-ink/60 block mt-0.5">Mahasiswa terdaftar</span>
+                </div>
+
+                <div class="p-3 sm:p-4 bg-surface-muted border-2 border-ink">
+                    <span class="text-[10px] font-display font-bold uppercase tracking-wider text-ink/60 block">BELUM MEMILIH</span>
+                    <div class="font-display font-black text-xl sm:text-2xl text-ink/70 mt-0.5">
+                        {{ $resultsData['unvoted_formatted'] }}
+                    </div>
+                    <span class="text-[10px] text-ink/60 block mt-0.5">Sisa hak suara</span>
+                </div>
+            </div>
+
+            @if ($resultsData['has_candidates'])
+                <div class="grid grid-cols-1 md:grid-cols-2 {{ $resultsData['candidate_results']->count() >= 3 ? 'lg:grid-cols-3' : '' }} gap-4 sm:gap-6">
+                    @foreach ($resultsData['candidate_results'] as $item)
+                        <div class="bg-surface border-2 border-ink shadow-brutal flex flex-col justify-between overflow-hidden {{ $item['is_highest'] ? 'ring-2 ring-brand' : '' }}">
+                            @if ($item['is_highest'])
+                                <div class="bg-brand text-accent px-3 py-1 text-xs font-display font-black uppercase tracking-wider text-center border-b-2 border-ink flex items-center justify-center gap-1.5">
+                                    <svg class="w-3.5 h-3.5 fill-accent" viewBox="0 0 20 20">
+                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                    </svg>
+                                    <span>PEROLEHAN SUARA TERTINGGI</span>
+                                </div>
+                            @endif
+
+                            <div class="p-4 sm:p-5 space-y-4">
+                                <div class="flex items-center justify-between gap-2">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 bg-surface-muted text-ink border-2 border-ink text-xs font-display font-black uppercase tracking-wider">
+                                        PASLON #{{ $item['formatted_number'] }}
+                                    </span>
+                                    <span class="font-mono font-bold text-xs text-ink/80">
+                                        {{ $item['votes_formatted'] }} suara
+                                    </span>
+                                </div>
+
+                                <div class="flex items-start gap-3">
+                                    <div class="w-16 h-16 sm:w-20 sm:h-20 bg-surface-muted border-2 border-ink shrink-0 overflow-hidden shadow-brutal-sm relative">
+                                        @if ($item['photo'])
+                                            <img src="{{ asset('storage/' . $item['photo']) }}"
+                                                 alt="Foto Paslon {{ $item['formatted_number'] }}"
+                                                 class="w-full h-full object-cover" />
+                                        @else
+                                            <div class="w-full h-full flex items-center justify-center font-display font-black text-xl text-ink/40 bg-surface-muted">
+                                                {{ $item['formatted_number'] }}
+                                            </div>
+                                        @endif
+                                    </div>
+
+                                    <div class="space-y-1 min-w-0 flex-1 font-sans text-xs">
+                                        <div>
+                                            <span class="text-[10px] font-display font-bold uppercase text-ink/50 block">Calon Ketua</span>
+                                            <div class="font-display font-black text-xs sm:text-sm text-ink uppercase truncate" title="{{ $item['leader_name'] }}">
+                                                {{ $item['leader_name'] }}
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <span class="text-[10px] font-display font-bold uppercase text-ink/50 block">Calon Wakil</span>
+                                            <div class="font-display font-black text-xs sm:text-sm text-ink uppercase truncate" title="{{ $item['vice_leader_name'] }}">
+                                                {{ $item['vice_leader_name'] }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="pt-3 border-t-2 border-ink space-y-1.5">
+                                    <div class="flex items-baseline justify-between gap-2">
+                                        <span class="text-[11px] font-display font-bold uppercase tracking-wider text-ink/60">
+                                            PERSENTASE
+                                        </span>
+                                        <div class="font-display font-black text-2xl sm:text-3xl text-brand leading-none">
+                                            {{ $item['percentage_formatted'] }}
+                                        </div>
+                                    </div>
+
+                                    <div class="w-full h-3 bg-surface-muted border-2 border-ink overflow-hidden p-0.5">
+                                        <div class="h-full {{ $item['colors']['progress'] }} transition-all duration-500"
+                                             style="width: {{ min(100, max(0, $item['percentage'])) }}%"></div>
+                                    </div>
+
+                                    <div class="flex items-center justify-between text-[10px] font-sans text-ink/70 pt-0.5">
+                                        <span>Proporsi DPT: <strong>{{ $item['percentage_of_dpt_formatted'] }}</strong></span>
+                                        <span>Total: <strong>{{ $item['votes_formatted'] }} suara</strong></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            @else
+                <div class="p-6 bg-surface-muted border-2 border-ink text-center text-xs font-sans text-ink/60">
+                    Belum ada pasangan calon aktif terdaftar pada agenda pemilihan ini.
+                </div>
+            @endif
+        </div>
+    @endif
+
     <div class="bg-surface border-2 border-ink p-6 sm:p-7 shadow-brutal">
         <h3 class="font-display font-bold text-lg text-ink uppercase tracking-wide mb-5 flex items-center gap-2">
             <span class="w-3 h-3 bg-accent inline-block border border-ink"></span>

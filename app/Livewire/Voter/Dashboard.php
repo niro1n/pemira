@@ -4,8 +4,10 @@ namespace App\Livewire\Voter;
 
 use App\Models\CandidatePair;
 use App\Models\Election;
+use App\Models\SystemSetting;
 use App\Models\User;
 use App\Models\VotingParticipation;
+use App\Services\Election\ElectionResultService;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
@@ -52,6 +54,15 @@ class Dashboard extends Component
 
         $isEligible = (bool) ($eligibleVoter?->is_eligible ?? false);
 
+        $isRealtimeResultsEnabled = SystemSetting::isRealtimeResultsEnabled();
+        $resultsData = null;
+
+        if ($election && $isRealtimeResultsEnabled) {
+            if ($hasVoted || $currentPhase === \App\Enums\ElectionPhase::FINISHED || $currentPhase === \App\Enums\ElectionPhase::VOTING) {
+                $resultsData = app(ElectionResultService::class)->getResults($election->id);
+            }
+        }
+
         return view('livewire.voter.dashboard', [
             'user' => $user,
             'voterAccount' => $voterAccount,
@@ -64,6 +75,12 @@ class Dashboard extends Component
             'votingParticipation' => $votingParticipation,
             'activeCandidatesCount' => $activeCandidatesCount,
             'isEligible' => $isEligible,
+            'isRealtimeResultsEnabled' => $isRealtimeResultsEnabled,
+            'resultsData' => $resultsData,
         ]);
+    }
+
+    public function refreshResults(): void
+    {
     }
 }

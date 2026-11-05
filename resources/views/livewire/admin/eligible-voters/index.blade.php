@@ -340,6 +340,14 @@
                                 </td>
                                 <td class="px-4 py-3 text-center whitespace-nowrap border-b border-ink/10">
                                     <div class="inline-flex items-center gap-1.5">
+                                        @if (auth()->user()?->isSuperAdmin() && ! $voter->voter_account_exists)
+                                            <button wire:click="openSuperAdminActivationModal({{ $voter->id }})"
+                                                    type="button"
+                                                    class="px-2 py-1 bg-amber-300 hover:bg-amber-400 text-ink border border-ink text-[10px] font-display font-black uppercase tracking-wider shadow-brutal-sm cursor-pointer"
+                                                    title="Aktivasi Akun Pemilih Manual (Khusus Super Admin)">
+                                                BYPASS OTP
+                                            </button>
+                                        @endif
                                         <x-action-button variant="detail" label="Lihat detail" wire:click="openDetailModal({{ $voter->id }})" />
                                         <x-action-button variant="edit" label="Edit data pemilih" wire:click="openEditModal({{ $voter->id }})" />
                                         <x-action-button variant="delete" label="Hapus data pemilih" wire:click="openDeleteModal({{ $voter->id }})" />
@@ -805,11 +813,20 @@
                             class="w-full sm:w-auto px-4 py-2.5 sm:py-2 bg-surface hover:bg-accent border-2 border-ink font-display font-bold text-xs uppercase tracking-wider text-center transition-colors cursor-pointer min-h-10">
                         TUTUP
                     </button>
-                    <button wire:click="openEditModal({{ $selectedEligibleVoter->id }})"
-                            type="button"
-                            class="w-full sm:w-auto px-4 py-2.5 sm:py-2 bg-brand text-surface hover:bg-brand-dark border-2 border-ink shadow-brutal font-display font-bold text-xs uppercase tracking-wider text-center transition-colors cursor-pointer min-h-10">
-                        LENGKAPI / EDIT
-                    </button>
+                    <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                        @if (auth()->user()?->isSuperAdmin() && ! $selectedEligibleVoter->voter_account_exists)
+                            <button wire:click="openSuperAdminActivationModal({{ $selectedEligibleVoter->id }})"
+                                    type="button"
+                                    class="w-full sm:w-auto px-4 py-2.5 sm:py-2 bg-amber-400 text-ink hover:bg-amber-500 border-2 border-ink shadow-brutal font-display font-black text-xs uppercase tracking-wider text-center transition-colors cursor-pointer min-h-10">
+                                AKTIVASI MANUAL (SUPER ADMIN)
+                            </button>
+                        @endif
+                        <button wire:click="openEditModal({{ $selectedEligibleVoter->id }})"
+                                type="button"
+                                class="w-full sm:w-auto px-4 py-2.5 sm:py-2 bg-brand text-surface hover:bg-brand-dark border-2 border-ink shadow-brutal font-display font-bold text-xs uppercase tracking-wider text-center transition-colors cursor-pointer min-h-10">
+                            LENGKAPI / EDIT
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1202,6 +1219,170 @@
                         </div>
                     </div>
                 @endif
+            </div>
+        </div>
+    @endif
+
+    @if ($showSuperAdminActivationModal && $selectedEligibleVoter)
+        <div class="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-3 sm:p-4 bg-ink/75 backdrop-blur-xs"
+             role="dialog"
+             aria-modal="true">
+            <div class="w-full sm:max-w-lg bg-surface border-2 border-ink shadow-brutal flex flex-col min-w-0">
+                <div class="px-5 py-4 border-b-2 border-ink flex items-center justify-between bg-amber-200 shrink-0">
+                    <div>
+                        <span class="text-xs font-display font-bold uppercase tracking-wider text-ink/70 block">SUPER ADMIN BYPASS</span>
+                        <h3 class="font-display font-black text-lg text-ink uppercase truncate min-w-0">
+                            Aktivasi Akun Pemilih Manual
+                        </h3>
+                    </div>
+                    <button wire:click="closeSuperAdminActivationModal"
+                            type="button"
+                            class="w-9 h-9 border-2 border-ink bg-surface hover:bg-accent flex items-center justify-center shrink-0 transition-colors cursor-pointer"
+                            aria-label="Tutup modal">
+                        <svg class="w-4 h-4 text-ink" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <form wire:submit.prevent="confirmSuperAdminActivation" class="p-5 sm:p-6 space-y-4 font-sans text-xs">
+                    <div class="bg-surface-muted border-2 border-ink p-3 space-y-1">
+                        <div class="text-[10px] font-display font-bold uppercase text-ink/60">Data Mahasiswa:</div>
+                        <div class="font-mono font-bold text-brand text-xs">NIM: {{ $selectedEligibleVoter->nim }}</div>
+                        <div class="font-display font-black text-sm uppercase text-ink">{{ $selectedEligibleVoter->name }}</div>
+                        <div class="text-ink/70">Jurusan: {{ $selectedEligibleVoter->studyProgram?->name ?? 'Belum terpetakan' }}</div>
+                    </div>
+
+                    <div>
+                        <label for="superAdminActivationEmail" class="block font-display font-bold uppercase text-ink mb-1">
+                            Email Login Mahasiswa <span class="text-rose-600">*</span>
+                        </label>
+                        <input type="email"
+                               id="superAdminActivationEmail"
+                               wire:model="superAdminActivationEmail"
+                               placeholder="contoh: {{ strtolower(explode(' ', $selectedEligibleVoter->name)[0] ?? 'mahasiswa') }}@student.pnb.ac.id"
+                               class="w-full px-3 py-2 border-2 border-ink bg-surface font-sans text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-brand shadow-brutal-sm">
+                        @error('superAdminActivationEmail')
+                            <p class="text-rose-600 font-bold mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div>
+                        <label for="superAdminActivationPassword" class="block font-display font-bold uppercase text-ink mb-1">
+                            Password Sementara <span class="text-rose-600">*</span>
+                        </label>
+                        <input type="text"
+                               id="superAdminActivationPassword"
+                               wire:model="superAdminActivationPassword"
+                               class="w-full px-3 py-2 border-2 border-ink bg-surface font-mono text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-brand shadow-brutal-sm">
+                        <span class="text-[11px] text-ink/60 mt-0.5 block">Default otomatis: Pemira{{ $selectedEligibleVoter->nim }}! (Dapat Anda ubah sesuai kebutuhan).</span>
+                        @error('superAdminActivationPassword')
+                            <p class="text-rose-600 font-bold mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div>
+                        <label for="superAdminActivationNote" class="block font-display font-bold uppercase text-ink mb-1">
+                            Alasan / Catatan Verifikasi Super Admin <span class="text-rose-600">*</span>
+                        </label>
+                        <textarea id="superAdminActivationNote"
+                                  wire:model="superAdminActivationNote"
+                                  rows="2"
+                                  placeholder="contoh: Validasi identitas via KTM WhatsApp (kendala OTP email kampus)"
+                                  class="w-full px-3 py-2 border-2 border-ink bg-surface font-sans text-xs focus:outline-none focus:ring-2 focus:ring-brand shadow-brutal-sm"></textarea>
+                        @error('superAdminActivationNote')
+                            <p class="text-rose-600 font-bold mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div class="px-0 pt-3 border-t-2 border-ink flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-2.5">
+                        <button wire:click="closeSuperAdminActivationModal"
+                                type="button"
+                                class="px-4 py-2 bg-surface hover:bg-ink/10 border-2 border-ink font-display font-bold text-xs uppercase cursor-pointer text-center">
+                            BATAL
+                        </button>
+                        <button type="submit"
+                                wire:loading.attr="disabled"
+                                class="px-5 py-2.5 bg-brand text-accent hover:bg-brand-dark border-2 border-ink shadow-brutal-sm font-display font-black text-xs uppercase tracking-wider transition-all cursor-pointer text-center">
+                            <span wire:loading.remove wire:target="confirmSuperAdminActivation">
+                                AKTIFKAN AKUN SEKARANG
+                            </span>
+                            <span wire:loading wire:target="confirmSuperAdminActivation">
+                                MENDAFTARKAN...
+                            </span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    @endif
+
+    @if ($showSuperAdminSuccessModal && $superAdminSuccessData)
+        <div class="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-3 sm:p-4 bg-ink/75 backdrop-blur-xs"
+             role="dialog"
+             aria-modal="true">
+            <div class="w-full sm:max-w-lg bg-surface border-2 border-ink shadow-brutal flex flex-col min-w-0"
+                 x-data="{ copiedWa: false }">
+                <div class="px-5 py-4 border-b-2 border-ink flex items-center justify-between bg-emerald-100 shrink-0">
+                    <div>
+                        <span class="text-xs font-display font-bold uppercase tracking-wider text-emerald-950 block">STATUS: AKTIF & TERVERIFIKASI</span>
+                        <h3 class="font-display font-black text-lg text-emerald-950 uppercase">
+                            AKUN BERHASIL DIAKTIVASI!
+                        </h3>
+                    </div>
+                    <button wire:click="closeSuperAdminSuccessModal"
+                            type="button"
+                            class="w-9 h-9 border-2 border-ink bg-surface hover:bg-accent flex items-center justify-center shrink-0 transition-colors cursor-pointer"
+                            aria-label="Tutup modal">
+                        <svg class="w-4 h-4 text-ink" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="p-5 sm:p-6 space-y-4 font-sans text-xs">
+                    <p class="text-ink leading-relaxed">
+                        Akun pemilih atas nama <strong>{{ $superAdminSuccessData['name'] }}</strong> telah resmi terdaftar dan terverifikasi di sistem PEMIRA.
+                    </p>
+
+                    <div class="p-4 bg-surface-muted border-2 border-ink space-y-2">
+                        <div class="flex justify-between border-b border-ink/20 pb-1">
+                            <span class="text-ink/60">NIM:</span>
+                            <span class="font-mono font-bold text-ink">{{ $superAdminSuccessData['nim'] }}</span>
+                        </div>
+                        <div class="flex justify-between border-b border-ink/20 pb-1">
+                            <span class="text-ink/60">Nama:</span>
+                            <span class="font-display font-black uppercase text-ink">{{ $superAdminSuccessData['name'] }}</span>
+                        </div>
+                        <div class="flex justify-between border-b border-ink/20 pb-1">
+                            <span class="text-ink/60">Email Login:</span>
+                            <span class="font-bold text-brand">{{ $superAdminSuccessData['email'] }}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-ink/60">Password:</span>
+                            <span class="font-mono font-black text-rose-700 bg-surface px-1.5 py-0.5 border border-ink">{{ $superAdminSuccessData['password'] }}</span>
+                        </div>
+                    </div>
+
+                    @php
+                        $waMsg = "Halo {$superAdminSuccessData['name']} (NIM: {$superAdminSuccessData['nim']}),\n\nAkun PEMIRA 2026 kamu telah diaktivasi oleh Panitia/Super Admin.\n\nSilakan langsung login ke website:\nURL: ".url('/login')."\nEmail: {$superAdminSuccessData['email']}\nPassword: {$superAdminSuccessData['password']}\n\nSetelah berhasil masuk, silakan gunakan hak suara kamu pada bilik suara. Terima kasih!";
+                    @endphp
+
+                    <button type="button"
+                            @click="navigator.clipboard.writeText(`{{ $waMsg }}`); copiedWa = true; setTimeout(() => copiedWa = false, 2500)"
+                            class="w-full px-4 py-3 bg-brand text-accent hover:bg-brand-dark border-2 border-ink shadow-brutal font-display font-black text-xs uppercase tracking-wider text-center transition-all cursor-pointer">
+                        <span x-show="!copiedWa">SALIN PESAN LOGIN UNTUK WHATSAPP MAHASISWA</span>
+                        <span x-show="copiedWa" class="text-accent">✓ PESAN WHATSAPP BERHASIL DISALIN!</span>
+                    </button>
+                </div>
+
+                <div class="px-5 py-3 border-t-2 border-ink bg-surface-muted text-right">
+                    <button wire:click="closeSuperAdminSuccessModal"
+                            type="button"
+                            class="px-5 py-2 bg-surface hover:bg-ink/10 border-2 border-ink font-display font-bold text-xs uppercase cursor-pointer">
+                        SELESAI / TUTUP
+                    </button>
+                </div>
             </div>
         </div>
     @endif

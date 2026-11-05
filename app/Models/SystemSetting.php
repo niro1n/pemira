@@ -61,4 +61,14 @@ class SystemSetting extends Model
     {
         static::set('maintenance_mode', $enabled ? '1' : '0');
     }
+
+    public static function isRealtimeResultsEnabled(): bool
+    {
+        return static::get('show_realtime_results_to_voters', '1') === '1';
+    }
+
+    public static function setRealtimeResultsEnabled(bool $enabled): void
+    {
+        static::set('show_realtime_results_to_voters', $enabled ? '1' : '0');
+    }
 }
